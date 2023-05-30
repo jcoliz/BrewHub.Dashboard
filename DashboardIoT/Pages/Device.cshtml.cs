@@ -76,7 +76,7 @@ namespace DashboardIoT.Pages
             var instream = await cosmos.DoQueryAsync(lookback,bininterval,new[]{"device-1"});
             var data = DatapointReader.ReadFromJson(instream);
 
-            Chart = ChartMaker.Engine.CreateMultiLineChart(data, new[] { "thermostat1/Temperature", "thermostat2/Temperature" }, labelformat);
+            Chart = ChartMaker.Engine.CreateMultiLineChart(data, new[] { "Top/Temperature", "Condenser/Temperature" }, labelformat);
         }
 
         private static readonly ChartColor[] palette = new ChartColor[]

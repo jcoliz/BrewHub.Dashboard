@@ -52,7 +52,7 @@ namespace DashboardIoT.Pages
                 var instream = await cosmos.DoQueryAsync(TimeSpan.FromMinutes(10), TimeSpan.FromMinutes(10),new [] {"device-1", "device-2", "device-3", "device-4", "device-5", "device-6"});
                 var data = DatapointReader.ReadFromJson(instream);
 
-                Chart = ChartMaker.Engine.CreateMultiDeviceBarChart(data, new[] { "thermostat1/Temperature", "thermostat2/Temperature" });
+                Chart = ChartMaker.Engine.CreateMultiDeviceBarChart(data, new[] { "Top/Temperature", "Condenser/Temperature" });
             }
             else if (Site == "Reference")
             {

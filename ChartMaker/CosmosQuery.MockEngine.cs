@@ -11,14 +11,14 @@ public class MockEngine : ICosmosQueryEngine
         {
             var time = DateTimeOffset.UtcNow;
             double workingset = 500000.0;
-            double t1 = 60.0 + 20.0 * rand.NextDouble();
-            double t2 = 80.0 + 40.0 * rand.NextDouble();
+            double t1 = 75.0 + 10.0 * rand.NextDouble();
+            double t2 = 15.0 + 10.0 * rand.NextDouble();
             int divisions = (int)Math.Round(LookBack / BinInterval, 0, MidpointRounding.AwayFromZero);
             while(divisions-- > 0)
             {
                 result.Add(new DeviceReading() { __Device = device, __Time = time, WorkingSet = workingset });
-                result.Add(new TempReading() { __Device = device, __Time = time, __Component = "thermostat1", Temperature = t1 });
-                result.Add(new TempReading() { __Device = device, __Time = time, __Component = "thermostat2", Temperature = t2 });
+                result.Add(new TempReading() { __Device = device, __Time = time, __Component = "Top", Temperature = t1 });
+                result.Add(new TempReading() { __Device = device, __Time = time, __Component = "Condenser", Temperature = t2 });
 
                 workingset += workingset * (rand.NextDouble() - 0.5) / 20.0;
                 t1 += t1 * (rand.NextDouble() - 0.5) / 20.0;
