@@ -25,30 +25,30 @@
           <tr>
             <th style="width: 36%;">Name</th>
             <th style="width: 14%;">Devices</th>
-            <th style="width: 15%;">Errors</th>
+            <th style="width: 15%;">Status</th>
             <th style="width: 15%;">Frequency</th>
             <th style="width: 20%;">Recipient</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <th scope="row" class="text-start">Failure conditions</th>
+            <th scope="row" class="text-start">Failures</th>
             <td>*</td>
-            <td>500+</td>
+            <td>&GreaterEqual;800</td>
             <td>PT5M</td>
             <td>*</td>
           </tr>
           <tr>
-            <th scope="row" class="text-start">Warnings</th>
+            <th scope="row" class="text-start">Errors</th>
             <td>*</td>
-            <td>200-499</td>
+            <td>&GreaterEqual;200</td>
             <td>PT4H</td>
             <td>Frank White</td>
           </tr>
           <tr>
-            <th scope="row" class="text-start">Concerns</th>
+            <th scope="row" class="text-start">Warnings</th>
             <td>*</td>
-            <td>1-199</td>
+            <td>&gt;0</td>
             <td>PT12H</td>
             <td>Frank White<br/>Martha Brown</td>
           </tr>
