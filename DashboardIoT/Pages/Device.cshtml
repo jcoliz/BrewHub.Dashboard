@@ -1,0 +1,231 @@
+﻿@page
+@using System.Text.Json
+@model DevicePageModel
+@{
+    ViewData["Title"] = "Devices";
+}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Device: @Model.DeviceId</h1>
+
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+            <div class="btn-group" role="group">
+                <button id="btnGroupDrop1" type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span data-feather="calendar"></span>
+                    @Model.Timeframe.ToString()
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                    @foreach (var name in Enum.GetNames(typeof(IndexModel.TimeframeEnum)))
+                    {
+                        <li><a class="dropdown-item" asp-page="Device" asp-route-t="@name" asp-route-id="@Model.DeviceId">@name</a></li>
+                    }
+                </ul>
+            </div>
+            <div class="btn-group" role="group">
+                <button id="btnGroupDrop2" type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    Device
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="btnGroupDrop2">
+                    <li><a class="dropdown-item" asp-page="Device" asp-route-id="device-1" asp-route-t="@Model.Timeframe.ToString()">device-1</a></li>
+                    <li><a class="dropdown-item" asp-page="Device" asp-route-id="device-2" asp-route-t="@Model.Timeframe.ToString()">device-2</a></li>
+                    <li><a class="dropdown-item" asp-page="Device" asp-route-id="device-3" asp-route-t="@Model.Timeframe.ToString()">device-3</a></li>
+                    <li><a class="dropdown-item" asp-page="Device" asp-route-id="device-4" asp-route-t="@Model.Timeframe.ToString()">device-4</a></li>
+                    <li><a class="dropdown-item" asp-page="Device" asp-route-id="device-5" asp-route-t="@Model.Timeframe.ToString()">device-5</a></li>
+                    <li><a class="dropdown-item" asp-page="Device" asp-route-id="device-5" asp-route-t="@Model.Timeframe.ToString()">device-6</a></li>
+                </ul>
+                <button  type="button" class="btn btn-sm btn-outline-secondary" >
+                      <span data-feather="refresh-cw"></span>
+                </button>
+            </div>
+        </div>
+
+        <div class="btn-group ms-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
+        </div>
+    </div>
+
+</div>
+<canvas class="my-4 w-100" id="chart" width="900" height="380"></canvas>
+<script>
+    const ctx = document.getElementById('chart').getContext('2d');
+    const setup = @Html.Raw(JsonSerializer.Serialize(Model.Chart, new JsonSerializerOptions() { WriteIndented = true, PropertyNamingPolicy = JsonNamingPolicy.CamelCase, DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull }));
+    const myChart = new Chart(ctx, setup);
+</script>
+
+<div class="row">
+    <div class="col-md-6 col-lg-4 mb-3">
+        <h4 class="d-flex justify-content-between align-items-center mb-3">
+            <span class="text-primary">Device Details</span>
+        </h4>
+        <ul class="list-group mb-3">
+            <li class="list-group-item d-flex justify-content-between lh-sm">
+                <div>
+                    <h6 class="my-0">Schema</h6>
+                    <small class="text-body-secondary">Temperature Controller</small>
+                </div>
+            </li>
+            <li class="list-group-item d-flex justify-content-between lh-sm">
+                <div>
+                    <h6 class="my-0">Current Working Set</h6>
+                    <small class="text-body-secondary">500kB</small>
+                </div>
+            </li>
+            <li class="list-group-item d-flex justify-content-between lh-sm">
+                <div>
+                    <h6 class="my-0">Serial Number</h6>
+                    <small class="text-body-secondary">1234567890-ABCDEF-linux</small>
+                </div>
+            </li>
+        </ul>
+        <form class="card p-2">
+            <div class="row g-3">
+                <div class="col-12">
+
+            <label for="environment" class="h6 form-label">Tag: Environment</label>
+            <div class="input-group">
+                <input type="text" id="environment" class="form-control" value="Staging">
+                <button type="submit" class="btn btn-secondary">Update</button>
+            </div>
+                </div>
+                <div class="col-12">
+                    <label for="minmax" class="h6 form-label">Restart Device</label>
+            <div class="input-group">
+                <input type="text" id="reboot" class="form-control" placeholder="Delay">
+                <span class="input-group-text">ms</span>
+                <button type="submit" class="btn btn-secondary">Go</button>
+            </div>
+            </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-6 col-lg-4 mb-3">
+        <h4 class="d-flex justify-content-between align-items-center mb-3">
+            <span class="text-primary">thermostat1</span>
+        </h4>
+        <ul class="list-group mb-3">
+            <li class="list-group-item d-flex justify-content-between lh-sm">
+                <div>
+                    <h6 class="my-0">Current Temperature</h6>
+                    <small class="text-body-secondary">110°C</small>
+                </div>
+            </li>
+            <li class="list-group-item d-flex justify-content-between lh-sm">
+            <div>
+                <h6 class="my-0">Max Temp Since Last Reboot</h6>
+                <small class="text-body-secondary">1,024°C</small>
+            </div>
+            </li>
+        </ul>
+        <form class="card p-2">
+            <div class="row g-3">
+                <div class="col-12">
+                    <label for="targetTemperature" class="h6 form-label">Target Temperature</label>
+                    <div class="input-group">
+                        <input type="text" id="targetTemperature" class="form-control" value="1001">
+                        <span class="input-group-text">°C</span>
+                        <button type="submit" class="btn btn-secondary">Update</button>
+                    </div>
+
+                </div>
+                <div class="col-12">
+                    <label for="minmax" class="h6 form-label">Get Max-Min Report</label>
+                    <div class="input-group">
+                        <input type="text" id="minmax" class="form-control" placeholder="Since date/time">
+                        <button type="submit" class="btn btn-secondary">Go</button>
+                    </div>                    
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-6 col-lg-4 mb-3">
+        <h4 class="d-flex justify-content-between align-items-center mb-3">
+            <span class="text-primary">thermostat2</span>
+        </h4>
+        <ul class="list-group mb-3">
+            <li class="list-group-item d-flex justify-content-between lh-sm">
+                <div>
+                    <h6 class="my-0">Current Temperature</h6>
+                    <small class="text-body-secondary">75°C</small>
+                </div>
+            </li>
+            <li class="list-group-item d-flex justify-content-between lh-sm">
+            <div>
+                <h6 class="my-0">Max Temp Since Last Reboot</h6>
+                <small class="text-body-secondary">2,405°C</small>
+            </div>
+            </li>
+        </ul>
+        <form class="card p-2">
+            <div class="row g-3">
+                <div class="col-12">
+                    <label for="targetTemperature" class="h6 form-label">Target Temperature</label>
+                    <div class="input-group">
+                        <input type="text" id="targetTemperature" class="form-control" value="2002">
+                        <span class="input-group-text">°C</span>
+                        <button type="submit" class="btn btn-secondary">Update</button>
+                    </div>
+
+                </div>
+                <div class="col-12">
+                    <label for="minmax" class="h6 form-label">Get Max-Min Report</label>
+                    <div class="input-group">
+                        <input type="text" id="minmax" class="form-control" placeholder="Since date/time">
+                        <button type="submit" class="btn btn-secondary">Go</button>
+                    </div>                    
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="col-md-6 col-lg-4 mb-3">
+        <h4 class="d-flex justify-content-between align-items-center mb-3">
+            <span class="text-primary">Device Information</span>
+        </h4>
+        <ul class="list-group mb-3">
+            <li class="list-group-item d-flex justify-content-between lh-sm">
+                <div>
+                    <h6 class="my-0">Manufacturer</h6>
+                    <small class="text-body-secondary">Example</small>
+                </div>
+            </li>
+            <li class="list-group-item d-flex justify-content-between lh-sm">
+                <div>
+                    <h6 class="my-0">Model</h6>
+                    <small class="text-body-secondary">Thermostat Controller</small>
+                </div>
+            </li>
+            <li class="list-group-item d-flex justify-content-between lh-sm">
+                <div>
+                    <h6 class="my-0">Software Version</h6>
+                    <small class="text-body-secondary">0.0.0-ci-2483</small>
+                </div>
+            </li>
+            <li class="list-group-item d-flex justify-content-between lh-sm">
+                <div>
+                    <h6 class="my-0">Operating System</h6>
+                    <small class="text-body-secondary">Linux 5.4.0-137-generic #154-Ubuntu SMP Thu Jan 5 17:03:22 UTC 2023</small>
+                </div>
+            </li>
+            <li class="list-group-item d-flex justify-content-between lh-sm">
+                <div>
+                    <h6 class="my-0">Processor Architecture</h6>
+                    <small class="text-body-secondary">X64</small>
+                </div>
+            </li>
+            <li class="list-group-item d-flex justify-content-between lh-sm">
+                <div>
+                    <h6 class="my-0">Total Storage</h6>
+                    <small class="text-body-secondary">120GB</small>
+                </div>
+            </li>
+            <li class="list-group-item d-flex justify-content-between lh-sm">
+                <div>
+                    <h6 class="my-0">Total Memory</h6>
+                    <small class="text-body-secondary">7.96GB</small>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+</div>

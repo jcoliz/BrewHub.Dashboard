@@ -1,0 +1,166 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - DashboardIoT</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+@*
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+*@
+    </style>
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="~/css/dashboard.css">
+
+    <script src="~/lib/chart.js/dist/chart.js"></script>
+
+</head>
+<body>
+
+@**** Dashboard Template Navbar ****@
+
+<header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+  <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">BrewHub.Net</a>
+  <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
+  <div class="navbar-nav">
+    <div class="nav-item text-nowrap">
+      <a class="nav-link px-3" href="#"><span data-feather="log-in"></span> Sign in</a>
+    </div>
+  </div>
+</header>
+
+@{ 
+    var title = ViewData["Title"].ToString();
+    var active_visualize = (title == "Devices") ? "active" : string.Empty;
+    var active_calibrate = (title == "Scripts") ? "active" : string.Empty;
+    var active_notify = (title == "Alerts") ? "active" : string.Empty;
+    var active_manage = (title == "Settings") ? "active" : string.Empty;
+    var active_about = (title == "About") ? "active" : string.Empty;
+}
+
+<div class="container-fluid">
+  <div class="row">
+    <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+      <div class="position-sticky pt-3">
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link @active_visualize" aria-current="page" asp-page="Index">
+              <span data-feather="activity"></span>
+              Devices
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link @active_calibrate" asp-page="Calibrate">
+              <span data-feather="cpu"></span>
+              Scripts
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link @active_notify" asp-page="Notify">
+              <span data-feather="alert-triangle"></span>
+              Alerts
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link @active_manage" asp-page="Manage">
+              <span data-feather="sliders"></span>
+              Settings
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link @active_about" asp-page="About">
+              <span data-feather="help-circle"></span>
+              About
+            </a>
+          </li>
+        </ul>
+
+        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+          <span>Azure Services</span>
+        </h6>
+        <ul class="nav flex-column mb-2">
+          <li class="nav-item">
+            <a class="nav-link" href="https://explorer.digitaltwins.azure.net/" target="_blank">
+              <span data-feather="compass"></span>
+              Digital Twins
+            </a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link" href="https://explorer.digitaltwins.azure.net/3dscenes" target="_blank">
+                  <span data-feather="box"></span>
+                  3D Scenes Studio
+              </a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link" href="https://app.powerbi.com/" target="_blank">
+                  <span data-feather="bar-chart"></span>
+                  Power BI
+              </a>
+          </li>
+        </ul>
+
+@if (false) // Only for running on the edge
+{
+        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+          <span>Edge Components</span>
+        </h6>
+        <ul class="nav flex-column mb-2">
+          <li class="nav-item">
+            <a class="nav-link" href="http://192.168.1.99:3000/" target="_blank">
+              <span data-feather="bar-chart"></span>
+              Grafana
+            </a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link" href="http://192.168.1.99:8086" target="_blank">
+                  <span data-feather="database"></span>
+                  InfluxDB
+              </a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link" href="http://192.168.1.99:8888/status" target="_blank">
+              <span data-feather="radio"></span>
+              VerneMQ
+            </a>
+          </li>
+        </ul>
+}
+      </div>
+    </nav>
+
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            @RenderBody()
+    <footer class="border-top footer text-muted">
+        <div>
+            BrewHub.Net isn't on GitHub yet, but it will be soon!
+        </div>
+    </footer>
+    </main>
+    </div>
+</div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/lib/feather-icons/dist/feather.min.js" ></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+<script src="~/js/dashboard.js" asp-append-version="true"></script>
+
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

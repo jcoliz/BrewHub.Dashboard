@@ -1,0 +1,207 @@
+﻿@page
+@using System.Text.Json
+@model IndexModel
+@{
+    ViewData["Title"] = "Devices";
+}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Devices</h1>
+
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group" role="group">
+            <button  type="button" class="btn btn-sm btn-outline-secondary" >
+                    <span data-feather="refresh-cw"></span>
+            </button>
+        </div>
+        <div class="btn-group ms-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
+        </div>
+    </div>
+
+</div>
+    <canvas class="my-4 w-100" id="chart" width="900" height="380"></canvas>
+
+    <script>
+    const ctx = document.getElementById('chart').getContext('2d');
+    const setup = @Html.Raw(JsonSerializer.Serialize(Model.Chart, new JsonSerializerOptions() { WriteIndented = true, PropertyNamingPolicy = JsonNamingPolicy.CamelCase, DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull }));
+    const myChart = new Chart(ctx, setup);
+    </script>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xxl-4 mb-3 text-center">
+        <div class="col">
+            <div class="card mb-4 rounded-3 shadow-sm border-primary">
+                <div class="card-header py-3 text-bg-primary border-primary">
+                    <h4 class="my-0 fw-normal">device-1</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table text-center">
+                            <tbody>
+                            <tr>
+                                <th scope="row" class="text-start">Working Set</th>
+                                <td class="text-end">500kB</td>
+                            </tr>
+                            <tr>
+                                <th scope="row" class="text-start">thermostat1/Temperature</th>
+                                <td class="text-end">75.2°C</td>
+                            </tr>
+                            <tr>
+                                <th scope="row" class="text-start">thermostat2/Temperature</th>
+                                <td class="text-end">105.2°C</td>
+                            </tr>
+                            </tbody>
+
+                        </table>
+                    </div>
+                <a class="w-100 btn btn-lg btn-outline-primary" asp-page="Device" asp-route-id="device-1">Details</a>
+                </div>
+            </div>
+        </div>
+        <div class="col"> 
+            <div class="card mb-4 rounded-3 shadow-sm border-primary">
+            <div class="card-header py-3 text-bg-primary border-primary">
+                <h4 class="my-0 fw-normal">device-2</h4>
+            </div>
+            <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table text-center">
+                            <tbody>
+                            <tr>
+                                <th scope="row" class="text-start">Working Set</th>
+                                <td class="text-end">500kB</td>
+                            </tr>
+                            <tr>
+                                <th scope="row" class="text-start">thermostat1/Temperature</th>
+                                <td class="text-end">75.2°C</td>
+                            </tr>
+                            <tr>
+                                <th scope="row" class="text-start">thermostat2/Temperature</th>
+                                <td class="text-end">105.2°C</td>
+                            </tr>
+                            </tbody>
+
+                        </table>
+                    </div>
+                <a class="w-100 btn btn-lg btn-outline-primary" asp-page="Device" asp-route-id="device-2">Details</a>
+            </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card mb-4 rounded-3 shadow-sm border-primary">
+            <div class="card-header py-3 text-bg-primary border-primary">
+                <h4 class="my-0 fw-normal">device-3</h4>
+            </div>
+            <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table text-center">
+                            <tbody>
+                            <tr>
+                                <th scope="row" class="text-start">Working Set</th>
+                                <td class="text-end">500kB</td>
+                            </tr>
+                            <tr>
+                                <th scope="row" class="text-start">thermostat1/Temperature</th>
+                                <td class="text-end">75.2°C</td>
+                            </tr>
+                            <tr>
+                                <th scope="row" class="text-start">thermostat2/Temperature</th>
+                                <td class="text-end">105.2°C</td>
+                            </tr>
+                            </tbody>
+
+                        </table>
+                    </div>
+                <a class="w-100 btn btn-lg btn-outline-primary" asp-page="Device" asp-route-id="device-3">Details</a>
+            </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card mb-4 rounded-3 shadow-sm border-primary">
+            <div class="card-header py-3 text-bg-primary border-primary">
+                <h4 class="my-0 fw-normal">device-4</h4>
+            </div>
+            <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table text-center">
+                            <tbody>
+                            <tr>
+                                <th scope="row" class="text-start">Working Set</th>
+                                <td class="text-end">500kB</td>
+                            </tr>
+                            <tr>
+                                <th scope="row" class="text-start">thermostat1/Temperature</th>
+                                <td class="text-end">75.2°C</td>
+                            </tr>
+                            <tr>
+                                <th scope="row" class="text-start">thermostat2/Temperature</th>
+                                <td class="text-end">105.2°C</td>
+                            </tr>
+                            </tbody>
+
+                        </table>
+                    </div>
+                <a class="w-100 btn btn-lg btn-outline-primary" asp-page="Device" asp-route-id="device-4">Details</a>
+            </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card mb-4 rounded-3 shadow-sm border-primary">
+                <div class="card-header py-3 text-bg-primary border-primary">
+                    <h4 class="my-0 fw-normal">device-5</h4>
+                </div>
+                <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table text-center">
+                                <tbody>
+                                <tr>
+                                    <th scope="row" class="text-start">Working Set</th>
+                                    <td class="text-end">500kB</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" class="text-start">thermostat1/Temperature</th>
+                                    <td class="text-end">75.2°C</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" class="text-start">thermostat2/Temperature</th>
+                                    <td class="text-end">105.2°C</td>
+                                </tr>
+                                </tbody>
+
+                            </table>
+                        </div>
+                    <a class="w-100 btn btn-lg btn-outline-primary" asp-page="Device" asp-route-id="device-5">Details</a>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card mb-4 rounded-3 shadow-sm border-primary">
+                <div class="card-header py-3 text-bg-primary border-primary">
+                    <h4 class="my-0 fw-normal">device-6</h4>
+                </div>
+                <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table text-center">
+                                <tbody>
+                                <tr>
+                                    <th scope="row" class="text-start">Working Set</th>
+                                    <td class="text-end">500kB</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" class="text-start">thermostat1/Temperature</th>
+                                    <td class="text-end">75.2°C</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" class="text-start">thermostat2/Temperature</th>
+                                    <td class="text-end">105.2°C</td>
+                                </tr>
+                                </tbody>
+
+                            </table>
+                        </div>
+                    <a class="w-100 btn btn-lg btn-outline-primary" asp-page="Device" asp-route-id="device-6">Details</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
