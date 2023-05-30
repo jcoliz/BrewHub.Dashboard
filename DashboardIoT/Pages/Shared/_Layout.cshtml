@@ -91,6 +91,35 @@
           </li>
         </ul>
 
+@if (true) // Only for running on the edge
+{
+        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+          <span>Edge Components</span>
+        </h6>
+        <ul class="nav flex-column mb-2">
+          <li class="nav-item">
+            <a class="nav-link" href="http://localhost:3000/" target="_blank">
+              <span data-feather="bar-chart"></span>
+              Grafana
+            </a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link" href="http://localhost:8086" target="_blank">
+                  <span data-feather="database"></span>
+                  InfluxDB
+              </a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link" href="http://localhost:8888/status" target="_blank">
+              <span data-feather="radio"></span>
+              VerneMQ
+            </a>
+          </li>
+        </ul>
+}
+@if (false) // Only when connected to an Azure service
+{
+
         <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
           <span>Azure Services</span>
         </h6>
@@ -112,32 +141,6 @@
                   <span data-feather="bar-chart"></span>
                   Power BI
               </a>
-          </li>
-        </ul>
-
-@if (false) // Only for running on the edge
-{
-        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-          <span>Edge Components</span>
-        </h6>
-        <ul class="nav flex-column mb-2">
-          <li class="nav-item">
-            <a class="nav-link" href="http://192.168.1.99:3000/" target="_blank">
-              <span data-feather="bar-chart"></span>
-              Grafana
-            </a>
-          </li>
-          <li class="nav-item">
-              <a class="nav-link" href="http://192.168.1.99:8086" target="_blank">
-                  <span data-feather="database"></span>
-                  InfluxDB
-              </a>
-          </li>
-          <li class="nav-item">
-              <a class="nav-link" href="http://192.168.1.99:8888/status" target="_blank">
-              <span data-feather="radio"></span>
-              VerneMQ
-            </a>
           </li>
         </ul>
 }
