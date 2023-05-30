@@ -8,7 +8,13 @@
     bool full = Model.DeviceId == "device-1";
 }
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-    <h1 class="h2">Device: @Model.DeviceId</h1>
+
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-page="/Index" class="link-primary">Devices</a></li>
+        <li class="breadcrumb-item active" aria-current="page">@Model.DeviceId</li>
+    </ol>
+    </nav>
 
     <div class="btn-toolbar mb-2 mb-md-0">
         <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
@@ -108,6 +114,7 @@
                 </div>
             </div>
         </form>
+        <a class="w-100 btn btn-lg btn-outline-primary" asp-page="Component" asp-route-d="@Model.DeviceId" asp-route-c="">Details</a>
     </div>
 
     <div class="col-md-6 col-lg-4 mb-3">
@@ -151,6 +158,7 @@
                 </div>
             </form>
         }
+        <a class="w-100 btn btn-lg btn-outline-primary" asp-page="Component" asp-route-d="@Model.DeviceId" asp-route-c="Ambient">Details</a>
     </div>
     <div class="col-md-6 col-lg-4 mb-3">
         <h4 class="d-flex justify-content-between align-items-center mb-3">

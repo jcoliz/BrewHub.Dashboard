@@ -9,7 +9,14 @@
 }
 
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-    <h1 class="h2">Component: @Model.DeviceId / @(string.IsNullOrEmpty(Model.ComponentId)?"Device details":Model.ComponentId)</h1>
+
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-page="/Index" class="link-primary">Devices</a></li>
+            <li class="breadcrumb-item"> <a asp-page="Device" asp-route-id="@Model.DeviceId" asp-route-t="@Model.Timeframe.ToString()" class="link-primary">@Model.DeviceId</a></li>
+            <li class="breadcrumb-item active" aria-current="page">@(string.IsNullOrEmpty(Model.ComponentId)?"Device Details":Model.ComponentId)</li>
+        </ol>
+    </nav>
 
     <div class="btn-toolbar mb-2 mb-md-0">
         <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
@@ -57,6 +64,8 @@
     const myChart = new Chart(ctx, setup);
 </script>
 
+@if(string.IsNullOrEmpty(Model.ComponentId))
+{
 <div class="row">
     <div class="col-md-6 col-lg-4 mb-3">
         <h4 class="d-flex justify-content-between align-items-center mb-3">
@@ -165,3 +174,54 @@
     </div>
 
 </div>
+}
+else
+{
+<div class="row">
+    <div class="col-md-6 col-lg-4 mb-3">
+        <h4 class="d-flex justify-content-between align-items-center mb-3">
+            <span class="text-primary">Telemetry</span>
+        </h4>
+        <ul class="list-group mb-3">
+            <li class="list-group-item d-flex justify-content-between lh-sm">
+                <div>
+                    <h6 class="my-0">Temperature</h6>
+                    <small class="text-body-secondary">21°C</small>
+                </div>
+            </li>
+            <li class="list-group-item d-flex justify-content-between lh-sm">
+                <div>
+                    <h6 class="my-0">Humidity</h6>
+                    <small class="text-body-secondary">44%RH</small>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <div class="col-md-6 col-lg-4 mb-3">
+        <h4 class="d-flex justify-content-between align-items-center mb-3">
+            <span class="text-primary">Properties</span>
+        </h4>
+        <form class="card p-2">
+            <div class="row g-3">
+                <div class="col-12">
+                    <label for="targetTemperature" class="h6 form-label">Temperature Correction</label>
+                    <div class="input-group">
+                        <input type="text" id="targetTemperature" class="form-control" value="1.5">
+                        <span class="input-group-text">°C</span>
+                        <button type="submit" class="btn btn-secondary">Update</button>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <label for="targetTemperature" class="h6 form-label">Humidity Correction</label>
+                    <div class="input-group">
+                        <input type="text" id="targetTemperature" class="form-control" value="-2">
+                        <span class="input-group-text">%RH</span>
+                        <button type="submit" class="btn btn-secondary">Update</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+}
