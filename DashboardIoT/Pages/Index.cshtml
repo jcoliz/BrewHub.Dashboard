@@ -29,179 +29,38 @@
     </script>
 
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xxl-4 mb-3 text-center">
-        <div class="col">
-            <div class="card mb-4 rounded-3 shadow-sm border-primary">
-                <div class="card-header py-3 text-bg-primary border-primary">
-                    <h4 class="my-0 fw-normal">device-1</h4>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table text-center">
-                            <tbody>
-                            <tr>
-                                <th scope="row" class="text-start">Working Set</th>
-                                <td class="text-end">500kB</td>
-                            </tr>
-                            <tr>
-                                <th scope="row" class="text-start">thermostat1/Temperature</th>
-                                <td class="text-end">75.2°C</td>
-                            </tr>
-                            <tr>
-                                <th scope="row" class="text-start">thermostat2/Temperature</th>
-                                <td class="text-end">105.2°C</td>
-                            </tr>
-                            </tbody>
 
-                        </table>
+@{
+    var devices = new string[] { "device-1", "device-2", "device-3", "device-4", "device-5", "device-6" };
+}        
+        @foreach( var device in devices )
+        {
+            <div class="col">
+                <div class="card mb-4 rounded-3 shadow-sm border-primary">
+                    <div class="card-header py-3 text-bg-primary border-primary">
+                        <h4 class="my-0 fw-normal">@device</h4>
                     </div>
-                <a class="w-100 btn btn-lg btn-outline-primary" asp-page="Device" asp-route-id="device-1">Details</a>
-                </div>
-            </div>
-        </div>
-        <div class="col"> 
-            <div class="card mb-4 rounded-3 shadow-sm border-primary">
-            <div class="card-header py-3 text-bg-primary border-primary">
-                <h4 class="my-0 fw-normal">device-2</h4>
-            </div>
-            <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table text-center">
-                            <tbody>
-                            <tr>
-                                <th scope="row" class="text-start">Working Set</th>
-                                <td class="text-end">500kB</td>
-                            </tr>
-                            <tr>
-                                <th scope="row" class="text-start">thermostat1/Temperature</th>
-                                <td class="text-end">75.2°C</td>
-                            </tr>
-                            <tr>
-                                <th scope="row" class="text-start">thermostat2/Temperature</th>
-                                <td class="text-end">105.2°C</td>
-                            </tr>
-                            </tbody>
-
-                        </table>
-                    </div>
-                <a class="w-100 btn btn-lg btn-outline-primary" asp-page="Device" asp-route-id="device-2">Details</a>
-            </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card mb-4 rounded-3 shadow-sm border-primary">
-            <div class="card-header py-3 text-bg-primary border-primary">
-                <h4 class="my-0 fw-normal">device-3</h4>
-            </div>
-            <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table text-center">
-                            <tbody>
-                            <tr>
-                                <th scope="row" class="text-start">Working Set</th>
-                                <td class="text-end">500kB</td>
-                            </tr>
-                            <tr>
-                                <th scope="row" class="text-start">thermostat1/Temperature</th>
-                                <td class="text-end">75.2°C</td>
-                            </tr>
-                            <tr>
-                                <th scope="row" class="text-start">thermostat2/Temperature</th>
-                                <td class="text-end">105.2°C</td>
-                            </tr>
-                            </tbody>
-
-                        </table>
-                    </div>
-                <a class="w-100 btn btn-lg btn-outline-primary" asp-page="Device" asp-route-id="device-3">Details</a>
-            </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card mb-4 rounded-3 shadow-sm border-primary">
-            <div class="card-header py-3 text-bg-primary border-primary">
-                <h4 class="my-0 fw-normal">device-4</h4>
-            </div>
-            <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table text-center">
-                            <tbody>
-                            <tr>
-                                <th scope="row" class="text-start">Working Set</th>
-                                <td class="text-end">500kB</td>
-                            </tr>
-                            <tr>
-                                <th scope="row" class="text-start">thermostat1/Temperature</th>
-                                <td class="text-end">75.2°C</td>
-                            </tr>
-                            <tr>
-                                <th scope="row" class="text-start">thermostat2/Temperature</th>
-                                <td class="text-end">105.2°C</td>
-                            </tr>
-                            </tbody>
-
-                        </table>
-                    </div>
-                <a class="w-100 btn btn-lg btn-outline-primary" asp-page="Device" asp-route-id="device-4">Details</a>
-            </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card mb-4 rounded-3 shadow-sm border-primary">
-                <div class="card-header py-3 text-bg-primary border-primary">
-                    <h4 class="my-0 fw-normal">device-5</h4>
-                </div>
-                <div class="card-body">
+                    <div class="card-body">
                         <div class="table-responsive">
                             <table class="table text-center">
                                 <tbody>
                                 <tr>
-                                    <th scope="row" class="text-start">Working Set</th>
-                                    <td class="text-end">500kB</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="text-start">thermostat1/Temperature</th>
+                                    <th scope="row" class="text-start">Top/Temperature</th>
                                     <td class="text-end">75.2°C</td>
                                 </tr>
                                 <tr>
-                                    <th scope="row" class="text-start">thermostat2/Temperature</th>
+                                    <th scope="row" class="text-start">Condenser/Temperature</th>
                                     <td class="text-end">105.2°C</td>
                                 </tr>
                                 </tbody>
 
                             </table>
                         </div>
-                    <a class="w-100 btn btn-lg btn-outline-primary" asp-page="Device" asp-route-id="device-5">Details</a>
+                    <a class="w-100 btn btn-lg btn-outline-primary" asp-page="Device" asp-route-id="device-1">Details</a>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col">
-            <div class="card mb-4 rounded-3 shadow-sm border-primary">
-                <div class="card-header py-3 text-bg-primary border-primary">
-                    <h4 class="my-0 fw-normal">device-6</h4>
-                </div>
-                <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table text-center">
-                                <tbody>
-                                <tr>
-                                    <th scope="row" class="text-start">Working Set</th>
-                                    <td class="text-end">500kB</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="text-start">thermostat1/Temperature</th>
-                                    <td class="text-end">75.2°C</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="text-start">thermostat2/Temperature</th>
-                                    <td class="text-end">105.2°C</td>
-                                </tr>
-                                </tbody>
 
-                            </table>
-                        </div>
-                    <a class="w-100 btn btn-lg btn-outline-primary" asp-page="Device" asp-route-id="device-6">Details</a>
-                </div>
-            </div>
-        </div>
+        }
+
     </div>
-
