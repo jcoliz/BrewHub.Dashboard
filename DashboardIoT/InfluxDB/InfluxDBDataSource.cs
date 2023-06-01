@@ -2,6 +2,7 @@
 using InfluxDB.Client;
 using InfluxDB.Client.Core.Flux.Domain;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,16 +12,17 @@ namespace DashboardIoT.InfluxDB
 {
     public class InfluxDBDataSource : IDataSource, IDisposable
     {
+        private readonly ILogger<InfluxDBDataSource> _logger;
         private readonly InfluxDBClient _influxdbclient;
         private readonly Options _options;
 
         public class Options
         {
             public const string Section = "InfluxDB";
-            public string Server { get; set; }
+            public string Url { get; set; }
             public string Token { get; set; }
             public string Org { get; set; }
-            public string DefaultBucket { get; set; }
+            public string Bucket { get; set; }
         }
 
         public class QueryVariables
@@ -33,7 +35,7 @@ namespace DashboardIoT.InfluxDB
                 _SetWindowPeriod = span/divisions;
 
                 Organization = options.Org;
-                DefaultBucket = options.DefaultBucket;
+                Bucket = options.Bucket;
             }
 
             private readonly DateTime _SetTimeRangeStart;
@@ -49,7 +51,7 @@ namespace DashboardIoT.InfluxDB
             public string WindowPeriod => Math.Round(_SetWindowPeriod.TotalSeconds) + "s";
 
             public string Organization { get; private set; }
-            public string DefaultBucket { get; private set; }
+            public string Bucket { get; private set; }
         }
 
         public class Reading : IReading
@@ -117,10 +119,19 @@ namespace DashboardIoT.InfluxDB
             };
         }
 
-        public InfluxDBDataSource(IOptions<Options> options)
+        public InfluxDBDataSource(IOptions<Options> options, ILogger<InfluxDBDataSource> logger)
         {
+            _logger = logger;
             _options = options.Value;
-            _influxdbclient = InfluxDBClientFactory.Create(_options.Server, _options.Token);
+            try
+            {
+                _influxdbclient = InfluxDBClientFactory.Create(_options.Url, _options.Token);
+                _logger.LogInformation("InfluxDB: Created client OK");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "InfluxDB: Create client failed");
+            }
         }
 
         public void Dispose()
@@ -141,7 +152,7 @@ namespace DashboardIoT.InfluxDB
 
                 var v = new QueryVariables(_options, span, divisions);
 
-                var flux = $"from(bucket:\"{v.DefaultBucket}\")" +
+                var flux = $"from(bucket:\"{v.Bucket}\")" +
                     $" |> range(start: {v.TimeRangeStart}, stop:{v.TimeRangeStop})" +
                     $" |> filter(fn: (r) => r[\"_measurement\"] == \"zlan\")" +
                     $" |> filter(fn: (r) => r[\"site\"] == \"{site.ToLower()}\")" +
@@ -154,6 +165,7 @@ namespace DashboardIoT.InfluxDB
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "InfluxDB: Query Failed");
                 Console.WriteLine(ex.Message);
                 return Enumerable.Empty<IReading>();
             }

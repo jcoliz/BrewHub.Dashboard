@@ -46,8 +46,6 @@ namespace DashboardIoT
                     ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
             });
 
-            // Not working with InfluxDB right now
-#if false
             var section = Configuration.GetSection(InfluxDB.InfluxDBDataSource.Options.Section);
             if (section.Exists())
             {
@@ -56,7 +54,6 @@ namespace DashboardIoT
                 services.AddSingleton<IDataSource, InfluxDB.InfluxDBDataSource>();
             }
             else
-#endif
             {
                 logger.LogWarning("InfluxDB Options not found. Using mock data");
                 services.AddSingleton<IDataSource>(new MockDataSource());
