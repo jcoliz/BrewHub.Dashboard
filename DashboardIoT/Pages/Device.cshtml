@@ -63,346 +63,371 @@
 </script>
 
 <div class="row">
+
+@foreach(var slab in Model.Slabs)
+{
     <div class="col-md-6 col-lg-4 mb-3">
         <h4 class="d-flex justify-content-between align-items-center mb-3">
-            <span class="text-primary">Device Details</span>
+            <span class="text-primary">@slab.Header</span>
         </h4>
         <ul class="list-group mb-3">
-            <li class="list-group-item d-flex justify-content-between lh-sm">
-                <div>
-                    <h6 class="my-0">Schema</h6>
-                    <small class="text-body-secondary">BrewHub 6-Unit Distillery Prototype v1</small>
-                </div>
-            </li>
-            <li class="list-group-item d-flex justify-content-between lh-sm">
-                <div>
-                    <h6 class="my-0">Working Set</h6>
-                    <small class="text-body-secondary">500kiB</small>
-                </div>
-            </li>
-            <li class="list-group-item d-flex justify-content-between lh-sm">
-                <div>
-                    <h6 class="my-0">CPU Load</h6>
-                    <small class="text-body-secondary">3%</small>
-                </div>
-            </li>
-            <li class="list-group-item d-flex justify-content-between lh-sm">
-                <div>
-                    <h6 class="my-0">Status</h6>
-                    <small class="text-body-secondary">OK</small>
-                </div>
-            </li>
-            @if (full)
+            @foreach(var prop in slab.Properties)
             {
-            <li class="list-group-item d-flex justify-content-between lh-sm">
-                <div>
-                    <h6 class="my-0">Serial Number</h6>
-                    <small class="text-body-secondary">1234567890-ABCDEF-linux</small>
-                </div>
-            </li>
-            <li class="list-group-item d-flex justify-content-between lh-sm">
-                <div>
-                    <h6 class="my-0">Start Time</h6>
-                    <small class="text-body-secondary">11/5/2022 15:23:04</small>
-                </div>
-            </li>
+                <li class="list-group-item d-flex justify-content-between lh-sm">
+                    <div>
+                        <h6 class="my-0">@prop.Key</h6>
+                        <small class="text-body-secondary">@prop.Value</small>
+                    </div>
+                </li>
             }
         </ul>
-        <form class="card p-2">
-            <div class="row g-3">
-                <div class="col-12">
-                    <label for="reboot" class="h6 form-label">Restart Device</label>
-                    <div class="input-group">
-                        <input type="text" id="reboot" class="form-control" placeholder="Delay">
-                        <span class="input-group-text">ms</span>
-                        <button type="submit" class="btn btn-secondary">Go</button>
-                    </div>
-                </div>
-            </div>
-        </form>
-        <a class="w-100 btn btn-lg btn-outline-primary" asp-page="Component" asp-route-d="@Model.DeviceId" asp-route-c="">Details</a>
+        <a class="w-100 btn btn-lg btn-outline-primary" asp-page="Component" asp-route-d="@Model.DeviceId" asp-route-c="@(slab.ComponentId)">Details</a>
     </div>
-
-    <div class="col-md-6 col-lg-4 mb-3">
-        <h4 class="d-flex justify-content-between align-items-center mb-3">
-            <span class="text-primary">Ambient Conditions</span>
-        </h4>
-        <ul class="list-group mb-3">
-            <li class="list-group-item d-flex justify-content-between lh-sm">
-                <div>
-                    <h6 class="my-0">Temperature</h6>
-                    <small class="text-body-secondary">21°C</small>
-                </div>
-            </li>
-            <li class="list-group-item d-flex justify-content-between lh-sm">
-                <div>
-                    <h6 class="my-0">Humidity</h6>
-                    <small class="text-body-secondary">44%RH</small>
-                </div>
-            </li>
-        </ul>
-        @if (full)
-        {
+}
+@if (false)
+    {
+        <div class="col-md-6 col-lg-4 mb-3">
+            <h4 class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-primary">Device Details</span>
+            </h4>
+            <ul class="list-group mb-3">
+                <li class="list-group-item d-flex justify-content-between lh-sm">
+                    <div>
+                        <h6 class="my-0">Schema</h6>
+                        <small class="text-body-secondary">BrewHub 6-Unit Distillery Prototype v1</small>
+                    </div>
+                </li>
+                <li class="list-group-item d-flex justify-content-between lh-sm">
+                    <div>
+                        <h6 class="my-0">Working Set</h6>
+                        <small class="text-body-secondary">500kiB</small>
+                    </div>
+                </li>
+                <li class="list-group-item d-flex justify-content-between lh-sm">
+                    <div>
+                        <h6 class="my-0">CPU Load</h6>
+                        <small class="text-body-secondary">3%</small>
+                    </div>
+                </li>
+                <li class="list-group-item d-flex justify-content-between lh-sm">
+                    <div>
+                        <h6 class="my-0">Status</h6>
+                        <small class="text-body-secondary">OK</small>
+                    </div>
+                </li>
+                @if (full)
+                {
+                    <li class="list-group-item d-flex justify-content-between lh-sm">
+                        <div>
+                            <h6 class="my-0">Serial Number</h6>
+                            <small class="text-body-secondary">1234567890-ABCDEF-linux</small>
+                        </div>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between lh-sm">
+                        <div>
+                            <h6 class="my-0">Start Time</h6>
+                            <small class="text-body-secondary">11/5/2022 15:23:04</small>
+                        </div>
+                    </li>
+                }
+            </ul>
             <form class="card p-2">
                 <div class="row g-3">
                     <div class="col-12">
-                        <label for="targetTemperature" class="h6 form-label">Temperature Correction</label>
+                        <label for="reboot" class="h6 form-label">Restart Device</label>
                         <div class="input-group">
-                            <input type="text" id="targetTemperature" class="form-control" value="1.5">
-                            <span class="input-group-text">°C</span>
-                            <button type="submit" class="btn btn-secondary">Update</button>
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <label for="targetTemperature" class="h6 form-label">Humidity Correction</label>
-                        <div class="input-group">
-                            <input type="text" id="targetTemperature" class="form-control" value="-2">
-                            <span class="input-group-text">%RH</span>
-                            <button type="submit" class="btn btn-secondary">Update</button>
+                            <input type="text" id="reboot" class="form-control" placeholder="Delay">
+                            <span class="input-group-text">ms</span>
+                            <button type="submit" class="btn btn-secondary">Go</button>
                         </div>
                     </div>
                 </div>
             </form>
-        }
-        <a class="w-100 btn btn-lg btn-outline-primary" asp-page="Component" asp-route-d="@Model.DeviceId" asp-route-c="Ambient">Details</a>
-    </div>
-    <div class="col-md-6 col-lg-4 mb-3">
-        <h4 class="d-flex justify-content-between align-items-center mb-3">
-            <span class="text-primary">Top Thermostat</span>
-        </h4>
-        <ul class="list-group mb-3">
-            <li class="list-group-item d-flex justify-content-between lh-sm">
-                <div>
-                    <h6 class="my-0">Temperature</h6>
-                    <small class="text-body-secondary">85°C</small>
-                </div>
-            </li>
-            <li class="list-group-item d-flex justify-content-between lh-sm">
-                <div>
-                    <h6 class="my-0">Status</h6>
-                    <small class="text-body-secondary">OK</small>
-                </div>
-            </li>
-        </ul>
-        <form class="card p-2">
-            <div class="row g-3">
-                <div class="col-12">
-                    <label for="targetTemperature" class="h6 form-label">Target Temperature</label>
-                    <div class="input-group">
-                        <input type="text" id="targetTemperature" class="form-control" value="81">
-                        <span class="input-group-text">°C</span>
-                        <button type="submit" class="btn btn-secondary">Update</button>
+            <a class="w-100 btn btn-lg btn-outline-primary" asp-page="Component" asp-route-d="@Model.DeviceId" asp-route-c="">Details</a>
+        </div>
+
+        <div class="col-md-6 col-lg-4 mb-3">
+            <h4 class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-primary">Ambient Conditions</span>
+            </h4>
+            <ul class="list-group mb-3">
+                <li class="list-group-item d-flex justify-content-between lh-sm">
+                    <div>
+                        <h6 class="my-0">Temperature</h6>
+                        <small class="text-body-secondary">21°C</small>
                     </div>
-                </div>
-                @if (full)
-                {
-                <div class="col-12">
-                    <label for="targetComponent" class="h6 form-label">Target Component</label>
-                    <div class="input-group">
-                        <input type="text" id="targetComponent" class="form-control" value="N/A">
-                        <button type="submit" class="btn btn-secondary">Update</button>
+                </li>
+                <li class="list-group-item d-flex justify-content-between lh-sm">
+                    <div>
+                        <h6 class="my-0">Humidity</h6>
+                        <small class="text-body-secondary">44%RH</small>
                     </div>
-                </div>
-                <div class="col-12">
-                    <label for="targetComponent" class="h6 form-label">Controlling</label>
-                    <div class="input-group">
-                        <input type="text" id="targetComponent" class="form-control" value="Reflux Valve">
-                        <button type="submit" class="btn btn-secondary">Update</button>
+                </li>
+            </ul>
+            @if (full)
+            {
+                <form class="card p-2">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label for="targetTemperature" class="h6 form-label">Temperature Correction</label>
+                            <div class="input-group">
+                                <input type="text" id="targetTemperature" class="form-control" value="1.5">
+                                <span class="input-group-text">°C</span>
+                                <button type="submit" class="btn btn-secondary">Update</button>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label for="targetTemperature" class="h6 form-label">Humidity Correction</label>
+                            <div class="input-group">
+                                <input type="text" id="targetTemperature" class="form-control" value="-2">
+                                <span class="input-group-text">%RH</span>
+                                <button type="submit" class="btn btn-secondary">Update</button>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="col-12">
-                    <label for="targetTemperature" class="h6 form-label">Temperature Correction</label>
-                    <div class="input-group">
-                        <input type="text" id="targetTemperature" class="form-control" value="1.5">
-                        <span class="input-group-text">°C</span>
-                        <button type="submit" class="btn btn-secondary">Update</button>
+                </form>
+            }
+            <a class="w-100 btn btn-lg btn-outline-primary" asp-page="Component" asp-route-d="@Model.DeviceId" asp-route-c="Ambient">Details</a>
+        </div>
+        <div class="col-md-6 col-lg-4 mb-3">
+            <h4 class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-primary">Top Thermostat</span>
+            </h4>
+            <ul class="list-group mb-3">
+                <li class="list-group-item d-flex justify-content-between lh-sm">
+                    <div>
+                        <h6 class="my-0">Temperature</h6>
+                        <small class="text-body-secondary">85°C</small>
                     </div>
+                </li>
+                <li class="list-group-item d-flex justify-content-between lh-sm">
+                    <div>
+                        <h6 class="my-0">Status</h6>
+                        <small class="text-body-secondary">OK</small>
+                    </div>
+                </li>
+            </ul>
+            <form class="card p-2">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label for="targetTemperature" class="h6 form-label">Target Temperature</label>
+                        <div class="input-group">
+                            <input type="text" id="targetTemperature" class="form-control" value="81">
+                            <span class="input-group-text">°C</span>
+                            <button type="submit" class="btn btn-secondary">Update</button>
+                        </div>
+                    </div>
+                    @if (full)
+                    {
+                        <div class="col-12">
+                            <label for="targetComponent" class="h6 form-label">Target Component</label>
+                            <div class="input-group">
+                                <input type="text" id="targetComponent" class="form-control" value="N/A">
+                                <button type="submit" class="btn btn-secondary">Update</button>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label for="targetComponent" class="h6 form-label">Controlling</label>
+                            <div class="input-group">
+                                <input type="text" id="targetComponent" class="form-control" value="Reflux Valve">
+                                <button type="submit" class="btn btn-secondary">Update</button>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label for="targetTemperature" class="h6 form-label">Temperature Correction</label>
+                            <div class="input-group">
+                                <input type="text" id="targetTemperature" class="form-control" value="1.5">
+                                <span class="input-group-text">°C</span>
+                                <button type="submit" class="btn btn-secondary">Update</button>
+                            </div>
+                        </div>
+                    }
                 </div>
-                }
-            </div>
-        </form>
-    </div>
-    
-    <div class="col-md-6 col-lg-4 mb-3">
-        <h4 class="d-flex justify-content-between align-items-center mb-3">
-            <span class="text-primary">Reflux Valve</span>
-        </h4>
-        <ul class="list-group mb-3">
-            <li class="list-group-item d-flex justify-content-between lh-sm">
-                <div>
-                    <h6 class="my-0">State</h6>
-                    <small class="text-body-secondary">Open</small>
+            </form>
+        </div>
+
+        <div class="col-md-6 col-lg-4 mb-3">
+            <h4 class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-primary">Reflux Valve</span>
+            </h4>
+            <ul class="list-group mb-3">
+                <li class="list-group-item d-flex justify-content-between lh-sm">
+                    <div>
+                        <h6 class="my-0">State</h6>
+                        <small class="text-body-secondary">Open</small>
+                    </div>
+                </li>
+            </ul>
+            @if (full)
+            {
+                <form class="card p-2">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label for="targetTemperature" class="h6 form-label">Manual Override</label>
+                            <div class="input-group">
+                                <input type="text" id="targetTemperature" class="form-control" value="false">
+                                <button type="submit" class="btn btn-secondary">Update</button>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label for="targetTemperature" class="h6 form-label">State</label>
+                            <div class="input-group">
+                                <input type="text" id="targetTemperature" class="form-control" value="Open">
+                                <button type="submit" class="btn btn-secondary">Update</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            }
+
+        </div>
+
+        <div class="col-md-6 col-lg-4 mb-3">
+            <h4 class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-primary">Condenser Thermostat</span>
+            </h4>
+            <ul class="list-group mb-3">
+                <li class="list-group-item d-flex justify-content-between lh-sm">
+                    <div>
+                        <h6 class="my-0">Temperature</h6>
+                        <small class="text-body-secondary">20°C</small>
+                    </div>
+                </li>
+                <li class="list-group-item d-flex justify-content-between lh-sm">
+                    <div>
+                        <h6 class="my-0">Status</h6>
+                        <small class="text-body-secondary">OK</small>
+                    </div>
+                </li>
+            </ul>
+            <form class="card p-2">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label for="targetComponent" class="h6 form-label">Target Component</label>
+                        <div class="input-group">
+                            <input type="text" id="targetComponent" class="form-control" value="Ambient Conditions">
+                            <button type="submit" class="btn btn-secondary">Update</button>
+                        </div>
+                    </div>
+
+                    @if (full)
+                    {
+                        <div class="col-12">
+                            <label for="targetTemperature" class="h6 form-label">Target Temperature</label>
+                            <div class="input-group">
+                                <input type="text" id="targetTemperature" class="form-control" value="N/A">
+                                <span class="input-group-text">°C</span>
+                                <button type="submit" class="btn btn-secondary">Update</button>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label for="targetComponent" class="h6 form-label">Controlling</label>
+                            <div class="input-group">
+                                <input type="text" id="targetComponent" class="form-control" value="Condenser Valve">
+                                <button type="submit" class="btn btn-secondary">Update</button>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label for="targetTemperature" class="h6 form-label">Temperature Correction</label>
+                            <div class="input-group">
+                                <input type="text" id="targetTemperature" class="form-control" value="1.5">
+                                <span class="input-group-text">°C</span>
+                                <button type="submit" class="btn btn-secondary">Update</button>
+                            </div>
+                        </div>
+                    }
                 </div>
-            </li>
-        </ul>
+            </form>
+        </div>
+
+        <div class="col-md-6 col-lg-4 mb-3">
+            <h4 class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-primary">Condenser Valve</span>
+            </h4>
+            <ul class="list-group mb-3">
+                <li class="list-group-item d-flex justify-content-between lh-sm">
+                    <div>
+                        <h6 class="my-0">State</h6>
+                        <small class="text-body-secondary">Closed</small>
+                    </div>
+                </li>
+            </ul>
+            @if (full)
+            {
+                <form class="card p-2">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label for="targetTemperature" class="h6 form-label">Manual Override</label>
+                            <div class="input-group">
+                                <input type="text" id="targetTemperature" class="form-control" value="false">
+                                <button type="submit" class="btn btn-secondary">Update</button>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label for="targetTemperature" class="h6 form-label">State</label>
+                            <div class="input-group">
+                                <input type="text" id="targetTemperature" class="form-control" value="Closed">
+                                <button type="submit" class="btn btn-secondary">Update</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            }
+        </div>
+
         @if (full)
         {
-        <form class="card p-2">
-            <div class="row g-3">
-                <div class="col-12">
-                    <label for="targetTemperature" class="h6 form-label">Manual Override</label>
-                    <div class="input-group">
-                        <input type="text" id="targetTemperature" class="form-control" value="false">
-                        <button type="submit" class="btn btn-secondary">Update</button>
-                    </div>
-                </div>
-                <div class="col-12">
-                    <label for="targetTemperature" class="h6 form-label">State</label>
-                    <div class="input-group">
-                        <input type="text" id="targetTemperature" class="form-control" value="Open">
-                        <button type="submit" class="btn btn-secondary">Update</button>
-                    </div>
-                </div>
+            <div class="col-md-6 col-lg-4 mb-3">
+                <h4 class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="text-primary">Device Information</span>
+                </h4>
+                <ul class="list-group mb-3">
+                    <li class="list-group-item d-flex justify-content-between lh-sm">
+                        <div>
+                            <h6 class="my-0">Manufacturer</h6>
+                            <small class="text-body-secondary">Example</small>
+                        </div>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between lh-sm">
+                        <div>
+                            <h6 class="my-0">Model</h6>
+                            <small class="text-body-secondary">Thermostat Controller</small>
+                        </div>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between lh-sm">
+                        <div>
+                            <h6 class="my-0">Software Version</h6>
+                            <small class="text-body-secondary">0.0.0-ci-2483</small>
+                        </div>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between lh-sm">
+                        <div>
+                            <h6 class="my-0">Operating System</h6>
+                            <small class="text-body-secondary">Linux 5.4.0-137-generic #154-Ubuntu SMP Thu Jan 5 17:03:22 UTC 2023</small>
+                        </div>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between lh-sm">
+                        <div>
+                            <h6 class="my-0">Processor Architecture</h6>
+                            <small class="text-body-secondary">X64</small>
+                        </div>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between lh-sm">
+                        <div>
+                            <h6 class="my-0">Total Storage</h6>
+                            <small class="text-body-secondary">120GB</small>
+                        </div>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between lh-sm">
+                        <div>
+                            <h6 class="my-0">Total Memory</h6>
+                            <small class="text-body-secondary">7.96GB</small>
+                        </div>
+                    </li>
+                </ul>
             </div>
-        </form>
         }
 
-    </div>
-
-    <div class="col-md-6 col-lg-4 mb-3">
-        <h4 class="d-flex justify-content-between align-items-center mb-3">
-            <span class="text-primary">Condenser Thermostat</span>
-        </h4>
-        <ul class="list-group mb-3">
-            <li class="list-group-item d-flex justify-content-between lh-sm">
-                <div>
-                    <h6 class="my-0">Temperature</h6>
-                    <small class="text-body-secondary">20°C</small>
-                </div>
-            </li>
-            <li class="list-group-item d-flex justify-content-between lh-sm">
-                <div>
-                    <h6 class="my-0">Status</h6>
-                    <small class="text-body-secondary">OK</small>
-                </div>
-            </li>
-        </ul>
-        <form class="card p-2">
-            <div class="row g-3">
-                <div class="col-12">
-                    <label for="targetComponent" class="h6 form-label">Target Component</label>
-                    <div class="input-group">
-                        <input type="text" id="targetComponent" class="form-control" value="Ambient Conditions">
-                        <button type="submit" class="btn btn-secondary">Update</button>
-                    </div>
-                </div>
-
-                @if (full)
-                {
-                <div class="col-12">
-                    <label for="targetTemperature" class="h6 form-label">Target Temperature</label>
-                    <div class="input-group">
-                        <input type="text" id="targetTemperature" class="form-control" value="N/A">
-                        <span class="input-group-text">°C</span>
-                        <button type="submit" class="btn btn-secondary">Update</button>
-                    </div>
-                </div>
-                <div class="col-12">
-                    <label for="targetComponent" class="h6 form-label">Controlling</label>
-                    <div class="input-group">
-                        <input type="text" id="targetComponent" class="form-control" value="Condenser Valve">
-                        <button type="submit" class="btn btn-secondary">Update</button>
-                    </div>
-                </div>
-                <div class="col-12">
-                    <label for="targetTemperature" class="h6 form-label">Temperature Correction</label>
-                    <div class="input-group">
-                        <input type="text" id="targetTemperature" class="form-control" value="1.5">
-                        <span class="input-group-text">°C</span>
-                        <button type="submit" class="btn btn-secondary">Update</button>
-                    </div>
-                </div>
-                }
-            </div>
-        </form>
-    </div>
-
-    <div class="col-md-6 col-lg-4 mb-3">
-        <h4 class="d-flex justify-content-between align-items-center mb-3">
-            <span class="text-primary">Condenser Valve</span>
-        </h4>
-        <ul class="list-group mb-3">
-            <li class="list-group-item d-flex justify-content-between lh-sm">
-                <div>
-                    <h6 class="my-0">State</h6>
-                    <small class="text-body-secondary">Closed</small>
-                </div>
-            </li>
-        </ul>
-        @if (full)
-        {
-        <form class="card p-2">
-            <div class="row g-3">
-                <div class="col-12">
-                    <label for="targetTemperature" class="h6 form-label">Manual Override</label>
-                    <div class="input-group">
-                        <input type="text" id="targetTemperature" class="form-control" value="false">
-                        <button type="submit" class="btn btn-secondary">Update</button>
-                    </div>
-                </div>
-                <div class="col-12">
-                    <label for="targetTemperature" class="h6 form-label">State</label>
-                    <div class="input-group">
-                        <input type="text" id="targetTemperature" class="form-control" value="Closed">
-                        <button type="submit" class="btn btn-secondary">Update</button>
-                    </div>
-                </div>
-            </div>
-        </form>
-        }
-    </div>
-
-    @if (full)
-    {
-    <div class="col-md-6 col-lg-4 mb-3">
-        <h4 class="d-flex justify-content-between align-items-center mb-3">
-            <span class="text-primary">Device Information</span>
-        </h4>
-        <ul class="list-group mb-3">
-            <li class="list-group-item d-flex justify-content-between lh-sm">
-                <div>
-                    <h6 class="my-0">Manufacturer</h6>
-                    <small class="text-body-secondary">Example</small>
-                </div>
-            </li>
-            <li class="list-group-item d-flex justify-content-between lh-sm">
-                <div>
-                    <h6 class="my-0">Model</h6>
-                    <small class="text-body-secondary">Thermostat Controller</small>
-                </div>
-            </li>
-            <li class="list-group-item d-flex justify-content-between lh-sm">
-                <div>
-                    <h6 class="my-0">Software Version</h6>
-                    <small class="text-body-secondary">0.0.0-ci-2483</small>
-                </div>
-            </li>
-            <li class="list-group-item d-flex justify-content-between lh-sm">
-                <div>
-                    <h6 class="my-0">Operating System</h6>
-                    <small class="text-body-secondary">Linux 5.4.0-137-generic #154-Ubuntu SMP Thu Jan 5 17:03:22 UTC 2023</small>
-                </div>
-            </li>
-            <li class="list-group-item d-flex justify-content-between lh-sm">
-                <div>
-                    <h6 class="my-0">Processor Architecture</h6>
-                    <small class="text-body-secondary">X64</small>
-                </div>
-            </li>
-            <li class="list-group-item d-flex justify-content-between lh-sm">
-                <div>
-                    <h6 class="my-0">Total Storage</h6>
-                    <small class="text-body-secondary">120GB</small>
-                </div>
-            </li>
-            <li class="list-group-item d-flex justify-content-between lh-sm">
-                <div>
-                    <h6 class="my-0">Total Memory</h6>
-                    <small class="text-body-secondary">7.96GB</small>
-                </div>
-            </li>
-        </ul>
-    </div>
-        }
+    }
 
 </div>

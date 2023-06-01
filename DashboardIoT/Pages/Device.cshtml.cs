@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using ChartMaker;
+using DashboardIoT.Display;
 
 namespace DashboardIoT.Pages
 {
@@ -24,6 +25,8 @@ namespace DashboardIoT.Pages
         public string DeviceId { get; set; } = "device-1";
 
         public IEnumerable<IReading> Metrics { get; private set; }
+
+        public IEnumerable<Slab> Slabs { get; private set; }
 
         public DevicePageModel(ILogger<IndexModel> logger, IDataSource datasource)
         {
@@ -77,6 +80,23 @@ namespace DashboardIoT.Pages
             var data = DatapointReader.ReadFromJson(instream);
 
             Chart = ChartMaker.Engine.CreateMultiLineChart(data, new[] { "Top/Temperature", "Condenser/Temperature" }, labelformat);
+
+            // Query InfluxDB, compose into UI slabs
+
+            var raw = await _datasource.GetLatestDevicePropertiesAsync(DeviceId);
+
+            // For starters, we will just directly translate results into slabs.
+            // Next step will be breaking it apart, making it pretty
+
+            Slab FromComponent(KeyValuePair<string,Dictionary<string,object>> c)
+            {
+                string ValueOrEmpty(string s, string alt) => string.IsNullOrEmpty(s) ? alt : s;
+
+                var props = c.Value.Select(x => new KeyValueUnits() { Key = x.Key, Value = x.Value.ToString() }).ToList();
+                return new Slab() { Header = ValueOrEmpty(c.Key,"Device"), ComponentId = c.Key, Properties = props };
+            }
+
+            Slabs = raw.Select(FromComponent).ToList();
         }
 
         private static readonly ChartColor[] palette = new ChartColor[]

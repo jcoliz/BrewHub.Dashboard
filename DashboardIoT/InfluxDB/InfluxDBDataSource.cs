@@ -215,5 +215,54 @@ namespace DashboardIoT.InfluxDB
                 throw;
             }
         }
+
+        /// <summary>
+        /// Get latest value for all metrics for one device
+        /// </summary>
+        /// <param name="deviceid">Which device</param>
+        /// <returns>
+        /// Dictionary of component names (or string.empty) to telemetry key-value pairs
+        /// </returns>
+        public async Task<Dictionary<string, Dictionary<string, object>>> GetLatestDevicePropertiesAsync(string deviceid)
+        {
+            try
+            {
+                //
+                // Query data
+                //
+
+                var flux = $"from(bucket:\"{_options.Bucket}\")" +
+                    " |> range(start: -24h)" +
+                    $" |> filter(fn: (r) => r[\"device\"] == \"{deviceid}\")" +
+                    " |> filter(fn: (r) => r[\"_field\"] != \"Seq\" and r[\"_field\"] != \"__t\")" +
+                    " |> last()" +
+                    " |> keep(columns: [ \"component\", \"_field\", \"_value\" ])";
+
+                var fluxTables = await _influxdbclient.GetQueryApi().QueryAsync(flux, _options.Org);
+
+                string ExtractComponent(Dictionary<string,object> d)
+                {
+                    return d.ContainsKey("component") switch
+                    {
+                        true => $"{d["component"]}",
+                        false => string.Empty
+                    };
+                }
+
+                var result = fluxTables
+                    .SelectMany(x => x.Records)
+                    .Select(x => x.Values)
+                    .GroupBy(ExtractComponent)
+                    .OrderBy(x => x.Key)
+                    .ToDictionary(x => x.Key, x => x.ToDictionary(y => y["_field"].ToString(), y => y["_value"]));
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "InfluxDB: Query Failed");
+                throw;
+            }
+        }
     }
 }
