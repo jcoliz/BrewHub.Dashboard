@@ -92,11 +92,57 @@ namespace DashboardIoT.Pages
             {
                 string ValueOrEmpty(string s, string alt) => string.IsNullOrEmpty(s) ? alt : s;
 
-                var props = c.Value.Select(x => new KeyValueUnits() { Key = x.Key, Value = x.Value.ToString() }).ToList();
-                return new Slab() { Header = ValueOrEmpty(c.Key,"Device"), ComponentId = c.Key, Properties = props };
+                var props = c.Value.Select(x => new KeyValueUnits() { Key = MapKey(x.Key), Value = MapValue(x) }).ToList();
+                return new Slab() { Header = ValueOrEmpty(MapKey(c.Key),"Device Details"), ComponentId = c.Key, Properties = props };
             }
 
             Slabs = raw.Select(FromComponent).ToList();
+        }
+
+        // Translate into displayable telemetry
+        string MapKey(string key)
+        {
+            return key switch
+            {
+                "serialNumber" => "Serial Number",
+                "thermostat1" => "Thermostat One",
+                "thermostat2" => "Thermostat Two",
+                "deviceInformation" => "Device Information",
+                "manufacturer" => "Manufacturer",
+                "model" => "Device Model",
+                "swVersion" => "Software Version",
+                "osName" => "Operating System",
+                "processorArchitecture" => "Processor Architecture",
+                "totalStorage" => "Total Storage",
+                "totalMemory" => "Total Memory",
+                "temperature" => "Temperature",
+                "maxTempSinceLastReboot" => "Max Temperature Since Reboot",
+                "targetTemperature" => "Target Temperature",
+                "workingSet" => $"Working Set",
+                "telemetryPeriod" => "Telemetry Period",
+                _ => key
+            };
+        }
+        string MapValue(KeyValuePair<string,object> kvp)
+        {
+            return kvp.Key switch
+            {
+                "maxTempSinceLastReboot" or
+                "targetTemperature" or
+                "temperature" or
+                "temperature"
+                        => $"{kvp.Value:F1}°C",
+                "workingSet" => $"{(double)kvp.Value/7812.5:F1}MB",
+                "totalStorage" or
+                "totalMemory" 
+                    => (double)kvp.Value switch
+                    {
+                        > 1000000 => $"{(double)kvp.Value/1000000:F1} GB",
+                        > 1000 => $"{(double)kvp.Value/1000:F1} MB",
+                        _ => $"{(double)kvp.Value:F1} kB"
+                    },
+                _ => kvp.Value.ToString()
+            };
         }
 
         private static readonly ChartColor[] palette = new ChartColor[]
