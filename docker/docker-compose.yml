@@ -1,7 +1,7 @@
 version: '3.6'
 services:
   dashboard:
-    image: dashboard:3
+    image:  brewhub.net/brewhub-dashboard:local-20230531-193831-amd64
     container_name: dashboard
     restart: always
     ports:
