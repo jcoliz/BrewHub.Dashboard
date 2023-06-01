@@ -81,11 +81,14 @@ namespace DashboardIoT.Pages
 
                 Metrics = Enumerable.Empty<IReading>();
 
+#if false
                 var cosmos = new ChartMaker.CosmosQuery.MockEngine();
                 var instream = await cosmos.DoQueryAsync(TimeSpan.FromMinutes(10), TimeSpan.FromMinutes(10),new [] {"device-1", "device-2", "device-3", "device-4", "device-5", "device-6"});
-                var data = DatapointReader.ReadFromJson(instream);
+                var data2 = DatapointReader.ReadFromJson(instream);
+#endif
+                var data = DatapointReader.ReadFromInfluxDB(raw);
 
-                Chart = ChartMaker.Engine.CreateMultiDeviceBarChart(data, new[] { "Top/Temperature", "Condenser/Temperature" });
+                Chart = ChartMaker.Engine.CreateMultiDeviceBarChart(data, new[] { "thermostat1/temperature", "thermostat2/temperature" });
             }
             else if (Site == "Reference")
             {
@@ -120,7 +123,6 @@ namespace DashboardIoT.Pages
                 var cosmos = new ChartMaker.CosmosQuery.MockEngine();
                 var instream = await cosmos.DoQueryAsync(lookback,bininterval,new[]{"device-1"});
                 var data = DatapointReader.ReadFromJson(instream);
-
                 Chart = ChartMaker.Engine.CreateMultiLineChart(data, new[] { "thermostat1/Temperature", "thermostat2/Temperature" }, labelformat);
 
             }

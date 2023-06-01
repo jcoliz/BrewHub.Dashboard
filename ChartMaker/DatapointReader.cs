@@ -31,4 +31,24 @@ public static class DatapointReader
 
         return data;
     }
+
+    public static List<Datapoint> ReadFromInfluxDB(Dictionary<string,Dictionary<string,object>> input)
+    {
+        Datapoint FromKvp(string device, KeyValuePair<string,object> kvp)
+        {
+            var split = kvp.Key.Split('/');
+
+            return new Datapoint()
+            {
+                __Device = device,
+                __Field = split.Last(),
+                __Value = (double)kvp.Value,
+                __Component = (split.Length > 1) ? split.First() : null
+            };
+        }
+
+        var result = input.SelectMany(x => x.Value.Select(y => FromKvp(x.Key, y))).ToList();
+
+        return result;
+    }
 }
