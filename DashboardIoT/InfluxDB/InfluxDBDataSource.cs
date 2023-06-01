@@ -162,12 +162,57 @@ namespace DashboardIoT.InfluxDB
 
                 // Each table is a single "reading", where a "reading" is really a metric plus a group of readings
                 return fluxTables.Select(Reading.FromFluxTable);
+
+
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "InfluxDB: Query Failed");
                 Console.WriteLine(ex.Message);
                 return Enumerable.Empty<IReading>();
+            }
+        }
+
+        public async Task<Dictionary<string, Dictionary<string, object>>> GetLatestDeviceTelemetryAllAsync()
+        {
+            try
+            {
+                //
+                // Query data
+                //
+
+                // TODO: This is where it would be great to have a tag for type=telemetry
+
+                var flux = $"from(bucket:\"{_options.Bucket}\")" +
+                    " |> range(start: -10m)" +
+                    " |> filter(fn: (r) => r[\"_field\"] == \"workingSet\" or r[\"_field\"] == \"temperature\")" +
+                    " |> last()" +
+                    " |> keep(columns: [ \"device\", \"component\", \"_field\", \"_value\" ])";
+
+                var fluxTables = await _influxdbclient.GetQueryApi().QueryAsync(flux, _options.Org);
+
+                string ExtractKey(Dictionary<string,object> d)
+                {
+                    return d.ContainsKey("component") switch
+                    {
+                        true => $"{d["component"]}/{d["_field"]}",
+                        false => $"{d["_field"]}"
+                    };
+                }
+
+                var result = fluxTables
+                    .SelectMany(x => x.Records)
+                    .Select(x => x.Values)
+                    .GroupBy(x => x["device"].ToString())
+                    .OrderBy(x => x.Key)
+                    .ToDictionary(x => x.Key, x => x.ToDictionary(ExtractKey, y => y["_value"]));
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "InfluxDB: Query Failed");
+                throw;
             }
         }
     }

@@ -37,6 +37,11 @@ namespace DashboardIoT.Core.MockData
 
         private readonly Random _random = new();
 
+        public Task<Dictionary<string, Dictionary<string, object>>> GetLatestDeviceTelemetryAllAsync()
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<IEnumerable<IReading>> GetMomentaryReadingsAsync(string site)
         {
             return Task.FromResult<IEnumerable<IReading>>(GetReadings(site));

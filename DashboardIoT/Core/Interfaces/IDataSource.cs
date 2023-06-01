@@ -7,7 +7,18 @@ namespace DashboardIoT.Core.Interfaces
 {
     public interface IDataSource
     {
+        // (Deprecated) V1 design
         public Task<IEnumerable<IReading>> GetMomentaryReadingsAsync(string site);
         public Task<IEnumerable<IReading>> GetSeriesReadingsAsync(string site, TimeSpan span, int divisions);
+
+        // NEW V2 design
+
+        /// <summary>
+        /// Get latest value for all telemetry from all devices
+        /// </summary>
+        /// <returns>
+        /// Dictionary of device names to telemetry key-value pairs
+        /// </returns>
+        public Task<Dictionary<string,Dictionary<string,object>>> GetLatestDeviceTelemetryAllAsync();
     }
 }

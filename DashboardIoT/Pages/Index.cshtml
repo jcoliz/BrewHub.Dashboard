@@ -34,37 +34,33 @@
 
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xxl-4 mb-3 text-center">
 
-@{
-    var devices = new string[] { "device-1", "device-2", "device-3", "device-4", "device-5", "device-6" };
-}        
-        @foreach( var device in devices )
-        {
-            <div class="col">
-                <div class="card mb-4 rounded-3 shadow-sm border-primary">
-                    <div class="card-header py-3 text-bg-primary border-primary">
-                        <h4 class="my-0 fw-normal">@device</h4>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table text-center">
-                                <tbody>
-                                <tr>
-                                    <th scope="row" class="text-start">Top/Temperature</th>
-                                    <td class="text-end">75.2°C</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="text-start">Condenser/Temperature</th>
-                                    <td class="text-end">105.2°C</td>
-                                </tr>
-                                </tbody>
+    @foreach( var device in Model.Telemetry )
+    {
+        <div class="col">
+            <div class="card mb-4 rounded-3 shadow-sm border-primary">
+                <div class="card-header py-3 text-bg-primary border-primary">
+                    <h4 class="my-0 fw-normal">@device.Key</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table text-center">
+                            <tbody>
+                                @foreach( var metric in device.Value )
+                                {
+                                    <tr>
+                                        <th scope="row" class="text-start">@metric.Key</th>
+                                        <td class="text-end">@(((double)metric.Value).ToString("F1"))°C</td>
+                                    </tr>
+                                }
+                            </tbody>
 
-                            </table>
-                        </div>
-                    <a class="w-100 btn btn-lg btn-outline-primary" asp-page="Device" asp-route-id="@device">Details</a>
+                        </table>
                     </div>
+                <a class="w-100 btn btn-lg btn-outline-primary" asp-page="Device" asp-route-id="@device.Key">Details</a>
                 </div>
             </div>
+        </div>
 
-        }
+    }
 
     </div>

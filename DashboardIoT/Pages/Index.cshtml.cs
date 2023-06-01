@@ -25,6 +25,8 @@ namespace DashboardIoT.Pages
 
         public IEnumerable<IReading> Metrics { get; private set; }
 
+        public Dictionary<string,Dictionary<string,object>> Telemetry { get; private set; }
+
         public IndexModel(ILogger<IndexModel> logger, IDataSource datasource)
         {
             _logger = logger;
@@ -46,6 +48,9 @@ namespace DashboardIoT.Pages
 
             if (Site == "Devices")
             {
+                // Test InfluxDB interface
+                Telemetry = await _datasource.GetLatestDeviceTelemetryAllAsync();
+
                 Metrics = Enumerable.Empty<IReading>();
 
                 var cosmos = new ChartMaker.CosmosQuery.MockEngine();
