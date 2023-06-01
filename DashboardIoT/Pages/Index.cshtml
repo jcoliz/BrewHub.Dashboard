@@ -49,11 +49,10 @@
                                 {
                                     <tr>
                                         <th scope="row" class="text-start">@metric.Key</th>
-                                        <td class="text-end">@(((double)metric.Value).ToString("F1"))°C</td>
+                                        <td class="text-end">@metric.Value</td>
                                     </tr>
                                 }
                             </tbody>
-
                         </table>
                     </div>
                 <a class="w-100 btn btn-lg btn-outline-primary" asp-page="Device" asp-route-id="@device.Key">Details</a>

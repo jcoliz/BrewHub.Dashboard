@@ -25,7 +25,7 @@ namespace DashboardIoT.Pages
 
         public IEnumerable<IReading> Metrics { get; private set; }
 
-        public Dictionary<string,Dictionary<string,object>> Telemetry { get; private set; }
+        public Dictionary<string,Dictionary<string,string>> Telemetry { get; private set; }
 
         public IndexModel(ILogger<IndexModel> logger, IDataSource datasource)
         {
@@ -37,7 +37,7 @@ namespace DashboardIoT.Pages
         static readonly ChartColor _yellow = new("#EFB700");
         static readonly ChartColor _green = new("#008450");
 
-        public enum TimeframeEnum { Hour = 0, Day, Week, Month };
+        public enum TimeframeEnum { Hour = 0, Day, Week, Month };        
 
         public async Task OnGetAsync(TimeframeEnum t, string s)
         {
@@ -48,8 +48,36 @@ namespace DashboardIoT.Pages
 
             if (Site == "Devices")
             {
-                // Test InfluxDB interface
-                Telemetry = await _datasource.GetLatestDeviceTelemetryAllAsync();
+                // Pull raw telemetry from database
+                var raw = await _datasource.GetLatestDeviceTelemetryAllAsync();
+
+                // Translate into displayable telemetry
+                string MapKey(KeyValuePair<string,object> kvp)
+                {
+                    return kvp.Key switch
+                    {
+                        "thermostat1/temperature" => "Thermostat1/Temperature",
+                        "thermostat2/temperature" => "Thermostat2/Temperature",
+                        "workingSet" => $"Working Set",
+                        _ => "?"
+                    };
+                }
+                string MapValue(KeyValuePair<string,object> kvp)
+                {
+                    return kvp.Key switch
+                    {
+                        "thermostat1/temperature" or
+                        "thermostat2/temperature"
+                             => $"{kvp.Value:F1}°C",
+                        "workingSet" => $"{(double)kvp.Value/7812.5:F1}MB",
+                        _ => "?"
+                    };
+                }
+
+                Telemetry = raw.ToDictionary(
+                    x => x.Key,
+                    x => x.Value.ToDictionary(MapKey,MapValue)
+                );
 
                 Metrics = Enumerable.Empty<IReading>();
 
