@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using ChartMaker;
+using DashboardIoT.Core.Dtmi;
 
 namespace DashboardIoT.Pages
 {
@@ -49,34 +50,14 @@ namespace DashboardIoT.Pages
             if (Site == "Devices")
             {
                 // Pull raw telemetry from database
+                // TODO: Need to get all telemetry in this call
                 var raw = await _datasource.GetLatestDeviceTelemetryAllAsync();
 
-                // Translate into displayable telemetry
-                string MapKey(KeyValuePair<string,object> kvp)
-                {
-                    return kvp.Key switch
-                    {
-                        "thermostat1/temperature" => "Thermostat1/Temperature",
-                        "thermostat2/temperature" => "Thermostat2/Temperature",
-                        "workingSet" => $"Working Set",
-                        _ => "?"
-                    };
-                }
-                string MapValue(KeyValuePair<string,object> kvp)
-                {
-                    return kvp.Key switch
-                    {
-                        "thermostat1/temperature" or
-                        "thermostat2/temperature"
-                             => $"{kvp.Value:F1}°C",
-                        "workingSet" => $"{(double)kvp.Value/7812.5:F1}MB",
-                        _ => "?"
-                    };
-                }
+                var dtmi = new DeviceModelDetails();
 
                 Telemetry = raw.ToDictionary(
                     x => x.Key,
-                    x => x.Value.ToDictionary(MapKey,MapValue)
+                    x => x.Value.ToDictionary(x=>dtmi.MapMetricName(x.Key),dtmi.FormatMetricValue)
                 );
 
                 Metrics = Enumerable.Empty<IReading>();
@@ -86,9 +67,10 @@ namespace DashboardIoT.Pages
                 var instream = await cosmos.DoQueryAsync(TimeSpan.FromMinutes(10), TimeSpan.FromMinutes(10),new [] {"device-1", "device-2", "device-3", "device-4", "device-5", "device-6"});
                 var data2 = DatapointReader.ReadFromJson(instream);
 #endif
+
                 var data = DatapointReader.ReadFromInfluxDB(raw);
 
-                Chart = ChartMaker.Engine.CreateMultiDeviceBarChart(data, new[] { "thermostat1/temperature", "thermostat2/temperature" });
+                Chart = ChartMaker.Engine.CreateMultiDeviceBarChart(data, dtmi.VisualizeTelemetryTop);
             }
             else if (Site == "Reference")
             {

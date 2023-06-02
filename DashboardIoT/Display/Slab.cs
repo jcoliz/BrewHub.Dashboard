@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using DashboardIoT.Core.Dtmi;
 
 namespace DashboardIoT.Display;
 
@@ -13,12 +14,4 @@ public record Slab
     public IEnumerable<KeyValueUnits> WritableProperties { get; init; } = Enumerable.Empty<KeyValueUnits>();
     public IEnumerable<KeyValueUnits> Commands { get; init; } = Enumerable.Empty<KeyValueUnits>();
     public string ComponentId { get; init; } = null;
-}
-
-public record KeyValueUnits
-{
-    public string Key { get; init; } = string.Empty;
-    public string Value { get; init; } = string.Empty;
-    public string Units { get; init; } = null;
-    public bool Writable { get; init; } = false;
 }

@@ -4,8 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Common.ChartJS;
 using DashboardIoT.Core.Interfaces;
-using DashboardIoT.Core.MockData;
-using Microsoft.AspNetCore.Mvc;
+using DashboardIoT.Core.Dtmi;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using ChartMaker;
@@ -92,15 +91,15 @@ namespace DashboardIoT.Pages
             var instream = await cosmos.DoQueryAsync(lookback,bininterval,new[]{"device-1"});
             var data = DatapointReader.ReadFromJson(instream);
 #endif
-            Chart = ChartMaker.Engine.CreateMultiLineChart(data, new[] { "thermostat1/temperature", "thermostat2/temperature" }, labelformat);
+            var dtmi = new DeviceModelDetails();
+            Chart = ChartMaker.Engine.CreateMultiLineChart(data, dtmi.VisualizeTelemetryDevice, labelformat);
 
             // Query InfluxDB, compose into UI slabs
 
             var raw = await _datasource.GetLatestDevicePropertiesAsync(DeviceId);
 
             // Augment with DTMI information
-
-            raw[string.Empty]["Schema"] = "Temperature Controller";
+            raw[string.Empty]["Schema"] = dtmi.SchemaName;
 
             // For starters, we will just directly translate results into slabs.
             // Next step will be breaking it apart, making it pretty
@@ -109,95 +108,11 @@ namespace DashboardIoT.Pages
             {
                 string ValueOrEmpty(string s, string alt) => string.IsNullOrEmpty(s) ? alt : s;
 
-                var props = c.Value.Select(x => new KeyValueUnits() { Key = MapKey(x.Key), Value = MapValue(x), Writable = MapWritable(x.Key), Units = MapWritableUnits(x.Key) }).ToList();
-                return new Slab() { Header = ValueOrEmpty(MapKey(c.Key),"Device Details"), ComponentId = c.Key, Properties = props, Commands = MapCommands(c.Key) };
+                var props = c.Value.Select(x => new KeyValueUnits() { Key = dtmi.MapMetricName(x.Key), Value = dtmi.FormatMetricValue(x), Writable = dtmi.IsMetricWritable(x.Key), Units = dtmi.GetWritableUnits(x.Key) }).ToList();
+                return new Slab() { Header = ValueOrEmpty(dtmi.MapMetricName(c.Key),"Device Details"), ComponentId = c.Key, Properties = props, Commands = dtmi.GetCommands(c.Key) };
             }
 
             Slabs = raw.Select(FromComponent).ToList();
-        }
-
-        // Translate into displayable properties
-        string MapKey(string key)
-        {
-            return key switch
-            {
-                "serialNumber" => "Serial Number",
-                "thermostat1" => "Thermostat One",
-                "thermostat2" => "Thermostat Two",
-                "deviceInformation" => "Device Information",
-                "manufacturer" => "Manufacturer",
-                "model" => "Device Model",
-                "swVersion" => "Software Version",
-                "osName" => "Operating System",
-                "processorArchitecture" => "Processor Architecture",
-                "totalStorage" => "Total Storage",
-                "totalMemory" => "Total Memory",
-                "temperature" => "Temperature",
-                "maxTempSinceLastReboot" => "Max Temperature Since Reboot",
-                "targetTemperature" => "Target Temperature",
-                "workingSet" => $"Working Set",
-                "telemetryPeriod" => "Telemetry Period",
-                _ => key
-            };
-        }
-
-        bool MapWritable(string key)
-        {
-            return key switch
-            {
-                "targetTemperature" or
-                "telemetryPeriod" => true,
-                _ => false
-            };
-        }
-
-        IEnumerable<KeyValueUnits> MapCommands(string key)
-        {
-            return key switch
-            {
-                "" => new List<KeyValueUnits>()
-                                {
-                                    new() { Key = "Reboot", Value = "Delay", Units = "s" }
-                                }
-                ,
-                "thermostat1" or
-                "thermostat2" => new List<KeyValueUnits>()
-                                {
-                                    new() { Key = "Get Max-Min report", Value = "Since", Units = "D/T" }                                    
-                                },
-                _ => Enumerable.Empty<KeyValueUnits>()
-            };
-        }
-
-        string MapWritableUnits(string key)
-        {
-            return key switch
-            {
-                "targetTemperature" => "°C",
-                _ => null
-            };
-        }
-
-        string MapValue(KeyValuePair<string,object> kvp)
-        {
-            return kvp.Key switch
-            {
-                "maxTempSinceLastReboot" or
-                "temperature" or
-                "temperature"
-                        => $"{kvp.Value:F1}°C",
-                "targetTemperature" => $"{kvp.Value:F1}",
-                "workingSet" => $"{(double)kvp.Value/7812.5:F1}MB",
-                "totalStorage" or
-                "totalMemory" 
-                    => (double)kvp.Value switch
-                    {
-                        > 1000000 => $"{(double)kvp.Value/1000000:F1} GB",
-                        > 1000 => $"{(double)kvp.Value/1000:F1} MB",
-                        _ => $"{(double)kvp.Value:F1} kB"
-                    },
-                _ => kvp.Value.ToString()
-            };
         }
 
         private static readonly ChartColor[] palette = new ChartColor[]
