@@ -71,7 +71,7 @@
             <span class="text-primary">@slab.Header</span>
         </h4>
         <ul class="list-group mb-3">
-            @foreach(var prop in slab.Properties)
+            @foreach(var prop in slab.Properties.Where(x=>!x.Writable))
             {
                 <li class="list-group-item d-flex justify-content-between lh-sm">
                     <div>
@@ -81,7 +81,32 @@
                 </li>
             }
         </ul>
-        <a class="w-100 btn btn-lg btn-outline-primary" asp-page="Component" asp-route-d="@Model.DeviceId" asp-route-c="@(slab.ComponentId)">Details</a>
+        @if (slab.Properties.Any(x=>x.Writable))
+        {
+            var index = 1;
+
+            <form class="card p-2">
+                <div class="row g-3">
+                    @foreach(var prop in slab.Properties.Where(x=>x.Writable))
+                    {
+                        <div class="col-12">
+                            <label for="writable-@index" class="h6 form-label">@prop.Key</label>
+                            <div class="input-group">
+                                <input type="text" id="writable-@(index++)" class="form-control" value="@prop.Value">
+                                @if (prop.Units is not null)
+                                {
+                                    <span class="input-group-text">@prop.Units</span>
+                                }
+                                <button type="submit" class="btn btn-secondary">Update</button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </form>            
+        }
+        <a asp-page="Component" asp-route-d="@Model.DeviceId" asp-route-c="@(slab.ComponentId)" class="icon-link h6 mb-3">
+          More Details &raquo;
+        </a>
     </div>
 }
 @if (false)

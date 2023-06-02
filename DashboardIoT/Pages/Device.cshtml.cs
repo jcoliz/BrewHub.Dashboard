@@ -92,14 +92,14 @@ namespace DashboardIoT.Pages
             {
                 string ValueOrEmpty(string s, string alt) => string.IsNullOrEmpty(s) ? alt : s;
 
-                var props = c.Value.Select(x => new KeyValueUnits() { Key = MapKey(x.Key), Value = MapValue(x) }).ToList();
+                var props = c.Value.Select(x => new KeyValueUnits() { Key = MapKey(x.Key), Value = MapValue(x), Writable = MapWritable(x.Key), Units = MapWritableUnits(x.Key) }).ToList();
                 return new Slab() { Header = ValueOrEmpty(MapKey(c.Key),"Device Details"), ComponentId = c.Key, Properties = props };
             }
 
             Slabs = raw.Select(FromComponent).ToList();
         }
 
-        // Translate into displayable telemetry
+        // Translate into displayable properties
         string MapKey(string key)
         {
             return key switch
@@ -123,15 +123,35 @@ namespace DashboardIoT.Pages
                 _ => key
             };
         }
+
+        bool MapWritable(string key)
+        {
+            return key switch
+            {
+                "targetTemperature" or
+                "telemetryPeriod" => true,
+                _ => false
+            };
+        }
+
+        string MapWritableUnits(string key)
+        {
+            return key switch
+            {
+                "targetTemperature" => "°C",
+                _ => null
+            };
+        }
+
         string MapValue(KeyValuePair<string,object> kvp)
         {
             return kvp.Key switch
             {
                 "maxTempSinceLastReboot" or
-                "targetTemperature" or
                 "temperature" or
                 "temperature"
                         => $"{kvp.Value:F1}°C",
+                "targetTemperature" => $"{kvp.Value:F1}",
                 "workingSet" => $"{(double)kvp.Value/7812.5:F1}MB",
                 "totalStorage" or
                 "totalMemory" 
