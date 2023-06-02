@@ -85,6 +85,10 @@ namespace DashboardIoT.Pages
 
             var raw = await _datasource.GetLatestDevicePropertiesAsync(DeviceId);
 
+            // Augment with DTMI information
+
+            raw[string.Empty]["Schema"] = "Temperature Controller";
+
             // For starters, we will just directly translate results into slabs.
             // Next step will be breaking it apart, making it pretty
 
