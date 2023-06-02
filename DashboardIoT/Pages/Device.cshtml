@@ -24,7 +24,7 @@
                     @Model.Timeframe.ToString()
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                    @foreach (var name in Enum.GetNames(typeof(IndexModel.TimeframeEnum)))
+                    @foreach (var name in Enum.GetNames(typeof(DevicePageModel.TimeframeEnum)))
                     {
                         <li><a class="dropdown-item" asp-page="Device" asp-route-t="@name" asp-route-id="@Model.DeviceId">@name</a></li>
                     }

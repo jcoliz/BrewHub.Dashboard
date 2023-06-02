@@ -67,6 +67,11 @@ namespace DashboardIoT.Core.MockData
             return _metrics[site];
         }
 
+        Task<Dictionary<string, List<(DateTimeOffset,double)>>> IDataSource.GetSingleDeviceTelemetryAsync(string deviceid, string lookback, string window)
+        {
+            throw new NotImplementedException();
+        }
+
         private double NextRandomReading() => _random.NextDouble() * 40.0 + 30.0;
     }
 }

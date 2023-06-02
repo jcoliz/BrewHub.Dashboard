@@ -173,6 +173,15 @@ namespace DashboardIoT.InfluxDB
             }
         }
 
+        private string ExtractKey(Dictionary<string,object> d)
+        {
+            return d.ContainsKey("component") switch
+            {
+                true => $"{d["component"]}/{d["_field"]}",
+                false => $"{d["_field"]}"
+            };
+        }
+
         public async Task<Dictionary<string, Dictionary<string, object>>> GetLatestDeviceTelemetryAllAsync()
         {
             try
@@ -190,15 +199,6 @@ namespace DashboardIoT.InfluxDB
                     " |> keep(columns: [ \"device\", \"component\", \"_field\", \"_value\" ])";
 
                 var fluxTables = await _influxdbclient.GetQueryApi().QueryAsync(flux, _options.Org);
-
-                string ExtractKey(Dictionary<string,object> d)
-                {
-                    return d.ContainsKey("component") switch
-                    {
-                        true => $"{d["component"]}/{d["_field"]}",
-                        false => $"{d["_field"]}"
-                    };
-                }
 
                 var result = fluxTables
                     .SelectMany(x => x.Records)
@@ -264,5 +264,71 @@ namespace DashboardIoT.InfluxDB
                 throw;
             }
         }
+
+        public async Task<Dictionary<string, List<(DateTimeOffset,double)>>> GetSingleDeviceTelemetryAsync(string deviceid, string lookback, string window)
+        {
+            try
+            {
+                //
+                // Query data
+                //
+
+                // TODO: This is where it would be great to have a tag for type=telemetry
+
+                var flux = $"from(bucket:\"{_options.Bucket}\")" +
+                    $" |> range(start: -{lookback})" +
+                    $" |> filter(fn: (r) => r[\"device\"] == \"{deviceid}\")" +
+                    " |> filter(fn: (r) => r[\"_field\"] == \"temperature\")" +
+                    " |> keep(columns: [ \"component\", \"_field\", \"_value\", \"_time\" ])" +
+                    $" |> aggregateWindow(every: {window}, fn: mean, createEmpty: false)" +
+                    "  |> yield(name: \"mean\")";
+
+                /*from(bucket: "dockerism")
+                  |> range(start: -24h)
+                  |> filter(fn: (r) => r["device"] == "6a535e8e4e6e")
+                  |> filter(fn: (r) => r["_field"] == "temperature")
+                  |> aggregateWindow(every: 30m, fn: mean, createEmpty: false)  
+                  |> keep(columns: [ "_field", "_value", "_time", "component"])
+                  |> yield(name: "mean")
+                */
+
+                var fluxTables = await _influxdbclient.GetQueryApi().QueryAsync(flux, _options.Org);
+
+                var result = fluxTables
+                    .SelectMany(x => x.Records)
+                    .Select(x => x.Values)
+                    .GroupBy(ExtractKey)
+                    .ToDictionary(
+                        x => x.Key,
+                        x => x.OrderBy(y => y["_time"])
+                                .Select(y => (((NodaTime.Instant)y["_time"]).ToDateTimeOffset(),(double)y["_value"]))
+                                .ToList()
+                    );
+
+#if false
+                var result = fluxTables
+                    .SelectMany(x => x.Records)
+                    .Select(x => x.Values)
+                    .GroupBy(x => new { c = ExtractComponent(x), f = x["_field"].ToString() })
+                    .GroupBy(x => x.Key.c)
+                    .ToDictionary(
+                        x => x.Key, 
+                        x => x.ToDictionary(
+                            y => y.Key.f, 
+                            y => y.OrderBy(z => z["_time"])
+                                    .Select(z => Convert.ToDouble(z["_value"]))
+                                    .ToList()
+                        )
+                    );
+#endif
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "InfluxDB: Query Failed");
+                throw;
+            }
+        }
+
     }
 }

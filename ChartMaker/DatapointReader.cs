@@ -51,4 +51,31 @@ public static class DatapointReader
 
         return result;
     }
+
+    public static List<Datapoint> ReadFromInfluxDB(Dictionary<string, List<(DateTimeOffset,double)>> input)
+    {
+        // TODO: This data pipeline is fairly nuts. It goes through a LOT of steps and permutations to get
+        // where we need it. Must rethink!!
+
+        IEnumerable<Datapoint> FromKvp(KeyValuePair<string,List<(DateTimeOffset,double)>> kvp)
+        {
+            var split = kvp.Key.Split('/');
+
+            return kvp.Value.Select(
+                x =>
+                new Datapoint()
+                {
+                    __Field = split.Last(),
+                    __Component = (split.Length > 1) ? split.First() : null,
+                    __Value = x.Item2,
+                    __Time = x.Item1
+                }
+            );
+        }
+
+        var result = input.SelectMany(FromKvp).ToList();
+
+        return result;
+    }
+
 }

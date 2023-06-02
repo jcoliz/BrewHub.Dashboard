@@ -30,5 +30,6 @@ namespace DashboardIoT.Core.Interfaces
         /// </returns>
         public Task<Dictionary<string, Dictionary<string, object>>> GetLatestDevicePropertiesAsync(string deviceid);
 
+        public Task<Dictionary<string, List<(DateTimeOffset,double)>>> GetSingleDeviceTelemetryAsync(string deviceid, string lookback, string window);
     }
 }

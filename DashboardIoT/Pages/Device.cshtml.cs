@@ -38,7 +38,7 @@ namespace DashboardIoT.Pages
         static readonly ChartColor _yellow = new("#EFB700");
         static readonly ChartColor _green = new("#008450");
 
-        public enum TimeframeEnum { Hour = 0, Day, Week, Month };
+        public enum TimeframeEnum { Minutes = 0, Hour, Hours, Day, Week, Month };
 
         public async Task OnGetAsync(TimeframeEnum t, string id)
         {
@@ -51,35 +51,48 @@ namespace DashboardIoT.Pages
 
             var lookback = Timeframe switch
             {
-                TimeframeEnum.Hour => TimeSpan.FromHours(1),
-                TimeframeEnum.Day => TimeSpan.FromHours(24),
-                TimeframeEnum.Week => TimeSpan.FromDays(7),
-                TimeframeEnum.Month => TimeSpan.FromDays(7*8),
+                TimeframeEnum.Minutes => "5m",
+                TimeframeEnum.Hour => "1h",
+                TimeframeEnum.Hours => "4h",
+                TimeframeEnum.Day => "24h",
+                TimeframeEnum.Week => "7d",
+                TimeframeEnum.Month => "28d",
                 _ => throw new NotImplementedException()
             };
 
             var bininterval = Timeframe switch
             {
-                TimeframeEnum.Hour => TimeSpan.FromMinutes(5),
-                TimeframeEnum.Day => TimeSpan.FromHours(1),
-                TimeframeEnum.Week => TimeSpan.FromDays(1),
-                TimeframeEnum.Month => TimeSpan.FromDays(7),
+                TimeframeEnum.Minutes => "20s",
+                TimeframeEnum.Hour => "2m",
+                TimeframeEnum.Hours => "15m",
+                TimeframeEnum.Day => "1h",
+                TimeframeEnum.Week => "1d",
+                TimeframeEnum.Month => "7d",
                 _ => throw new NotImplementedException()
             };
 
             var labelformat = Timeframe switch
             {
-                TimeframeEnum.Hour or TimeframeEnum.Day => "H:mm",
-                TimeframeEnum.Week or TimeframeEnum.Month => "M/dd",
+                TimeframeEnum.Minutes => "mm:ss",
+                TimeframeEnum.Hour or 
+                TimeframeEnum.Hours or 
+                TimeframeEnum.Day => "H:mm",
+                TimeframeEnum.Week or 
+                TimeframeEnum.Month => "M/dd",
                 _ => throw new NotImplementedException()
 
             };
 
+            // Get historical telemetry data for all components on this device
+            var influx = await _datasource.GetSingleDeviceTelemetryAsync(DeviceId, lookback, bininterval);
+            var data = DatapointReader.ReadFromInfluxDB(influx);
+
+#if false
             var cosmos = new ChartMaker.CosmosQuery.MockEngine();
             var instream = await cosmos.DoQueryAsync(lookback,bininterval,new[]{"device-1"});
             var data = DatapointReader.ReadFromJson(instream);
-
-            Chart = ChartMaker.Engine.CreateMultiLineChart(data, new[] { "Top/Temperature", "Condenser/Temperature" }, labelformat);
+#endif
+            Chart = ChartMaker.Engine.CreateMultiLineChart(data, new[] { "thermostat1/temperature", "thermostat2/temperature" }, labelformat);
 
             // Query InfluxDB, compose into UI slabs
 
