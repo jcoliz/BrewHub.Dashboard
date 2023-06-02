@@ -81,7 +81,7 @@
                 </li>
             }
         </ul>
-        @if (slab.Properties.Any(x=>x.Writable))
+        @if (slab.Properties.Any(x=>x.Writable) || slab.Commands.Any())
         {
             var index = 1;
 
@@ -98,6 +98,20 @@
                                     <span class="input-group-text">@prop.Units</span>
                                 }
                                 <button type="submit" class="btn btn-secondary">Update</button>
+                            </div>
+                        </div>
+                    }
+                    @foreach(var cmd in slab.Commands)
+                    {
+                        <div class="col-12">
+                            <label for="cmd-@index" class="h6 form-label">@cmd.Key</label>
+                            <div class="input-group">
+                                <input type="text" id="cmd-@(index++)" class="form-control" placeholder="@cmd.Value">
+                                @if (cmd.Units is not null)
+                                {
+                                    <span class="input-group-text">@cmd.Units</span>
+                                }
+                                <button type="submit" class="btn btn-secondary">Go</button>
                             </div>
                         </div>
                     }

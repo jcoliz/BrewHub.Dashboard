@@ -110,7 +110,7 @@ namespace DashboardIoT.Pages
                 string ValueOrEmpty(string s, string alt) => string.IsNullOrEmpty(s) ? alt : s;
 
                 var props = c.Value.Select(x => new KeyValueUnits() { Key = MapKey(x.Key), Value = MapValue(x), Writable = MapWritable(x.Key), Units = MapWritableUnits(x.Key) }).ToList();
-                return new Slab() { Header = ValueOrEmpty(MapKey(c.Key),"Device Details"), ComponentId = c.Key, Properties = props };
+                return new Slab() { Header = ValueOrEmpty(MapKey(c.Key),"Device Details"), ComponentId = c.Key, Properties = props, Commands = MapCommands(c.Key) };
             }
 
             Slabs = raw.Select(FromComponent).ToList();
@@ -148,6 +148,24 @@ namespace DashboardIoT.Pages
                 "targetTemperature" or
                 "telemetryPeriod" => true,
                 _ => false
+            };
+        }
+
+        IEnumerable<KeyValueUnits> MapCommands(string key)
+        {
+            return key switch
+            {
+                "" => new List<KeyValueUnits>()
+                                {
+                                    new() { Key = "Reboot", Value = "Delay", Units = "s" }
+                                }
+                ,
+                "thermostat1" or
+                "thermostat2" => new List<KeyValueUnits>()
+                                {
+                                    new() { Key = "Get Max-Min report", Value = "Since", Units = "D/T" }                                    
+                                },
+                _ => Enumerable.Empty<KeyValueUnits>()
             };
         }
 
