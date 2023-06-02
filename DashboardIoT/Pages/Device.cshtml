@@ -85,7 +85,7 @@
         {
             var index = 1;
 
-            <form class="card p-2">
+            <form class="card p-2 mb-3">
                 <div class="row g-3">
                     @foreach(var prop in slab.Properties.Where(x=>x.Writable))
                     {
@@ -104,9 +104,11 @@
                 </div>
             </form>            
         }
-        <a asp-page="Component" asp-route-d="@Model.DeviceId" asp-route-c="@(slab.ComponentId)" class="icon-link h6 mb-3">
-          More Details &raquo;
-        </a>
+        <div class="d-flex w-100">
+            <a asp-page="Component" asp-route-d="@Model.DeviceId" asp-route-c="@(slab.ComponentId)" class="icon-link h6 mb-3 ms-auto">
+            More &raquo;
+            </a>
+        </div>
     </div>
 }
 @if (false)
