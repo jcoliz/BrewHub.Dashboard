@@ -38,7 +38,9 @@ namespace DashboardIoT.Pages
 
         public async Task OnGetAsync(TimeframeEnum t, string s)
         {
-            Timeframe = t;
+            try
+            {
+                Timeframe = t;
 
                 // Pull raw telemetry from database
                 // TODO: Need to get all telemetry in this call
@@ -51,14 +53,13 @@ namespace DashboardIoT.Pages
                     x => x.Value.ToDictionary(x=>dtmi.MapMetricName(x.Key),dtmi.FormatMetricValue)
                 );
 
-#if false
-                var cosmos = new ChartMaker.CosmosQuery.MockEngine();
-                var instream = await cosmos.DoQueryAsync(TimeSpan.FromMinutes(10), TimeSpan.FromMinutes(10),new [] {"device-1", "device-2", "device-3", "device-4", "device-5", "device-6"});
-                var data2 = DatapointReader.ReadFromJson(instream);
-#endif
-
                 var data = DatapointReader.ReadFromInfluxDB(raw);
                 Chart = ChartMaker.Engine.CreateMultiDeviceBarChart(data, dtmi.VisualizeTelemetryTop);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Get: Failed");
+            }
         }
 
         private static readonly ChartColor[] palette = new ChartColor[]
