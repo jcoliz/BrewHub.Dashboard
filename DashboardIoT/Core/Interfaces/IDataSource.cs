@@ -1,23 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace DashboardIoT.Core.Interfaces
 {
     public interface IDataSource
     {
-        // (Deprecated) V1 design
-        public Task<IEnumerable<IReading>> GetMomentaryReadingsAsync(string site);
-        public Task<IEnumerable<IReading>> GetSeriesReadingsAsync(string site, TimeSpan span, int divisions);
-
-        // NEW V2 design
-
         /// <summary>
         /// Get latest value for all telemetry from all devices
         /// </summary>
         /// <returns>
-        /// Dictionary of device names to telemetry key-value pairs
+        /// Dictionary of device names to component/metric key-value pairs
         /// </returns>
         public Task<Dictionary<string,Dictionary<string,object>>> GetLatestDeviceTelemetryAllAsync();
 
@@ -26,10 +19,19 @@ namespace DashboardIoT.Core.Interfaces
         /// </summary>
         /// <param name="deviceid">Which device</param>
         /// <returns>
-        /// Dictionary of component names (or string.empty) to telemetry key-value pairs
+        /// Dictionary of component names (or string.empty) to metric key-value pairs
         /// </returns>
         public Task<Dictionary<string, Dictionary<string, object>>> GetLatestDevicePropertiesAsync(string deviceid);
 
-        public Task<Dictionary<string, List<(DateTimeOffset,double)>>> GetSingleDeviceTelemetryAsync(string deviceid, string lookback, string window);
+        /// <summary>
+        /// Get latest value for all metrics for one device
+        /// </summary>
+        /// <param name="deviceid">Which device</param>
+        /// <param name="lookback">How far back from now to look</param>
+        /// <param name="interval">How much time should each data point cover</param>
+        /// <returns>
+        /// Dictionary of component/field names to list of time/values
+        /// </returns>
+        public Task<Dictionary<string, List<(DateTimeOffset,double)>>> GetSingleDeviceTelemetryAsync(string deviceid, TimeSpan lookback, TimeSpan interval);
     }
 }

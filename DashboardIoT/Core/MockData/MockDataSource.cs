@@ -8,70 +8,65 @@ namespace DashboardIoT.Core.MockData
 {
     public class MockDataSource : IDataSource
     {
-        private readonly Dictionary<string, List<MockReading>> _metrics = new()
-        {
-            {
-                "Distillery",
-                new()
-                {
-                    new MockReading() { Topic = "sensors/thermocouple/Still-1/Top/Temp", Last = 35.0f },
-                    new MockReading() { Topic = "sensors/thermocouple/Still-1/Middle/Temp", Last = 49.0f },
-                    new MockReading() { Topic = "sensors/thermocouple/Still-1/Bottom/Temp", Last = 41.0f },
-                    new MockReading() { Topic = "sensors/thermocouple/Still-2/Top/Temp", Last = 64.0f },
-                    new MockReading() { Topic = "sensors/thermocouple/Still-2/Middle/Temp", Last = 69.0f },
-                    new MockReading() { Topic = "sensors/thermocouple/Still-2/Bottom/Temp", Last = 60.0f },
-                    new MockReading() { Topic = "sensors/thermocouple/Still-3/Top/Temp", Last = 50.0f },
-                    new MockReading() { Topic = "sensors/thermocouple/Still-3/Middle/Temp", Last = 61.0f },
-                    new MockReading() { Topic = "sensors/thermocouple/Still-3/Bottom/Temp", Last = 63.0f },
-                }
-            },
-            {
-                "Home",
-                new()
-                {
-                    new MockReading() { Topic = "//Office/Desk/Temp", Units = "°C" },
-                    new MockReading() { Topic = "//Office/Desk/Humidity", Units = "%RH" },
-                }
-            }
-        };                       
-
         private readonly Random _random = new();
+
+        private readonly List<string> devices = new();
+
+        private readonly List<string> components = new() { string.Empty };
+
+        private readonly List<string> telemetry = new();
+        private readonly List<string> properties = new();
+
+        private const int numdevices = 6;
+        private const int numcomponents = 3;
+        private const int numtelemetry = 2;
+        private const int numproperties = 4;
+
+        private string NextInt64String()
+        {
+            return (_random.NextInt64() >> 32).ToString("X");
+        }
+
+        private double NextDouble1000()
+        {
+            return Math.Round(_random.NextDouble() * 1000, 1);
+        }
+
+        public MockDataSource()
+        {
+            devices.AddRange(Enumerable.Range(1, numdevices).Select(_ => NextInt64String()));
+            components.AddRange(Enumerable.Range(1, numcomponents).Select(_ => NextInt64String()));
+            telemetry.AddRange(Enumerable.Range(1, numtelemetry).Select(_ => NextInt64String()));
+            properties.AddRange(Enumerable.Range(1, numproperties).Select(_ => NextInt64String()));
+        }
 
         public Task<Dictionary<string, Dictionary<string, object>>> GetLatestDevicePropertiesAsync(string deviceid)
         {
-            throw new NotImplementedException();
+            var result = components.ToDictionary(x => x,x => properties.ToDictionary(y => y, y => (object)NextDouble1000()));
+            return Task.FromResult(result);
         }
 
         public Task<Dictionary<string, Dictionary<string, object>>> GetLatestDeviceTelemetryAllAsync()
         {
-            throw new NotImplementedException();
+            var result = devices.ToDictionary(
+                x => x,
+                x => components
+                        .SelectMany(x => telemetry.Select(y => $"{x}/{y}"))
+                        .ToDictionary(x => x, x => (object)NextDouble1000())
+            );
+            return Task.FromResult(result);
         }
 
-        public Task<IEnumerable<IReading>> GetMomentaryReadingsAsync(string site)
+        public Task<Dictionary<string, List<(DateTimeOffset,double)>>> GetSingleDeviceTelemetryAsync(string deviceid, TimeSpan lookback, TimeSpan interval)
         {
-            return Task.FromResult<IEnumerable<IReading>>(GetReadings(site));
+            var now = DateTimeOffset.Now;
+            var dates = Enumerable.Range(0, (int)Math.Ceiling(lookback / interval)).Select(x => now + x * interval);
+            var result = components
+                            .ToDictionary(
+                                x => x,
+                                x => dates.Select(y=>(y,NextDouble1000())).ToList()
+                            );
+            return Task.FromResult(result);
         }
-
-        public Task<IEnumerable<IReading>> GetSeriesReadingsAsync(string site, TimeSpan _, int divisions)
-        {
-            var result = _metrics[site].Select(x => new MockReading(x) { Values = Enumerable.Range(0, divisions).Select(d => NextRandomReading()) });
-
-            return Task.FromResult<IEnumerable<IReading>>(result);
-        }
-
-        private IEnumerable<MockReading> GetReadings(string site)
-        {
-            foreach (var reading in _metrics[site])
-                reading.Last = NextRandomReading();
-
-            return _metrics[site];
-        }
-
-        Task<Dictionary<string, List<(DateTimeOffset,double)>>> IDataSource.GetSingleDeviceTelemetryAsync(string deviceid, string lookback, string window)
-        {
-            throw new NotImplementedException();
-        }
-
-        private double NextRandomReading() => _random.NextDouble() * 40.0 + 30.0;
     }
 }

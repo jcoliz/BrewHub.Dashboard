@@ -46,8 +46,9 @@ namespace DashboardIoT
                     ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
             });
 
+            // Set influxdb:Server to "-" to force use of mock data
             var section = Configuration.GetSection(InfluxDB.InfluxDBDataSource.Options.Section);
-            if (section.Exists())
+            if (section.Exists() && Configuration["influxdb:server"] != "-")
             {
                 logger.LogInformation("InfluxDB Options OK");
                 services.Configure<InfluxDB.InfluxDBDataSource.Options>(section);

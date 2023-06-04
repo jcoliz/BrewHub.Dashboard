@@ -22,10 +22,6 @@ namespace DashboardIoT.Pages
 
         public TimeframeEnum Timeframe { get; set; } = TimeframeEnum.Hour;
 
-        public string Site { get; set; } = "Devices";
-
-        public IEnumerable<IReading> Metrics { get; private set; }
-
         public Dictionary<string,Dictionary<string,string>> Telemetry { get; private set; }
 
         public IndexModel(ILogger<IndexModel> logger, IDataSource datasource)
@@ -44,11 +40,6 @@ namespace DashboardIoT.Pages
         {
             Timeframe = t;
 
-            if (!string.IsNullOrEmpty(s))
-                Site = s;
-
-            if (Site == "Devices")
-            {
                 // Pull raw telemetry from database
                 // TODO: Need to get all telemetry in this call
                 var raw = await _datasource.GetLatestDeviceTelemetryAllAsync();
@@ -60,8 +51,6 @@ namespace DashboardIoT.Pages
                     x => x.Value.ToDictionary(x=>dtmi.MapMetricName(x.Key),dtmi.FormatMetricValue)
                 );
 
-                Metrics = Enumerable.Empty<IReading>();
-
 #if false
                 var cosmos = new ChartMaker.CosmosQuery.MockEngine();
                 var instream = await cosmos.DoQueryAsync(TimeSpan.FromMinutes(10), TimeSpan.FromMinutes(10),new [] {"device-1", "device-2", "device-3", "device-4", "device-5", "device-6"});
@@ -69,70 +58,7 @@ namespace DashboardIoT.Pages
 #endif
 
                 var data = DatapointReader.ReadFromInfluxDB(raw);
-
                 Chart = ChartMaker.Engine.CreateMultiDeviceBarChart(data, dtmi.VisualizeTelemetryTop);
-            }
-            else if (Site == "Reference")
-            {
-                Metrics = Enumerable.Empty<IReading>();
-
-                var lookback = Timeframe switch
-                {
-                    TimeframeEnum.Hour => TimeSpan.FromHours(1),
-                    TimeframeEnum.Day => TimeSpan.FromHours(24),
-                    TimeframeEnum.Week => TimeSpan.FromDays(7),
-                    TimeframeEnum.Month => TimeSpan.FromDays(7*8),
-                    _ => throw new NotImplementedException()
-                };
-
-                var bininterval = Timeframe switch
-                {
-                    TimeframeEnum.Hour => TimeSpan.FromMinutes(5),
-                    TimeframeEnum.Day => TimeSpan.FromHours(1),
-                    TimeframeEnum.Week => TimeSpan.FromDays(1),
-                    TimeframeEnum.Month => TimeSpan.FromDays(7),
-                    _ => throw new NotImplementedException()
-                };
-
-                var labelformat = Timeframe switch
-                {
-                    TimeframeEnum.Hour or TimeframeEnum.Day => "H:mm",
-                    TimeframeEnum.Week or TimeframeEnum.Month => "M/dd",
-                    _ => throw new NotImplementedException()
-
-                };
-
-                var cosmos = new ChartMaker.CosmosQuery.MockEngine();
-                var instream = await cosmos.DoQueryAsync(lookback,bininterval,new[]{"device-1"});
-                var data = DatapointReader.ReadFromJson(instream);
-                Chart = ChartMaker.Engine.CreateMultiLineChart(data, new[] { "thermostat1/Temperature", "thermostat2/Temperature" }, labelformat);
-
-            }
-            else
-            {
-                Metrics = await _datasource.GetMomentaryReadingsAsync(Site);
-
-#if false
-                if (t == TimeframeEnum.Now)
-                {
-                    SetNowChart();
-                }
-                else
-#endif
-                {
-                    var timespan = t switch
-                    {
-                        //TimeframeEnum.Minutes => TimeSpan.FromMinutes(5),
-                        TimeframeEnum.Hour => TimeSpan.FromHours(1),
-                        TimeframeEnum.Day => TimeSpan.FromDays(1),
-                        TimeframeEnum.Week => TimeSpan.FromDays(7),
-                        _ => throw new NotImplementedException()
-                    };
-                    await SetTimespanChartAsync(timespan);
-                }            
-
-            }
-
         }
 
         private static readonly ChartColor[] palette = new ChartColor[]
@@ -145,36 +71,5 @@ namespace DashboardIoT.Pages
             new ChartColor("8EE3EF"),
             new ChartColor("7A918D"),
         };
-
-        private async Task SetTimespanChartAsync(TimeSpan timespan)
-        {
-            var now = DateTime.Now;
-            var divisions = 48;
-
-            var labels = Enumerable.Range(0, divisions).Select(x => timespan * ((double)x / (double)divisions)).Select(x => (now + x).ToString("hh:mm"));
-
-            var alldata = await _datasource.GetSeriesReadingsAsync(Site, timespan, divisions);
-            var selector = alldata.First().Node;
-            var subset = alldata.Where(x => x.Node == selector);
-            var series = subset.Select(x => (x.Label, x.Values.Select(x=>Convert.ToInt32(x))));
-
-            Chart = ChartConfig.CreateLineChart(labels, series, palette);
-        }
-
-        private void SetNowChart()
-        {
-            var points = Metrics.Select(x => (x.Label,(int)x.Last));
-
-            var palette = points.Select(x =>
-            {
-                if (x.Item2 < 60)
-                    return _green;
-                if (x.Item2 < 65)
-                    return _yellow;
-                return _red;
-            });
-
-            Chart = ChartConfig.CreateBarChart(points, palette);
-        }
     }
 }

@@ -50,23 +50,23 @@ namespace DashboardIoT.Pages
 
             var lookback = Timeframe switch
             {
-                TimeframeEnum.Minutes => "5m",
-                TimeframeEnum.Hour => "1h",
-                TimeframeEnum.Hours => "4h",
-                TimeframeEnum.Day => "24h",
-                TimeframeEnum.Week => "7d",
-                TimeframeEnum.Month => "28d",
+                TimeframeEnum.Minutes => TimeSpan.FromMinutes(5), // "5m",
+                TimeframeEnum.Hour => TimeSpan.FromHours(1), //"1h",
+                TimeframeEnum.Hours => TimeSpan.FromHours(4), //"4h",
+                TimeframeEnum.Day => TimeSpan.FromHours(24), //"24h",
+                TimeframeEnum.Week => TimeSpan.FromDays(7), //"7d",
+                TimeframeEnum.Month => TimeSpan.FromDays(28), //"28d",
                 _ => throw new NotImplementedException()
             };
 
             var bininterval = Timeframe switch
             {
-                TimeframeEnum.Minutes => "20s",
-                TimeframeEnum.Hour => "2m",
-                TimeframeEnum.Hours => "15m",
-                TimeframeEnum.Day => "1h",
-                TimeframeEnum.Week => "1d",
-                TimeframeEnum.Month => "7d",
+                TimeframeEnum.Minutes =>  TimeSpan.FromSeconds(20), //"20s",
+                TimeframeEnum.Hour =>  TimeSpan.FromMinutes(2), //"2m",
+                TimeframeEnum.Hours =>  TimeSpan.FromMinutes(15), //"15m",
+                TimeframeEnum.Day =>  TimeSpan.FromHours(1), //"1h",
+                TimeframeEnum.Week =>  TimeSpan.FromDays(1), //"1d",
+                TimeframeEnum.Month => TimeSpan.FromDays(7), //"7d",
                 _ => throw new NotImplementedException()
             };
 
@@ -125,36 +125,5 @@ namespace DashboardIoT.Pages
             new ChartColor("8EE3EF"),
             new ChartColor("7A918D"),
         };
-
-        private async Task SetTimespanChartAsync(TimeSpan timespan)
-        {
-            var now = DateTime.Now;
-            var divisions = 48;
-
-            var labels = Enumerable.Range(0, divisions).Select(x => timespan * ((double)x / (double)divisions)).Select(x => (now + x).ToString("hh:mm"));
-
-            var alldata = await _datasource.GetSeriesReadingsAsync(DeviceId, timespan, divisions);
-            var selector = alldata.First().Node;
-            var subset = alldata.Where(x => x.Node == selector);
-            var series = subset.Select(x => (x.Label, x.Values.Select(x=>Convert.ToInt32(x))));
-
-            Chart = ChartConfig.CreateLineChart(labels, series, palette);
-        }
-
-        private void SetNowChart()
-        {
-            var points = Metrics.Select(x => (x.Label,(int)x.Last));
-
-            var palette = points.Select(x =>
-            {
-                if (x.Item2 < 60)
-                    return _green;
-                if (x.Item2 < 65)
-                    return _yellow;
-                return _red;
-            });
-
-            Chart = ChartConfig.CreateBarChart(points, palette);
-        }
     }
 }

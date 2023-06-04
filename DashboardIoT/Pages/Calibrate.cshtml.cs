@@ -13,8 +13,6 @@ namespace DashboardIoT.Pages
     {
         private readonly IDataSource _datasource;
 
-        public IEnumerable<IReading> Sensors { get; private set; }
-
         public CalibrateModel(IDataSource datasource)
         {
             _datasource = datasource;
@@ -22,7 +20,6 @@ namespace DashboardIoT.Pages
 
         public async Task OnGet()
         {
-            Sensors = await _datasource.GetMomentaryReadingsAsync("Home");
         }
     }
 }

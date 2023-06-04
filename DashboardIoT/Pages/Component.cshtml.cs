@@ -32,10 +32,6 @@ namespace DashboardIoT.Pages
             _datasource = datasource;
         }
 
-        static readonly ChartColor _red = new("#B81d13");
-        static readonly ChartColor _yellow = new("#EFB700");
-        static readonly ChartColor _green = new("#008450");
-
         public enum TimeframeEnum { Hour = 0, Day, Week, Month };
 
         public async Task OnGetAsync(TimeframeEnum t, string d, string c)
@@ -93,36 +89,5 @@ namespace DashboardIoT.Pages
             new ChartColor("8EE3EF"),
             new ChartColor("7A918D"),
         };
-
-        private async Task SetTimespanChartAsync(TimeSpan timespan)
-        {
-            var now = DateTime.Now;
-            var divisions = 48;
-
-            var labels = Enumerable.Range(0, divisions).Select(x => timespan * ((double)x / (double)divisions)).Select(x => (now + x).ToString("hh:mm"));
-
-            var alldata = await _datasource.GetSeriesReadingsAsync(DeviceId, timespan, divisions);
-            var selector = alldata.First().Node;
-            var subset = alldata.Where(x => x.Node == selector);
-            var series = subset.Select(x => (x.Label, x.Values.Select(x=>Convert.ToInt32(x))));
-
-            Chart = ChartConfig.CreateLineChart(labels, series, palette);
-        }
-
-        private void SetNowChart()
-        {
-            var points = Metrics.Select(x => (x.Label,(int)x.Last));
-
-            var palette = points.Select(x =>
-            {
-                if (x.Item2 < 60)
-                    return _green;
-                if (x.Item2 < 65)
-                    return _yellow;
-                return _red;
-            });
-
-            Chart = ChartConfig.CreateBarChart(points, palette);
-        }
     }
 }

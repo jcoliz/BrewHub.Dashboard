@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace DashboardIoT.InfluxDB
 {
@@ -240,7 +241,7 @@ namespace DashboardIoT.InfluxDB
 
                 var fluxTables = await _influxdbclient.GetQueryApi().QueryAsync(flux, _options.Org);
 
-                string ExtractComponent(Dictionary<string,object> d)
+                string ComponentSlashField(Dictionary<string,object> d)
                 {
                     return d.ContainsKey("component") switch
                     {
@@ -252,7 +253,7 @@ namespace DashboardIoT.InfluxDB
                 var result = fluxTables
                     .SelectMany(x => x.Records)
                     .Select(x => x.Values)
-                    .GroupBy(ExtractComponent)
+                    .GroupBy(ComponentSlashField)
                     .OrderBy(x => x.Key)
                     .ToDictionary(x => x.Key, x => x.ToDictionary(y => y["_field"].ToString(), y => y["_value"]));
 
@@ -265,7 +266,7 @@ namespace DashboardIoT.InfluxDB
             }
         }
 
-        public async Task<Dictionary<string, List<(DateTimeOffset,double)>>> GetSingleDeviceTelemetryAsync(string deviceid, string lookback, string window)
+        public async Task<Dictionary<string, List<(DateTimeOffset,double)>>> GetSingleDeviceTelemetryAsync(string deviceid, TimeSpan lookback, TimeSpan interval)
         {
             try
             {
@@ -275,12 +276,15 @@ namespace DashboardIoT.InfluxDB
 
                 // TODO: This is where it would be great to have a tag for type=telemetry
 
+                string lookbackstr = XmlConvert.ToString(lookback)[1..];
+                string intervalstr = XmlConvert.ToString(interval)[1..];
+
                 var flux = $"from(bucket:\"{_options.Bucket}\")" +
                     $" |> range(start: -{lookback})" +
                     $" |> filter(fn: (r) => r[\"device\"] == \"{deviceid}\")" +
                     " |> filter(fn: (r) => r[\"_field\"] == \"temperature\")" +
                     " |> keep(columns: [ \"component\", \"_field\", \"_value\", \"_time\" ])" +
-                    $" |> aggregateWindow(every: {window}, fn: mean, createEmpty: false)" +
+                    $" |> aggregateWindow(every: {intervalstr}, fn: mean, createEmpty: false)" +
                     "  |> yield(name: \"mean\")";
 
                 /*from(bucket: "dockerism")
@@ -305,22 +309,6 @@ namespace DashboardIoT.InfluxDB
                                 .ToList()
                     );
 
-#if false
-                var result = fluxTables
-                    .SelectMany(x => x.Records)
-                    .Select(x => x.Values)
-                    .GroupBy(x => new { c = ExtractComponent(x), f = x["_field"].ToString() })
-                    .GroupBy(x => x.Key.c)
-                    .ToDictionary(
-                        x => x.Key, 
-                        x => x.ToDictionary(
-                            y => y.Key.f, 
-                            y => y.OrderBy(z => z["_time"])
-                                    .Select(z => Convert.ToDouble(z["_value"]))
-                                    .ToList()
-                        )
-                    );
-#endif
                 return result;
             }
             catch (Exception ex)
