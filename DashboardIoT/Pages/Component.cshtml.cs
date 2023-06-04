@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Common.ChartJS;
-using DashboardIoT.Core.Interfaces;
+using BrewHub.Core.Providers;
 using DashboardIoT.Core.MockData;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -24,8 +24,6 @@ namespace DashboardIoT.Pages
         public string DeviceId { get; set; } = "device-1";
         public string ComponentId { get; set; } = string.Empty;
 
-        public IEnumerable<IReading> Metrics { get; private set; }
-
         public ComponentPageModel(ILogger<IndexModel> logger, IDataSource datasource)
         {
             _logger = logger;
@@ -43,8 +41,6 @@ namespace DashboardIoT.Pages
 
             if (!string.IsNullOrEmpty(c))
                 ComponentId = c;
-
-            Metrics = Enumerable.Empty<IReading>();
 
             var lookback = Timeframe switch
             {

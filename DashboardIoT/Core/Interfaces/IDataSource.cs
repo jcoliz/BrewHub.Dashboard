@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace DashboardIoT.Core.Interfaces
+namespace BrewHub.Core.Providers
 {
     public interface IDataSource
     {

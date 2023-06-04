@@ -9,7 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
-using DashboardIoT.Core.Interfaces;
+using BrewHub.Core.Providers;
 using DashboardIoT.Core.MockData;
 using Microsoft.Extensions.Logging;
 

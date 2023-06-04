@@ -1,4 +1,4 @@
-﻿using DashboardIoT.Core.Interfaces;
+﻿using BrewHub.Core.Providers;
 using InfluxDB.Client;
 using InfluxDB.Client.Core.Flux.Domain;
 using Microsoft.Extensions.Options;
@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
+using System.Text.RegularExpressions;
 
 namespace DashboardIoT.InfluxDB
 {
@@ -55,71 +56,6 @@ namespace DashboardIoT.InfluxDB
             public string Bucket { get; private set; }
         }
 
-        public class Reading : IReading
-        {
-            public double Last { get; private set; }
-
-            public string Node { get; set; }
-
-            public string Device { get; set; }
-
-            public string Name 
-            { 
-                get
-                {
-                    return _Name;
-                }
-                set
-                {
-                    if (value == "tempc")
-                    {
-                        _Name = "temp";
-                        Units = "°C";
-                    }
-                    else
-                    {
-                        _Name = value;
-                        Units = _unitsmap.GetValueOrDefault(value);
-                    }
-                }
-            }
-
-            private string _Name;
-
-            public string Label => Name;
-
-            public string Units { get; set; }
-
-            public IEnumerable<double> Values 
-            { 
-                get
-                {
-                    return _Values;
-                }
-                set
-                {
-                    _Values = value;
-                    Last = value.Last();
-                }
-            }
-
-            private IEnumerable<double> _Values;
-
-            public double Adjustment { get; set; }
-
-            public static Reading FromFluxRecords(IEnumerable<FluxRecord> rs) =>
-                new Reading() { Name = rs.Last().GetField(), Node = (string)rs.Last().GetValueByKey("node"), Device = (string)rs.Last().GetValueByKey("device"), Values = rs.Select(r => (double)r.GetValue()) };
-
-            public static Reading FromFluxTable(FluxTable t) =>
-                FromFluxRecords(t.Records);
-
-            private readonly Dictionary<string, string> _unitsmap = new()
-            {
-                { "temp", "°F" },
-                { "humidity", "%RH" }
-            };
-        }
-
         public InfluxDBDataSource(IOptions<Options> options, ILogger<InfluxDBDataSource> logger)
         {
             _logger = logger;
@@ -140,41 +76,7 @@ namespace DashboardIoT.InfluxDB
             _influxdbclient.Dispose();
         }
 
-        public async Task<IEnumerable<IReading>> GetMomentaryReadingsAsync(string site) =>
-            await GetSeriesReadingsAsync(site, TimeSpan.FromMinutes(5), 5);
-
-        public async Task<IEnumerable<IReading>> GetSeriesReadingsAsync(string site, TimeSpan span, int divisions)
-        {
-            try
-            {
-                //
-                // Query data
-                //
-
-                var v = new QueryVariables(_options, span, divisions);
-
-                var flux = $"from(bucket:\"{v.Bucket}\")" +
-                    $" |> range(start: {v.TimeRangeStart}, stop:{v.TimeRangeStop})" +
-                    $" |> filter(fn: (r) => r[\"_measurement\"] == \"zlan\")" +
-                    $" |> filter(fn: (r) => r[\"site\"] == \"{site.ToLower()}\")" +
-                    $" |> aggregateWindow(every: {v.WindowPeriod}, fn: mean, createEmpty: false)";
-
-                var fluxTables = await _influxdbclient.GetQueryApi().QueryAsync(flux, v.Organization);
-
-                // Each table is a single "reading", where a "reading" is really a metric plus a group of readings
-                return fluxTables.Select(Reading.FromFluxTable);
-
-
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "InfluxDB: Query Failed");
-                Console.WriteLine(ex.Message);
-                return Enumerable.Empty<IReading>();
-            }
-        }
-
-        private string ExtractKey(Dictionary<string,object> d)
+        private string ComponentSlashField(Dictionary<string,object> d)
         {
             return d.ContainsKey("component") switch
             {
@@ -206,7 +108,7 @@ namespace DashboardIoT.InfluxDB
                     .Select(x => x.Values)
                     .GroupBy(x => x["device"].ToString())
                     .OrderBy(x => x.Key)
-                    .ToDictionary(x => x.Key, x => x.ToDictionary(ExtractKey, y => y["_value"]));
+                    .ToDictionary(x => x.Key, x => x.ToDictionary(ComponentSlashField, y => y["_value"]));
 
                 return result;
             }
@@ -241,7 +143,7 @@ namespace DashboardIoT.InfluxDB
 
                 var fluxTables = await _influxdbclient.GetQueryApi().QueryAsync(flux, _options.Org);
 
-                string ComponentSlashField(Dictionary<string,object> d)
+                string ComponentOrEmpty(Dictionary<string,object> d)
                 {
                     return d.ContainsKey("component") switch
                     {
@@ -253,7 +155,7 @@ namespace DashboardIoT.InfluxDB
                 var result = fluxTables
                     .SelectMany(x => x.Records)
                     .Select(x => x.Values)
-                    .GroupBy(ComponentSlashField)
+                    .GroupBy(ComponentOrEmpty)
                     .OrderBy(x => x.Key)
                     .ToDictionary(x => x.Key, x => x.ToDictionary(y => y["_field"].ToString(), y => y["_value"]));
 
@@ -274,34 +176,26 @@ namespace DashboardIoT.InfluxDB
                 // Query data
                 //
 
+                // Convert timespan into flux time construct
+                Regex regex = new Regex("^[PT]+(?<value>.+)");
+                string lookbackstr = regex.Match(XmlConvert.ToString(lookback)).Groups["value"].Value.ToLowerInvariant();
+                string intervalstr = regex.Match(XmlConvert.ToString(interval)).Groups["value"].Value.ToLowerInvariant();
+
                 // TODO: This is where it would be great to have a tag for type=telemetry
-
-                string lookbackstr = XmlConvert.ToString(lookback)[1..];
-                string intervalstr = XmlConvert.ToString(interval)[1..];
-
                 var flux = $"from(bucket:\"{_options.Bucket}\")" +
-                    $" |> range(start: -{lookback})" +
+                    $" |> range(start: -{lookbackstr})" +
                     $" |> filter(fn: (r) => r[\"device\"] == \"{deviceid}\")" +
-                    " |> filter(fn: (r) => r[\"_field\"] == \"temperature\")" +
-                    " |> keep(columns: [ \"component\", \"_field\", \"_value\", \"_time\" ])" +
+                     " |> filter(fn: (r) => r[\"_field\"] == \"temperature\")" +
+                     " |> keep(columns: [ \"component\", \"_field\", \"_value\", \"_time\" ])" +
                     $" |> aggregateWindow(every: {intervalstr}, fn: mean, createEmpty: false)" +
-                    "  |> yield(name: \"mean\")";
-
-                /*from(bucket: "dockerism")
-                  |> range(start: -24h)
-                  |> filter(fn: (r) => r["device"] == "6a535e8e4e6e")
-                  |> filter(fn: (r) => r["_field"] == "temperature")
-                  |> aggregateWindow(every: 30m, fn: mean, createEmpty: false)  
-                  |> keep(columns: [ "_field", "_value", "_time", "component"])
-                  |> yield(name: "mean")
-                */
+                     " |> yield(name: \"mean\")";
 
                 var fluxTables = await _influxdbclient.GetQueryApi().QueryAsync(flux, _options.Org);
 
                 var result = fluxTables
                     .SelectMany(x => x.Records)
                     .Select(x => x.Values)
-                    .GroupBy(ExtractKey)
+                    .GroupBy(ComponentSlashField)
                     .ToDictionary(
                         x => x.Key,
                         x => x.OrderBy(y => y["_time"])
