@@ -77,15 +77,6 @@ namespace DashboardIoT.InfluxDB
             _influxdbclient.Dispose();
         }
 
-        private string ComponentSlashField(Dictionary<string,object> d)
-        {
-            return d.ContainsKey("component") switch
-            {
-                true => $"{d["component"]}/{d["_field"]}",
-                false => $"{d["_field"]}"
-            };
-        }
-
         private Datapoint FluxToDatapoint(Dictionary<string,object> d)
         {
             return new Datapoint() 
@@ -98,34 +89,34 @@ namespace DashboardIoT.InfluxDB
             };
         }
 
-        public async Task<IEnumerable<Datapoint>> GetLatestDeviceTelemetryAllAsync()
+        private async Task<IEnumerable<Datapoint>> DoFluxQueryAsync(string query)
         {
             try
             {
-                //
-                // Query data
-                //
+                var fluxTables = await _influxdbclient.GetQueryApi().QueryAsync(query, _options.Org);
 
-                // TODO: This is where it would be great to have a tag for type=telemetry
-
-                var flux = $"from(bucket:\"{_options.Bucket}\")" +
-                    " |> range(start: -10m)" +
-                    " |> filter(fn: (r) => r[\"_field\"] == \"workingSet\" or r[\"_field\"] == \"temperature\")" +
-                    " |> last()" +
-                    " |> keep(columns: [ \"device\", \"component\", \"_field\", \"_value\" ])";
-
-                var fluxTables = await _influxdbclient.GetQueryApi().QueryAsync(flux, _options.Org);
-                var result = fluxTables
+                return fluxTables
                     .SelectMany(x => x.Records)
                     .Select(x => FluxToDatapoint(x.Values));
-
-                return result;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "InfluxDB: Query Failed");
                 throw;
             }
+        }
+
+        public async Task<IEnumerable<Datapoint>> GetLatestDeviceTelemetryAllAsync()
+        {
+            // TODO: This is where it would be great to have a tag for type=telemetry
+
+            var flux = $"from(bucket:\"{_options.Bucket}\")" +
+                " |> range(start: -10m)" +
+                " |> filter(fn: (r) => r[\"_field\"] == \"workingSet\" or r[\"_field\"] == \"temperature\")" +
+                " |> last()" +
+                " |> keep(columns: [ \"device\", \"component\", \"_field\", \"_value\" ])";
+
+            return await DoFluxQueryAsync(flux);
         }
 
         /// <summary>
@@ -137,42 +128,20 @@ namespace DashboardIoT.InfluxDB
         /// </returns>
         public async Task<IEnumerable<Datapoint>> GetLatestDevicePropertiesAsync(string deviceid)
         {
-            try
-            {
-                //
-                // Query data
-                //
+            var flux = $"from(bucket:\"{_options.Bucket}\")" +
+                " |> range(start: -24h)" +
+                $" |> filter(fn: (r) => r[\"device\"] == \"{deviceid}\")" +
+                " |> filter(fn: (r) => r[\"_field\"] != \"Seq\" and r[\"_field\"] != \"__t\")" +
+                " |> last()" +
+                " |> keep(columns: [ \"device\", \"component\", \"_field\", \"_value\" ])";
 
-                var flux = $"from(bucket:\"{_options.Bucket}\")" +
-                    " |> range(start: -24h)" +
-                    $" |> filter(fn: (r) => r[\"device\"] == \"{deviceid}\")" +
-                    " |> filter(fn: (r) => r[\"_field\"] != \"Seq\" and r[\"_field\"] != \"__t\")" +
-                    " |> last()" +
-                    " |> keep(columns: [ \"device\", \"component\", \"_field\", \"_value\" ])";
-
-                var fluxTables = await _influxdbclient.GetQueryApi().QueryAsync(flux, _options.Org);
-
-                var result = fluxTables
-                    .SelectMany(x => x.Records)
-                    .Select(x => FluxToDatapoint(x.Values));
-
-                return result;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "InfluxDB: Query Failed");
-                throw;
-            }
+            return await DoFluxQueryAsync(flux);
         }
 
         public async Task<IEnumerable<Datapoint>> GetSingleDeviceTelemetryAsync(string deviceid, TimeSpan lookback, TimeSpan interval)
         {
             try
             {
-                //
-                // Query data
-                //
-
                 // Convert timespan into flux time construct
                 Regex regex = new Regex("^[PT]+(?<value>.+)");
                 string lookbackstr = regex.Match(XmlConvert.ToString(lookback)).Groups["value"].Value.ToLowerInvariant();
@@ -187,17 +156,11 @@ namespace DashboardIoT.InfluxDB
                     $" |> aggregateWindow(every: {intervalstr}, fn: mean, createEmpty: false)" +
                      " |> yield(name: \"mean\")";
 
-                var fluxTables = await _influxdbclient.GetQueryApi().QueryAsync(flux, _options.Org);
-
-                var result = fluxTables
-                    .SelectMany(x => x.Records)
-                    .Select(x => FluxToDatapoint(x.Values));
-
-                return result;
+                return await DoFluxQueryAsync(flux);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "InfluxDB: Query Failed");
+                _logger.LogError(ex, "InfluxDB: Query Composition Failed");
                 throw;
             }
         }
