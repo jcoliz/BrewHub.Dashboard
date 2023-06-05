@@ -78,15 +78,23 @@ namespace DashboardIoT.Core.MockData
             return Task.FromResult(result);
         }
 
-        public Task<Dictionary<string, List<(DateTimeOffset,double)>>> GetSingleDeviceTelemetryAsync(string deviceid, TimeSpan lookback, TimeSpan interval)
+        public Task<IEnumerable<Datapoint>> GetSingleDeviceTelemetryAsync(string deviceid, TimeSpan lookback, TimeSpan interval)
         {
             var now = DateTimeOffset.Now;
             var dates = Enumerable.Range(0, (int)Math.Ceiling(lookback / interval)).Select(x => now + x * interval);
-            var result = components
-                            .ToDictionary(
-                                x => x,
-                                x => dates.Select(y=>(y,NextDouble1000())).ToList()
-                            );
+            var result = components.SelectMany
+            (
+                c => telemetry.Select(
+                    t => new Datapoint()
+                    {
+                        __Device = deviceid,
+                        __Component = c,
+                        __Time = now,
+                        __Field = t,
+                        __Value = (object)NextDouble1000()
+                    }
+                )
+            );
             return Task.FromResult(result);
         }
     }

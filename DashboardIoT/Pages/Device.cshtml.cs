@@ -79,14 +79,7 @@ namespace DashboardIoT.Pages
             };
 
             // Get historical telemetry data for all components on this device
-            var influx = await _datasource.GetSingleDeviceTelemetryAsync(DeviceId, lookback, bininterval);
-            var data = DatapointReader.ReadFromInfluxDB(influx);
-
-#if false
-            var cosmos = new ChartMaker.CosmosQuery.MockEngine();
-            var instream = await cosmos.DoQueryAsync(lookback,bininterval,new[]{"device-1"});
-            var data = DatapointReader.ReadFromJson(instream);
-#endif
+            var data = await _datasource.GetSingleDeviceTelemetryAsync(DeviceId, lookback, bininterval);
             var dtmi = new DeviceModelDetails();
             Chart = ChartMaker.Engine.CreateMultiLineChart(data, dtmi.VisualizeTelemetryDevice, labelformat);
 

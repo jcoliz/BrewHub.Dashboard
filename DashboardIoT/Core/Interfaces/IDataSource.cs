@@ -33,6 +33,6 @@ namespace BrewHub.Core.Providers
         /// <returns>
         /// Dictionary of component/field names to list of time/values
         /// </returns>
-        public Task<Dictionary<string, List<(DateTimeOffset,double)>>> GetSingleDeviceTelemetryAsync(string deviceid, TimeSpan lookback, TimeSpan interval);
+        public Task<IEnumerable<Datapoint>> GetSingleDeviceTelemetryAsync(string deviceid, TimeSpan lookback, TimeSpan interval);
     }
 }
