@@ -85,23 +85,23 @@ namespace DashboardIoT.Pages
 
             // Query InfluxDB, compose into UI slabs
 
-            var raw = await _datasource.GetLatestDevicePropertiesAsync(DeviceId);
+            data = await _datasource.GetLatestDevicePropertiesAsync(DeviceId);
 
             // Augment with DTMI information
-            raw[string.Empty]["Schema"] = dtmi.SchemaName;
+            //raw[string.Empty]["Schema"] = dtmi.SchemaName;
 
             // For starters, we will just directly translate results into slabs.
             // Next step will be breaking it apart, making it pretty
 
-            Slab FromComponent(KeyValuePair<string,Dictionary<string,object>> c)
+            Slab FromComponent(IGrouping<string,ChartMaker.Models.Datapoint> c)
             {
                 string ValueOrEmpty(string s, string alt) => string.IsNullOrEmpty(s) ? alt : s;
 
-                var props = c.Value.Select(x => new KeyValueUnits() { Key = dtmi.MapMetricName(x.Key), Value = dtmi.FormatMetricValue(x), Writable = dtmi.IsMetricWritable(x.Key), Units = dtmi.GetWritableUnits(x.Key) }).ToList();
+                var props = c.Select(x => new KeyValueUnits() { Key = dtmi.MapMetricName(x.__Field), Value = dtmi.FormatMetricValue(x), Writable = dtmi.IsMetricWritable(x.__Field), Units = dtmi.GetWritableUnits(x.__Field) }).ToList();
                 return new Slab() { Header = ValueOrEmpty(dtmi.MapMetricName(c.Key),"Device Details"), ComponentId = c.Key, Properties = props, Commands = dtmi.GetCommands(c.Key) };
             }
 
-            Slabs = raw.Select(FromComponent).ToList();
+            Slabs = data.GroupBy(x => x.__Component ?? string.Empty).Select(FromComponent).ToList();
         }
 
         private static readonly ChartColor[] palette = new ChartColor[]

@@ -135,7 +135,7 @@ namespace DashboardIoT.InfluxDB
         /// <returns>
         /// Dictionary of component names (or string.empty) to telemetry key-value pairs
         /// </returns>
-        public async Task<Dictionary<string, Dictionary<string, object>>> GetLatestDevicePropertiesAsync(string deviceid)
+        public async Task<IEnumerable<Datapoint>> GetLatestDevicePropertiesAsync(string deviceid)
         {
             try
             {
@@ -148,25 +148,13 @@ namespace DashboardIoT.InfluxDB
                     $" |> filter(fn: (r) => r[\"device\"] == \"{deviceid}\")" +
                     " |> filter(fn: (r) => r[\"_field\"] != \"Seq\" and r[\"_field\"] != \"__t\")" +
                     " |> last()" +
-                    " |> keep(columns: [ \"component\", \"_field\", \"_value\" ])";
+                    " |> keep(columns: [ \"device\", \"component\", \"_field\", \"_value\" ])";
 
                 var fluxTables = await _influxdbclient.GetQueryApi().QueryAsync(flux, _options.Org);
 
-                string ComponentOrEmpty(Dictionary<string,object> d)
-                {
-                    return d.ContainsKey("component") switch
-                    {
-                        true => $"{d["component"]}",
-                        false => string.Empty
-                    };
-                }
-
                 var result = fluxTables
                     .SelectMany(x => x.Records)
-                    .Select(x => x.Values)
-                    .GroupBy(ComponentOrEmpty)
-                    .OrderBy(x => x.Key)
-                    .ToDictionary(x => x.Key, x => x.ToDictionary(y => y["_field"].ToString(), y => y["_value"]));
+                    .Select(x => FluxToDatapoint(x.Values));
 
                 return result;
             }

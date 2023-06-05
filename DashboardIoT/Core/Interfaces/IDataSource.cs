@@ -22,7 +22,7 @@ namespace BrewHub.Core.Providers
         /// <returns>
         /// Dictionary of component names (or string.empty) to metric key-value pairs
         /// </returns>
-        public Task<Dictionary<string, Dictionary<string, object>>> GetLatestDevicePropertiesAsync(string deviceid);
+        public Task<IEnumerable<Datapoint>> GetLatestDevicePropertiesAsync(string deviceid);
 
         /// <summary>
         /// Get latest value for all metrics for one device

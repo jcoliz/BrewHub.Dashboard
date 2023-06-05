@@ -41,22 +41,25 @@ namespace DashboardIoT.Core.MockData
             properties.AddRange(Enumerable.Range(1, numproperties).Select(_ => NextInt64String()));
         }
 
-        public Task<Dictionary<string, Dictionary<string, object>>> GetLatestDevicePropertiesAsync(string deviceid)
+        public Task<IEnumerable<Datapoint>> GetLatestDevicePropertiesAsync(string deviceid)
         {
-            var result = components.ToDictionary(x => x,x => properties.ToDictionary(y => y, y => (object)NextDouble1000()));
+            var result = components.SelectMany
+            (
+                c => properties.Select(
+                    t => new Datapoint()
+                    {
+                        __Device = deviceid,
+                        __Component = c,
+                        __Field = t,
+                        __Value = (object)NextDouble1000()
+                    }
+                )
+            );            
             return Task.FromResult(result);
         }
 
         public Task<IEnumerable<Datapoint>> GetLatestDeviceTelemetryAllAsync()
         {
-#if false
-            var result = devices.ToDictionary(
-                x => x,
-                x => components
-                        .SelectMany(x => telemetry.Select(y => $"{x}/{y}"))
-                        .ToDictionary(x => x, x => (object)NextDouble1000())
-            );
-#endif
             var now = DateTimeOffset.Now;
             var result = devices.SelectMany
             (

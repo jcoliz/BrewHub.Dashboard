@@ -34,7 +34,7 @@ public interface IDeviceModel
     /// </summary>
     /// <param name="metric"></param>
     /// <returns></returns>
-    string FormatMetricValue(KeyValuePair<string, object> metric);
+    string FormatMetricValue(ChartMaker.Models.Datapoint metric);
 
     /// <summary>
     /// Whether a specific metric is a writable property
@@ -43,7 +43,7 @@ public interface IDeviceModel
     /// <returns></returns>
     bool IsMetricWritable(string metricid);
 
-    /// <summary>
+    /// <summary> 
     /// Returns the units to be displayed with a metric, or null if metric is not writable, or no units need to be displayed
     /// </summary>
     /// <param name="metricid"></param>

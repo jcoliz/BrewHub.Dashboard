@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using ChartMaker.Models;
 
 namespace DashboardIoT.Core.Dtmi;
 
@@ -59,24 +60,24 @@ public class DeviceModelDetails: IDeviceModel
     /// </summary>
     /// <param name="metric"></param>
     /// <returns></returns>
-    public string FormatMetricValue(KeyValuePair<string, object> metric) => metric.Key switch
+    public string FormatMetricValue(Datapoint metric) => metric.__Field switch
     {
         "maxTempSinceLastReboot" or
         "thermostat1/temperature" or
         "thermostat2/temperature" or
         "temperature"
-                => $"{metric.Value:F1}°C",
-        "targetTemperature" => $"{metric.Value:F1}",
-        "workingSet" => $"{(double)metric.Value/7812.5:F1}MB",
+                => $"{metric.__Value:F1}°C",
+        "targetTemperature" => $"{metric.__Value:F1}",
+        "workingSet" => $"{(double)metric.__Value/7812.5:F1}MB",
         "totalStorage" or
         "totalMemory" 
-            => (double)metric.Value switch
+            => (double)metric.__Value switch
             {
-                > 1000000 => $"{(double)metric.Value/1000000:F1} GB",
-                > 1000 => $"{(double)metric.Value/1000:F1} MB",
-                _ => $"{(double)metric.Value:F1} kB"
+                > 1000000 => $"{(double)metric.__Value/1000000:F1} GB",
+                > 1000 => $"{(double)metric.__Value/1000:F1} MB",
+                _ => $"{(double)metric.__Value:F1} kB"
             },
-        _ => metric.Value.ToString()
+        _ => metric.__Value.ToString()
     };        
 
     /// <summary>
