@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Common.ChartJS;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using DashboardIoT.Display;
 
 namespace BrewHub.Dashboard.AspNet.Pages
 {

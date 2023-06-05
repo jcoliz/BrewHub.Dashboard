@@ -1,8 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using BrewHub.Dashboard.Core.Dtmi;
 
-namespace DashboardIoT.Display;
+namespace BrewHub.Dashboard.Core.Dtmi;
 
 /// <summary>
 /// A slab containing a subset of device information for display
