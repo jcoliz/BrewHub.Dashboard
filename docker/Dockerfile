@@ -5,11 +5,13 @@ WORKDIR /source
 
 # copy csproj and restore as distinct layers
 COPY Dashboard.AspNet/*.csproj Dashboard.AspNet/
+COPY Dashboard.Core/*.csproj Dashboard.Core/
 COPY Common.ChartJS/*.csproj Common.ChartJS/
-COPY *.sln .
+WORKDIR /source/Dashboard.AspNet
 RUN dotnet restore
 
 # copy everything else and build app
+WORKDIR /source
 COPY . .
 WORKDIR /source/Dashboard.AspNet
 RUN dotnet publish --self-contained false -o /app
