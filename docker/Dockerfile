@@ -4,9 +4,8 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /source
 
 # copy csproj and restore as distinct layers
-COPY DashboardIoT/*.csproj DashboardIoT/
+COPY Dashboard.AspNet/*.csproj Dashboard.AspNet/
 COPY Common.ChartJS/*.csproj Common.ChartJS/
-COPY ChartMaker/*.csproj ChartMaker/
 COPY *.sln .
 RUN dotnet restore
 
@@ -18,4 +17,4 @@ RUN dotnet publish --self-contained false -o /app
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
 WORKDIR /app
 COPY --from=build /app .
-ENTRYPOINT ["dotnet", "DashboardIoT.dll"]
+ENTRYPOINT ["dotnet", "Dashboard.AspNet.dll"]
