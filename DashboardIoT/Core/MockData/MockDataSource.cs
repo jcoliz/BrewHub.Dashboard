@@ -1,4 +1,5 @@
 ﻿using BrewHub.Core.Providers;
+using ChartMaker.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,14 +47,34 @@ namespace DashboardIoT.Core.MockData
             return Task.FromResult(result);
         }
 
-        public Task<Dictionary<string, Dictionary<string, object>>> GetLatestDeviceTelemetryAllAsync()
+        public Task<IEnumerable<Datapoint>> GetLatestDeviceTelemetryAllAsync()
         {
+#if false
             var result = devices.ToDictionary(
                 x => x,
                 x => components
                         .SelectMany(x => telemetry.Select(y => $"{x}/{y}"))
                         .ToDictionary(x => x, x => (object)NextDouble1000())
             );
+#endif
+            var now = DateTimeOffset.Now;
+            var result = devices.SelectMany
+            (
+                d => components.SelectMany
+                (
+                    c => telemetry.Select(
+                        t => new Datapoint() 
+                        { 
+                            __Device = d, 
+                            __Component = string.IsNullOrEmpty(c) ? null : c, 
+                            __Time = now, 
+                            __Field = t,  
+                            __Value = (object)NextDouble1000()
+                        }
+                    )
+                )
+            );
+
             return Task.FromResult(result);
         }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using ChartMaker.Models;
 
 namespace BrewHub.Core.Providers
 {
@@ -12,7 +13,7 @@ namespace BrewHub.Core.Providers
         /// <returns>
         /// Dictionary of device names to component/metric key-value pairs
         /// </returns>
-        public Task<Dictionary<string,Dictionary<string,object>>> GetLatestDeviceTelemetryAllAsync();
+        public Task<IEnumerable<Datapoint>> GetLatestDeviceTelemetryAllAsync();
 
         /// <summary>
         /// Get latest value for all metrics for one device

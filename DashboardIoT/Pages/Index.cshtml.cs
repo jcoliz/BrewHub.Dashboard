@@ -22,7 +22,7 @@ namespace DashboardIoT.Pages
 
         public TimeframeEnum Timeframe { get; set; } = TimeframeEnum.Hour;
 
-        public Dictionary<string,Dictionary<string,string>> Telemetry { get; private set; }
+        public List<ChartMaker.Models.Datapoint> Telemetry { get; private set; }
 
         public IndexModel(ILogger<IndexModel> logger, IDataSource datasource)
         {
@@ -44,17 +44,12 @@ namespace DashboardIoT.Pages
 
                 // Pull raw telemetry from database
                 // TODO: Need to get all telemetry in this call
-                var raw = await _datasource.GetLatestDeviceTelemetryAllAsync();
+                var data = await _datasource.GetLatestDeviceTelemetryAllAsync();
+                Telemetry = data.ToList();
 
                 var dtmi = new DeviceModelDetails();
 
-                Telemetry = raw.ToDictionary(
-                    x => x.Key,
-                    x => x.Value.ToDictionary(x=>dtmi.MapMetricName(x.Key),dtmi.FormatMetricValue)
-                );
-
-                var data = DatapointReader.ReadFromInfluxDB(raw);
-                Chart = ChartMaker.Engine.CreateMultiDeviceBarChart(data, dtmi.VisualizeTelemetryTop);
+                Chart = ChartMaker.Engine.CreateMultiDeviceBarChart(Telemetry, dtmi.VisualizeTelemetryTop);
             }
             catch (Exception ex)
             {

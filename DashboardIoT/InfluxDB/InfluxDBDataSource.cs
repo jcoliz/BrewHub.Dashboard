@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Text.RegularExpressions;
+using ChartMaker.Models;
 
 namespace DashboardIoT.InfluxDB
 {
@@ -85,7 +86,19 @@ namespace DashboardIoT.InfluxDB
             };
         }
 
-        public async Task<Dictionary<string, Dictionary<string, object>>> GetLatestDeviceTelemetryAllAsync()
+        private Datapoint FluxToDatapoint(Dictionary<string,object> d)
+        {
+            return new Datapoint() 
+            { 
+                __Device = d["device"].ToString(), 
+                __Component = d.GetValueOrDefault("component")?.ToString(),
+                __Time = d.ContainsKey("_time") ? ((NodaTime.Instant)d["_time"]).ToDateTimeOffset() : DateTimeOffset.MinValue,
+                __Field = d["_field"].ToString(), 
+                __Value = d["_value"]
+            };
+        }
+
+        public async Task<IEnumerable<Datapoint>> GetLatestDeviceTelemetryAllAsync()
         {
             try
             {
@@ -103,12 +116,17 @@ namespace DashboardIoT.InfluxDB
 
                 var fluxTables = await _influxdbclient.GetQueryApi().QueryAsync(flux, _options.Org);
 
+#if (false)
                 var result = fluxTables
                     .SelectMany(x => x.Records)
                     .Select(x => x.Values)
                     .GroupBy(x => x["device"].ToString())
                     .OrderBy(x => x.Key)
                     .ToDictionary(x => x.Key, x => x.ToDictionary(ComponentSlashField, y => y["_value"]));
+#endif
+                var result = fluxTables
+                    .SelectMany(x => x.Records)
+                    .Select(x => FluxToDatapoint(x.Values));
 
                 return result;
             }

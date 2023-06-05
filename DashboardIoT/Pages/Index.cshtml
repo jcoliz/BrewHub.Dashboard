@@ -3,6 +3,12 @@
 @model IndexModel
 @{
     ViewData["Title"] = "Devices";
+
+    KeyValuePair<string,object> ExtractMetric(ChartMaker.Models.Datapoint d)
+    {
+        var key = (d.__Component is null) ? d.__Field : $"{d.__Component}/{d.__Field}";
+        return new(key,d.__Value);
+    }
 }
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
@@ -61,19 +67,20 @@
 
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xxl-4 mb-3 text-center">
 
-    @foreach( var device in Model.Telemetry )
+    @foreach( var device in Model.Telemetry.DistinctBy(x=>x.__Device).Select(x=>x.__Device) )
     {
         <div class="col">
             <div class="card mb-4 rounded-3 shadow-sm border-primary">
                 <div class="card-header py-3 text-bg-primary border-primary">
-                    <h4 class="my-0 fw-normal">@device.Key</h4>
+                    <h4 class="my-0 fw-normal">@device</h4>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table text-center">
                             <tbody>
-                                @foreach( var metric in device.Value )
+                                @foreach( var point in Model.Telemetry.Where(x=>x.__Device == device) ) 
                                 {
+                                    var metric = ExtractMetric(point);
                                     <tr>
                                         <th scope="row" class="text-start">@metric.Key</th>
                                         <td class="text-end">@metric.Value</td>
@@ -82,7 +89,7 @@
                             </tbody>
                         </table>
                     </div>
-                <a class="w-100 btn btn-lg btn-outline-primary" asp-page="Device" asp-route-id="@device.Key">Details</a>
+                <a class="w-100 btn btn-lg btn-outline-primary" asp-page="Device" asp-route-id="@device">Details</a>
                 </div>
             </div>
         </div>
