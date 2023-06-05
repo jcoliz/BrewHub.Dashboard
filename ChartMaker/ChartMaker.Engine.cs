@@ -15,7 +15,7 @@ public static class Engine
         string field = split.Last();
         
         // Get a subset of the points which match the key, and are ordered by time ascending
-        var thesepoints = points.Where(x => x.__Component == component && x.__Field == field).OrderBy(x => x.__Time).Select(x=>( x.__Time.ToString(timeformat), (int)x.__Value ));
+        var thesepoints = points.Where(x => x.__Component == component && x.__Field == field).OrderBy(x => x.__Time).Select(x=>( x.__Time.ToString(timeformat), Convert.ToInt32(x.__Value) ));
 
         return ChartConfig.CreateBarChart(thesepoints, palette );
     }
@@ -35,7 +35,7 @@ public static class Engine
 
         // Transform them into how the chart config creator wants to see them
         var labels = thesepoints.Select(x => x.__Time.ToString(timeformat));
-        var data = thesepoints.Select(x => (int)x.__Value).AsEnumerable<int>();
+        var data = thesepoints.Select(x => Convert.ToInt32(x.__Value)).AsEnumerable<int>();
         var series = new[] { (key, data) };
 
         return ChartConfig.CreateLineChart(labels, series, palette );
@@ -59,7 +59,7 @@ public static class Engine
 
             // Get a subset of the points which match the key, and are ordered by time ascending
             var thesepoints = points.Where(x => x.__Component == component && x.__Field == field).OrderBy(x => x.__Time);
-            var data = thesepoints.Select(x => (int)x.__Value).AsEnumerable<int>();
+            var data = thesepoints.Select(x => Convert.ToInt32(x.__Value)).AsEnumerable<int>();
             series.Add( (key, data) );
 
             // Transform them into how the chart config creator wants to see them
@@ -90,7 +90,7 @@ public static class Engine
             string field = split.Last();
 
             // Each data point is a device
-            var data = points.Where(x => x.__Component == component && x.__Field == field).OrderBy(x => x.__Device).Select(x => (int)x.__Value).AsEnumerable<int>();
+            var data = points.Where(x => x.__Component == component && x.__Field == field).OrderBy(x => x.__Device).Select(x => Convert.ToInt32(x.__Value)).AsEnumerable<int>();
             series.Add( (key, data) );
         }
         return ChartConfig.CreateMultiBarChart(labels, series, palette);

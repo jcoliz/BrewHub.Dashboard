@@ -6,5 +6,5 @@ public record Datapoint
     public string? __Component;
     public DateTimeOffset __Time = DateTimeOffset.MinValue;
     public string __Field = string.Empty;
-    public double __Value;
+    public object __Value = 0.0;
 }
