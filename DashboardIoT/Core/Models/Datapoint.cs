@@ -1,3 +1,5 @@
+using System;
+
 namespace ChartMaker.Models;
 
 public record Datapoint

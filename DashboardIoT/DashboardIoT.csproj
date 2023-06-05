@@ -14,7 +14,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Common.ChartJS\Common.ChartJS.csproj" />
-    <ProjectReference Include="..\ChartMaker\ChartMaker.csproj" />
   </ItemGroup>
 
 </Project>

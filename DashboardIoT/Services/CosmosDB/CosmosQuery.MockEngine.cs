@@ -1,6 +1,11 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
+
 namespace ChartMaker.CosmosQuery;
 
-public class MockEngine : ICosmosQueryEngine
+public class MockEngine
 {
     public Task<Stream> DoQueryAsync(TimeSpan LookBack, TimeSpan BinInterval, IEnumerable<string> Devices)
     {
