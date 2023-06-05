@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DashboardIoT.Pages
+namespace BrewHub.Dashboard.AspNet.Pages
 {
     public class IndexModel : PageModel
     {

@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using BrewHub.Dashboard.Core.Providers;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace DashboardIoT.Pages
+namespace BrewHub.Dashboard.AspNet.Pages
 {
     public class CalibrateModel : PageModel
     {

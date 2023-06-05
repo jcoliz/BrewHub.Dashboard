@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 
-namespace DashboardIoT.Pages
+namespace BrewHub.Dashboard.AspNet.Pages
 {
     public class ComponentPageModel : PageModel
     {
-        private readonly ILogger<IndexModel> _logger;
+        private readonly ILogger<ComponentPageModel> _logger;
         private readonly IDataSource _datasource;
 
         public ChartConfig Chart { get; set; }
@@ -23,7 +23,7 @@ namespace DashboardIoT.Pages
         public string DeviceId { get; set; } = "device-1";
         public string ComponentId { get; set; } = string.Empty;
 
-        public ComponentPageModel(ILogger<IndexModel> logger, IDataSource datasource)
+        public ComponentPageModel(ILogger<ComponentPageModel> logger, IDataSource datasource)
         {
             _logger = logger;
             _datasource = datasource;

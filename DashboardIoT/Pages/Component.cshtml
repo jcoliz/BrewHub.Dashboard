@@ -1,6 +1,6 @@
 ﻿@page
 @using System.Text.Json
-@model ComponentPageModel
+@model BrewHub.Dashboard.AspNet.Pages.ComponentPageModel
 @{
     ViewData["Title"] = "Devices";
 
@@ -26,7 +26,7 @@
                     @Model.Timeframe.ToString()
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                    @foreach (var name in Enum.GetNames(typeof(IndexModel.TimeframeEnum)))
+                    @foreach (var name in Enum.GetNames(typeof(BrewHub.Dashboard.AspNet.Pages.IndexModel.TimeframeEnum)))
                     {
                         <li><a class="dropdown-item"  asp-page="Component" asp-route-d="@Model.DeviceId" asp-route-c="@Model.ComponentId" asp-route-t="@name">@name</a></li>
                     }
