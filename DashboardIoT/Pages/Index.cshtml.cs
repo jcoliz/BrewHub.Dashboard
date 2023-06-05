@@ -22,7 +22,7 @@ namespace DashboardIoT.Pages
 
         public TimeframeEnum Timeframe { get; set; } = TimeframeEnum.Hour;
 
-        public List<ChartMaker.Models.Datapoint> Telemetry { get; private set; }
+        public Dictionary<string,List<(string,string)>> Telemetry { get; private set; }
 
         public IndexModel(ILogger<IndexModel> logger, IDataSource datasource)
         {
@@ -45,11 +45,23 @@ namespace DashboardIoT.Pages
                 // Pull raw telemetry from database
                 // TODO: Need to get all telemetry in this call
                 var data = await _datasource.GetLatestDeviceTelemetryAllAsync();
-                Telemetry = data.ToList();
-
                 var dtmi = new DeviceModelDetails();
 
-                Chart = ChartMaker.Engine.CreateMultiDeviceBarChart(Telemetry, dtmi.VisualizeTelemetryTop);
+                string ExtractComponentAndMetricName(ChartMaker.Models.Datapoint d)
+                {
+                    var f = dtmi.MapMetricName(d.__Field);
+                    return (d.__Component is null) ? f : $"{dtmi.MapMetricName(d.__Component)}/{f}";
+                }
+
+                Telemetry = data
+                        .GroupBy(x => x.__Device)
+                        .ToDictionary
+                        (
+                            x => x.Key,
+                            x => x.Select(y => (ExtractComponentAndMetricName(y), dtmi.FormatMetricValue(y))).ToList()
+                        );
+
+                Chart = ChartMaker.Engine.CreateMultiDeviceBarChart(data, dtmi.VisualizeTelemetryTop);
             }
             catch (Exception ex)
             {
