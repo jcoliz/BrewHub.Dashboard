@@ -3,11 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DashboardIoT", "DashboardIoT\DashboardIoT.csproj", "{A2223290-CF84-4CCC-9AC5-EDD26746B04D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dashboard.AspNet", "Dashboard.AspNet\DashboardIoT.csproj", "{A2223290-CF84-4CCC-9AC5-EDD26746B04D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.ChartJS", "Common.ChartJS\Common.ChartJS.csproj", "{1DC58720-0893-450D-A64A-E258AD152E4C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChartMaker", "ChartMaker\ChartMaker.csproj", "{4C0C3E25-E2A8-4207-83ED-CEE24A0704DB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
