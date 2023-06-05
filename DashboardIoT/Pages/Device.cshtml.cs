@@ -75,7 +75,6 @@ namespace DashboardIoT.Pages
                 TimeframeEnum.Week or 
                 TimeframeEnum.Month => "M/dd",
                 _ => throw new NotImplementedException()
-
             };
 
             // Get historical telemetry data for all components on this device

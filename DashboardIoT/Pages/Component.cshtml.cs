@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using ChartMaker;
+using DashboardIoT.Core.Dtmi;
 
 namespace DashboardIoT.Pages
 {
@@ -30,7 +31,7 @@ namespace DashboardIoT.Pages
             _datasource = datasource;
         }
 
-        public enum TimeframeEnum { Hour = 0, Day, Week, Month };
+        public enum TimeframeEnum { Minutes = 0, Hour, Hours, Day, Week, Month };
 
         public async Task OnGetAsync(TimeframeEnum t, string d, string c)
         {
@@ -44,35 +45,43 @@ namespace DashboardIoT.Pages
 
             var lookback = Timeframe switch
             {
-                TimeframeEnum.Hour => TimeSpan.FromHours(1),
-                TimeframeEnum.Day => TimeSpan.FromHours(24),
-                TimeframeEnum.Week => TimeSpan.FromDays(7),
-                TimeframeEnum.Month => TimeSpan.FromDays(7*8),
+                TimeframeEnum.Minutes => TimeSpan.FromMinutes(5), // "5m",
+                TimeframeEnum.Hour => TimeSpan.FromHours(1), //"1h",
+                TimeframeEnum.Hours => TimeSpan.FromHours(4), //"4h",
+                TimeframeEnum.Day => TimeSpan.FromHours(24), //"24h",
+                TimeframeEnum.Week => TimeSpan.FromDays(7), //"7d",
+                TimeframeEnum.Month => TimeSpan.FromDays(28), //"28d",
                 _ => throw new NotImplementedException()
             };
 
             var bininterval = Timeframe switch
             {
-                TimeframeEnum.Hour => TimeSpan.FromMinutes(5),
-                TimeframeEnum.Day => TimeSpan.FromHours(1),
-                TimeframeEnum.Week => TimeSpan.FromDays(1),
-                TimeframeEnum.Month => TimeSpan.FromDays(7),
+                TimeframeEnum.Minutes => TimeSpan.FromSeconds(20), //"20s",
+                TimeframeEnum.Hour => TimeSpan.FromMinutes(2), //"2m",
+                TimeframeEnum.Hours => TimeSpan.FromMinutes(15), //"15m",
+                TimeframeEnum.Day => TimeSpan.FromHours(1), //"1h",
+                TimeframeEnum.Week => TimeSpan.FromDays(1), //"1d",
+                TimeframeEnum.Month => TimeSpan.FromDays(7), //"7d",
                 _ => throw new NotImplementedException()
             };
 
             var labelformat = Timeframe switch
             {
-                TimeframeEnum.Hour or TimeframeEnum.Day => "H:mm",
-                TimeframeEnum.Week or TimeframeEnum.Month => "M/dd",
+                TimeframeEnum.Minutes => "mm:ss",
+                TimeframeEnum.Hour or
+                TimeframeEnum.Hours or
+                TimeframeEnum.Day => "H:mm",
+                TimeframeEnum.Week or
+                TimeframeEnum.Month => "M/dd",
                 _ => throw new NotImplementedException()
-
             };
 
-            var cosmos = new ChartMaker.CosmosQuery.MockEngine();
-            var instream = await cosmos.DoQueryAsync(lookback,bininterval,new[]{"device-1"});
-            var data = DatapointReader.ReadFromJson(instream);
+            var data = await _datasource.GetSingleDeviceTelemetryAsync(DeviceId, lookback, bininterval);
+            var subset = data.Where(x => (x.__Component is null) ? (c == string.Empty) : x.__Component == c);
+            var dtmi = new DeviceModelDetails();
 
-            Chart = ChartMaker.Engine.CreateMultiLineChart(data, new[] { "WorkingSet" }, labelformat);
+            // TODO: Pick out the right telemetry for THIS component.
+            Chart = ChartMaker.Engine.CreateMultiLineChart(subset, new[]{ "temperature" }, labelformat);
         }
 
         private static readonly ChartColor[] palette = new ChartColor[]
