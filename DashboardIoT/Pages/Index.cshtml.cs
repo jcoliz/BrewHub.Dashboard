@@ -1,15 +1,13 @@
-﻿using System;
+﻿using BrewHub.Dashboard.Core.Dtmi;
+using BrewHub.Dashboard.Core.Models;
+using BrewHub.Dashboard.Core.Providers;
+using Common.ChartJS;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Common.ChartJS;
-using BrewHub.Core.Providers;
-using DashboardIoT.Core.MockData;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
-using ChartMaker;
-using DashboardIoT.Core.Dtmi;
 
 namespace DashboardIoT.Pages
 {
@@ -47,7 +45,7 @@ namespace DashboardIoT.Pages
                 var data = await _datasource.GetLatestDeviceTelemetryAllAsync();
                 var dtmi = new DeviceModelDetails();
 
-                string ExtractComponentAndMetricName(ChartMaker.Models.Datapoint d)
+                string ExtractComponentAndMetricName(Datapoint d)
                 {
                     var f = dtmi.MapMetricName(d.__Field);
                     return (d.__Component is null) ? f : $"{dtmi.MapMetricName(d.__Component)}/{f}";
@@ -61,7 +59,7 @@ namespace DashboardIoT.Pages
                             x => x.Select(y => (ExtractComponentAndMetricName(y), dtmi.FormatMetricValue(y))).ToList()
                         );
 
-                Chart = ChartMaker.Engine.CreateMultiDeviceBarChart(data, dtmi.VisualizeTelemetryTop);
+                Chart = BrewHub.Dashboard.Core.Charting.ChartMaker.CreateMultiDeviceBarChart(data, dtmi.VisualizeTelemetryTop);
             }
             catch (Exception ex)
             {

@@ -3,12 +3,6 @@
 @model IndexModel
 @{
     ViewData["Title"] = "Devices";
-
-    KeyValuePair<string,object> ExtractMetric(ChartMaker.Models.Datapoint d)
-    {
-        var key = (d.__Component is null) ? d.__Field : $"{d.__Component}/{d.__Field}";
-        return new(key,d.__Value);
-    }
 }
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">

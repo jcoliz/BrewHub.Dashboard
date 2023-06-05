@@ -1,10 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using BrewHub.Core.Providers;
-using DashboardIoT.Core.MockData;
-using Microsoft.AspNetCore.Mvc;
+using BrewHub.Dashboard.Core.Providers;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace DashboardIoT.Pages
@@ -18,8 +13,9 @@ namespace DashboardIoT.Pages
             _datasource = datasource;
         }
 
-        public async Task OnGetAsync()
+        public Task OnGetAsync()
         {
+            return Task.CompletedTask;
         }
     }
 }

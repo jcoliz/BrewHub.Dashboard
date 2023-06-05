@@ -1,8 +1,8 @@
+using BrewHub.Dashboard.Core.Models;
 using System.Collections.Generic;
 using System.Linq;
-using ChartMaker.Models;
 
-namespace DashboardIoT.Core.Dtmi;
+namespace BrewHub.Dashboard.Core.Dtmi;
 
 /// <summary>
 /// Provides the information needed to display data from a single top-level device model properly

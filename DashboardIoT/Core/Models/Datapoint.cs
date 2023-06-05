@@ -1,6 +1,6 @@
 using System;
 
-namespace ChartMaker.Models;
+namespace BrewHub.Dashboard.Core.Models;
 
 public record Datapoint
 {

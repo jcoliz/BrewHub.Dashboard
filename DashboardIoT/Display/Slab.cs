@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using DashboardIoT.Core.Dtmi;
+using BrewHub.Dashboard.Core.Dtmi;
 
 namespace DashboardIoT.Display;
 

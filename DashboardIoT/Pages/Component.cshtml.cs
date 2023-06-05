@@ -1,15 +1,13 @@
-﻿using System;
+﻿using BrewHub.Dashboard.Core.Providers;
+using BrewHub.Dashboard.Core.Charting;
+using BrewHub.Dashboard.Core.Dtmi;
+using Common.ChartJS;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Common.ChartJS;
-using BrewHub.Core.Providers;
-using DashboardIoT.Core.MockData;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using ChartMaker;
-using DashboardIoT.Core.Dtmi;
 
 namespace DashboardIoT.Pages
 {
@@ -81,7 +79,7 @@ namespace DashboardIoT.Pages
             var dtmi = new DeviceModelDetails();
 
             // TODO: Pick out the right telemetry for THIS component.
-            Chart = ChartMaker.Engine.CreateMultiLineChart(subset, new[]{ "temperature" }, labelformat);
+            Chart = ChartMaker.CreateMultiLineChart(subset, new[]{ "temperature" }, labelformat);
         }
 
         private static readonly ChartColor[] palette = new ChartColor[]

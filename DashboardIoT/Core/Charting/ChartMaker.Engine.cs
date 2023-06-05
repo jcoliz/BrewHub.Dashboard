@@ -3,8 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ChartMaker;
-public static class Engine
+namespace BrewHub.Dashboard.Core.Charting;
+
+public static class ChartMaker
 {
     public static ChartConfig CreateBarChart(IEnumerable<Models.Datapoint> points, string key, string timeformat)
     {

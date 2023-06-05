@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using ChartMaker.Models;
+using BrewHub.Dashboard.Core.Models;
 
-namespace BrewHub.Core.Providers
+namespace BrewHub.Dashboard.Core.Providers
 {
     public interface IDataSource
     {

@@ -1,11 +1,11 @@
-using ChartMaker.Models;
+using BrewHub.Dashboard.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
 
-namespace ChartMaker;
+namespace BrewHub.Dashboard.Services.CosmosDB;
 
 public static class DatapointReader
 {

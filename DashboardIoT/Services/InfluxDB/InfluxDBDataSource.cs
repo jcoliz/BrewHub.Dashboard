@@ -1,6 +1,6 @@
-﻿using BrewHub.Core.Providers;
+﻿using BrewHub.Dashboard.Core.Models;
+using BrewHub.Dashboard.Core.Providers;
 using InfluxDB.Client;
-using InfluxDB.Client.Core.Flux.Domain;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
 using System;
@@ -9,7 +9,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Text.RegularExpressions;
-using ChartMaker.Models;
 
 namespace DashboardIoT.InfluxDB
 {

@@ -1,4 +1,5 @@
-namespace DashboardIoT.Core.Dtmi;
+namespace BrewHub.Dashboard.Core.Dtmi;
+
 public record KeyValueUnits
 {
     public string Key { get; init; } = string.Empty;

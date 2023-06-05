@@ -1,13 +1,13 @@
-﻿using System;
+﻿using BrewHub.Dashboard.Core.Dtmi;
+using BrewHub.Dashboard.Core.Models;
+using BrewHub.Dashboard.Core.Providers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Common.ChartJS;
-using BrewHub.Core.Providers;
-using DashboardIoT.Core.Dtmi;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using ChartMaker;
 using DashboardIoT.Display;
 
 namespace DashboardIoT.Pages
@@ -80,7 +80,7 @@ namespace DashboardIoT.Pages
             // Get historical telemetry data for all components on this device
             var data = await _datasource.GetSingleDeviceTelemetryAsync(DeviceId, lookback, bininterval);
             var dtmi = new DeviceModelDetails();
-            Chart = ChartMaker.Engine.CreateMultiLineChart(data, dtmi.VisualizeTelemetryDevice, labelformat);
+            Chart = BrewHub.Dashboard.Core.Charting.ChartMaker.CreateMultiLineChart(data, dtmi.VisualizeTelemetryDevice, labelformat);
 
             // Query InfluxDB, compose into UI slabs
 
@@ -92,7 +92,7 @@ namespace DashboardIoT.Pages
             // For starters, we will just directly translate results into slabs.
             // Next step will be breaking it apart, making it pretty
 
-            Slab FromComponent(IGrouping<string,ChartMaker.Models.Datapoint> c)
+            Slab FromComponent(IGrouping<string,Datapoint> c)
             {
                 string ValueOrEmpty(string s, string alt) => string.IsNullOrEmpty(s) ? alt : s;
 

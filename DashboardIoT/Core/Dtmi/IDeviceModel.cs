@@ -1,6 +1,7 @@
+using BrewHub.Dashboard.Core.Models;
 using System.Collections.Generic;
 
-namespace DashboardIoT.Core.Dtmi;
+namespace BrewHub.Dashboard.Core.Dtmi;
 
 /// <summary>
 /// Provides the information needed to display data from a single top-level device model properly
@@ -34,7 +35,7 @@ public interface IDeviceModel
     /// </summary>
     /// <param name="metric"></param>
     /// <returns></returns>
-    string FormatMetricValue(ChartMaker.Models.Datapoint metric);
+    string FormatMetricValue(Datapoint metric);
 
     /// <summary>
     /// Whether a specific metric is a writable property

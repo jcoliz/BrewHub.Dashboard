@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace ChartMaker.CosmosQuery;
+namespace BrewHub.Dashboard.Services.CosmosDB;
 
 public class MockEngine
 {
