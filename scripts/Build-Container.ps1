@@ -13,7 +13,7 @@ foreach( $var in $vars.GetEnumerator() )
 }
 
 $ModuleName = "brewhub-dashboard"
-$ModuleVer = ./scripts/Get-Version.ps1
+$ModuleVer = ./Dashboard.AspNet/scripts/Get-Version.ps1
 $ModuleTags = "${env:ACRSERVER}/${ModuleName}:$ModuleVer-amd64"
 $ModuleTagsLocal = "${ModuleName}:local"
 

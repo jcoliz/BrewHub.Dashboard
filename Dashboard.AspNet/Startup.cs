@@ -68,6 +68,8 @@ namespace DashboardIoT
                 var version = streamreader.ReadLine();
                 Configuration["Codebase:Version"] = version;
             }
+
+            services.AddHealthChecks();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -97,6 +99,7 @@ namespace DashboardIoT
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHealthChecks("/health");
                 endpoints.MapRazorPages();
             });
         }

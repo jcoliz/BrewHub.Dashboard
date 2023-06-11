@@ -18,6 +18,11 @@ RUN dotnet publish --self-contained false -o /app
 
 # final stage/image
 FROM mcr.microsoft.com/dotnet/aspnet:7.0
+
+# Install Curl for healthcheck
+RUN apt-get update -yq && apt-get install -yq curl
+
 WORKDIR /app
 COPY --from=build /app .
 ENTRYPOINT ["dotnet", "Dashboard.AspNet.dll"]
+HEALTHCHECK --interval=10s --timeout=30s --start-period=5s --retries=3 CMD [ "curl", "http://localhost/health" ]
