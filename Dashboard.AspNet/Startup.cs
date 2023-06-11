@@ -67,6 +67,7 @@ namespace DashboardIoT
                 using var streamreader = new StreamReader(stream!);
                 var version = streamreader.ReadLine();
                 Configuration["Codebase:Version"] = version;
+                logger.LogInformation("Version: {version}", version);
             }
 
             services.AddHealthChecks();
