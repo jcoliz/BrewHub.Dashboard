@@ -16,13 +16,13 @@ namespace BrewHub.Dashboard.AspNet.Pages
         private readonly ILogger<DevicePageModel> _logger;
         private readonly IDataSource _datasource;
 
-        public ChartConfig Chart { get; set; }
+        public ChartConfig? Chart { get; set; }
 
         public TimeframeEnum Timeframe { get; set; } = TimeframeEnum.Hour;
 
         public string DeviceId { get; set; } = "device-1";
 
-        public IEnumerable<Slab> Slabs { get; private set; }
+        public IEnumerable<Slab>? Slabs { get; private set; }
 
         public DevicePageModel(ILogger<DevicePageModel> logger, IDataSource datasource)
         {

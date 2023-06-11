@@ -16,11 +16,11 @@ namespace BrewHub.Dashboard.AspNet.Pages
         private readonly ILogger<IndexModel> _logger;
         private readonly IDataSource _datasource;
 
-        public ChartConfig Chart { get; set; }
+        public ChartConfig? Chart { get; set; }
 
         public TimeframeEnum Timeframe { get; set; } = TimeframeEnum.Hour;
 
-        public Dictionary<string,List<(string,string)>> Telemetry { get; private set; }
+        public Dictionary<string,List<(string,string)>>? Telemetry { get; private set; }
 
         public IndexModel(ILogger<IndexModel> logger, IDataSource datasource)
         {

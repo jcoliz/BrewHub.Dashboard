@@ -47,7 +47,7 @@
 </header>
 
 @{ 
-    var title = ViewData["Title"].ToString();
+    var title = ViewData?["Title"]?.ToString();
     var active_visualize = (title == "Devices") ? "active" : string.Empty;
     var active_calibrate = (title == "Scripts") ? "active" : string.Empty;
     var active_notify = (title == "Alerts") ? "active" : string.Empty;

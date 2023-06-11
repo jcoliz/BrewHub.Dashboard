@@ -21,10 +21,10 @@ namespace DashboardIoT.InfluxDB
         public class Options
         {
             public const string Section = "InfluxDB";
-            public string Url { get; set; }
-            public string Token { get; set; }
-            public string Org { get; set; }
-            public string Bucket { get; set; }
+            public string? Url { get; set; }
+            public string? Token { get; set; }
+            public string? Org { get; set; }
+            public string? Bucket { get; set; }
         }
 
         public class QueryVariables
@@ -36,8 +36,8 @@ namespace DashboardIoT.InfluxDB
                 _SetTimeRangeStop = now;
                 _SetWindowPeriod = span/divisions;
 
-                Organization = options.Org;
-                Bucket = options.Bucket;
+                Organization = options.Org!;
+                Bucket = options.Bucket!;
             }
 
             private readonly DateTime _SetTimeRangeStart;
@@ -68,6 +68,7 @@ namespace DashboardIoT.InfluxDB
             catch (Exception ex)
             {
                 _logger.LogError(ex, "InfluxDB: Create client failed");
+                throw;
             }
         }
 
@@ -80,10 +81,10 @@ namespace DashboardIoT.InfluxDB
         {
             return new Datapoint() 
             { 
-                __Device = d["device"].ToString(), 
+                __Device = d["device"].ToString()!, 
                 __Component = d.GetValueOrDefault("component")?.ToString(),
                 __Time = d.ContainsKey("_time") ? ((NodaTime.Instant)d["_time"]).ToDateTimeOffset() : DateTimeOffset.MinValue,
-                __Field = d["_field"].ToString(), 
+                __Field = d["_field"].ToString()!, 
                 __Value = d["_value"]
             };
         }
