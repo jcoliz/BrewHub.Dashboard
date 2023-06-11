@@ -10,6 +10,11 @@ COPY Common.ChartJS/*.csproj Common.ChartJS/
 WORKDIR /source/Dashboard.AspNet
 RUN dotnet restore
 
+# Software version number
+#   - Should correspond to tag
+#   - Including default value so if someone just runs "docker build", it will work
+ARG SOLUTION_VERSION=docker
+
 # copy everything else and build app
 WORKDIR /source
 COPY . .
