@@ -60,25 +60,28 @@ public class DeviceModelDetails: IDeviceModel
     /// </summary>
     /// <param name="metric"></param>
     /// <returns></returns>
-    public string FormatMetricValue(Datapoint metric) => metric.__Field switch
+    public string FormatMetricValue(Datapoint metric)
     {
-        "maxTempSinceLastReboot" or
-        "thermostat1/temperature" or
-        "thermostat2/temperature" or
-        "temperature"
-                => $"{metric.__Value:F1}°C",
-        "targetTemperature" => $"{metric.__Value:F1}",
-        "workingSet" => $"{(double)metric.__Value/7812.5:F1}MB",
-        "totalStorage" or
-        "totalMemory" 
-            => (double)metric.__Value switch
-            {
-                > 1000000 => $"{(double)metric.__Value/1000000:F1} GB",
-                > 1000 => $"{(double)metric.__Value/1000:F1} MB",
-                _ => $"{(double)metric.__Value:F1} kB"
-            },
-        _ => metric.__Value.ToString()
-    };        
+        return metric.__Field switch
+        {
+            "maxTempSinceLastReboot" or
+            "thermostat1/temperature" or
+            "thermostat2/temperature" or
+            "temperature"
+                    => $"{metric.__Value:F1}°C",
+            "targetTemperature" => $"{metric.__Value:F1}",
+            "workingSet" => $"{(double)metric.__Value / 7812.5:F1}MB",
+            "totalStorage" or
+            "totalMemory"
+                => (double)metric.__Value switch
+                {
+                    > 1000000 => $"{(double)metric.__Value / 1000000:F1} GB",
+                    > 1000 => $"{(double)metric.__Value / 1000:F1} MB",
+                    _ => $"{(double)metric.__Value:F1} kB"
+                },
+            _ => metric.__Value.ToString()
+        } ?? string.Empty;
+    }         
 
     /// <summary>
     /// Whether a specific metric is a writable property
@@ -97,7 +100,7 @@ public class DeviceModelDetails: IDeviceModel
     /// </summary>
     /// <param name="metricid"></param>
     /// <returns></returns>
-    public string GetWritableUnits(string metricid) => metricid switch
+    public string? GetWritableUnits(string metricid) => metricid switch
     {
         "targetTemperature" => "°C",
         _ => null

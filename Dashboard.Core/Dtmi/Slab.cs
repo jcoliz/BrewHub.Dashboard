@@ -12,5 +12,5 @@ public record Slab
     public IEnumerable<KeyValueUnits> Properties { get; init; } = Enumerable.Empty<KeyValueUnits>();
     public IEnumerable<KeyValueUnits> WritableProperties { get; init; } = Enumerable.Empty<KeyValueUnits>();
     public IEnumerable<KeyValueUnits> Commands { get; init; } = Enumerable.Empty<KeyValueUnits>();
-    public string ComponentId { get; init; } = null;
+    public string? ComponentId { get; init; } = null;
 }

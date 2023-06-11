@@ -49,7 +49,7 @@ public interface IDeviceModel
     /// </summary>
     /// <param name="metricid"></param>
     /// <returns></returns>
-    string GetWritableUnits(string metricid);
+    string? GetWritableUnits(string metricid);
 
     /// <summary>
     /// Return all the commands for a given component id
