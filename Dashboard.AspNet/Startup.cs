@@ -1,15 +1,7 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
 using BrewHub.Dashboard.Core.Providers;
 using BrewHub.Dashboard.Core.MockData;
-using Microsoft.Extensions.Logging;
 using System.Reflection;
-using System.Linq;
-using System.IO;
 
 namespace DashboardIoT
 {
