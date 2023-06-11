@@ -13,6 +13,9 @@ foreach( $var in $vars.GetEnumerator() )
 }
 
 $ModuleName = "brewhub-dashboard"
-$ModuleVer = $(Get-Date -Format "yyyyMMdd-HHmmss")
-$ModuleTags = "${env:ACRSERVER}/${ModuleName}:local-$ModuleVer-amd64"
-$ModuleTags > obj\tags.txt
+$ModuleVer = ./scripts/Get-Version.ps1
+$ModuleTags = "${env:ACRSERVER}/${ModuleName}:$ModuleVer-amd64"
+$ModuleTagsLocal = "${ModuleName}:local"
+
+Invoke-Expression "docker build --rm --build-arg SOLUTION_VERSION=$ModuleVer -f .\docker\Dockerfile -t $ModuleTags -t $ModuleTagsLocal ." -ErrorAction Stop
+
