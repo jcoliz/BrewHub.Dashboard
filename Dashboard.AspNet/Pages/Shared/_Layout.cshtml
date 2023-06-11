@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration _config
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -150,7 +152,7 @@
             @RenderBody()
     <footer class="border-top footer text-muted">
         <div>
-            BrewHub.Net isn't on GitHub yet, but it will be soon!
+            @_config["Codebase:Version"] | BrewHub.Net isn't on GitHub yet, but it will be soon!
         </div>
     </footer>
     </main>
