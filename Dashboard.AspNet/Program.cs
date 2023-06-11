@@ -7,11 +7,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 // https://stackoverflow.com/questions/41287648/how-do-i-write-logs-from-within-startup-cs
 // https://github.com/dotnet/aspnetcore/issues/9337#issuecomment-539859667
-using var loggerFactory = LoggerFactory.Create(builder =>
+using var loggerFactory = LoggerFactory.Create(logbuilder =>
 {
-    builder.SetMinimumLevel(LogLevel.Information);
-    builder.AddConsole();
-    builder.AddEventSourceLogger();
+    logbuilder.AddConfiguration(builder.Configuration.GetSection("Logging"));
+    logbuilder.AddConsole();
+    logbuilder.AddEventSourceLogger();
 });
 var logger = loggerFactory.CreateLogger("Startup");
 logger.LogInformation("*** STARTING ***");
