@@ -1,5 +1,3 @@
-using System;
-
 namespace BrewHub.Dashboard.Core.Models;
 
 public record Datapoint
