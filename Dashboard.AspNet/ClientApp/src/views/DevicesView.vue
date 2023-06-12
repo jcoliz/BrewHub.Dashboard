@@ -7,6 +7,12 @@ import BreadCrumbs from '../components/BreadCrumbs.vue';
 import { DevicesClient, IDisplayMetricGroup, ChartsClient, IChartConfig } from '../apiclients/apiclient.ts';
 
 /*
+ * Route inputs
+ */
+
+const props = defineProps<{ deviceid: string }>();
+
+/*
  * Primary data to display
  */
 const slabs = ref<IDisplayMetricGroup[]>([]);
@@ -24,11 +30,11 @@ var devicesClient = new DevicesClient();
 var chartsClient = new ChartsClient();
 
 async function getData() {
-  slabs.value = await devicesClient.slabs();
+  slabs.value = await devicesClient.device(props.deviceid);
 }
 
 async function getChart() {
-  chartconfig.value = await chartsClient.telemetry();
+  chartconfig.value = await chartsClient.deviceChart(props.deviceid,0);
 }
 
 function update()
@@ -38,7 +44,7 @@ function update()
 }
 
 update();
-setInterval(update, 2000);
+//setInterval(update, 2000);
 
 </script>
 
@@ -58,8 +64,8 @@ setInterval(update, 2000);
 
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
       <div>
-        <h1 class="h2">Devices</h1>
-        <BreadCrumbs :links="[]" page="Home"/>
+        <h1 class="h2">Devices!</h1>
+        <BreadCrumbs :links="[{ title:'Home', href:'/' }]" :page="deviceid"/>
       </div>
       <ChartButtonToolbar/>
     </div>
@@ -68,7 +74,7 @@ setInterval(update, 2000);
       v-if="chartconfig?.data"
       class="my-5 w-100"
     >
-      <ChartViewer :bar="true" :cdata="chartconfig?.data!" :coptions="chartconfig?.options" />
+      <ChartViewer :bar="false" :cdata="chartconfig?.data!" :coptions="chartconfig?.options" />
     </div>
 
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xxl-4 mb-3 text-center">
@@ -76,7 +82,7 @@ setInterval(update, 2000);
         v-for="slab in slabs"
         :key="`${slab.kind}-${slab.id}`"
         :slab="slab"
-        :href="`/devices/${slab.id}`"
+        :href="`/components/${deviceid}/${slab.id}`"
       />
 
     </div>

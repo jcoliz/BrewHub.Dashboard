@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { defineProps, defineEmits } from 'vue';
 import { IDisplayMetricGroup } from '../apiclients/apiclient.ts';
 import { RouterLink } from 'vue-router';
 

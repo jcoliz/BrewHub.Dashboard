@@ -116,7 +116,7 @@ namespace Common.ChartJS
             }
 
             Data.Labels = labels;
-            Data.Datasets = series.Select((x, i) => new ChartDataSet() { Label = x.Label, Data = x.Data, BackgroundColor = (new ChartColor[] { colors.Skip(i).First() }).Select(x=>x.ToString()), BorderColor = (new ChartColor[] { colors.Skip(i).First() }).Select(x=>x.ToString()) });
+            Data.Datasets = series.Select((x, i) => new ChartDataSet() { Label = x.Label, Data = x.Data, BackgroundColor = (new ChartColor[] { colors.Skip(i).First() }).Select(x=>x.ToString()), BorderColor = (new ChartColor[] { colors.Skip(i).First() }).Select(x=>x.ToString()), BorderWidth = 3 });
         }
 
     };
