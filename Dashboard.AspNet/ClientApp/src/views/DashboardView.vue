@@ -25,6 +25,8 @@ async function getData() {
   slabs.value = await devicesClient.slabs();
 }
 
+setInterval(getData, 2000);
+
 getData()
 
 </script>
