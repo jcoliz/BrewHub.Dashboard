@@ -1,7 +1,10 @@
+using BrewHub.Dashboard.Core.Dtmi;
 using BrewHub.Dashboard.Core.Providers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BrewHub.Dashboard.Controllers;
+
+public enum TimeframeEnum { Minutes = 0, Hour, Hours, Day, Week, Month };
 
 [ApiController]
 [Route("api/[controller]")]
@@ -83,6 +86,64 @@ public class DevicesController : ControllerBase
                     .ToArray();
 
         return Ok(slabs);
+    }
+
+    //        public async Task OnGetAsync(TimeframeEnum t, string id)
+
+    [HttpGet]
+    [Route("{id}/Chart/{timeframe}")]
+    [ProducesResponseType(typeof(Common.ChartJS.ChartConfig),StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> DeviceChart([FromRoute] string id, [FromRoute] TimeframeEnum timeframe)
+    {
+        _logger.LogInformation("Request: Device Chart {device}", id);
+
+        var data = await _datasource.GetLatestDeviceTelemetryAllAsync();
+        var devices = data.Select(x => x.__Device).Distinct();
+
+        if (!devices.Contains(id))
+            return NotFound();
+
+
+        var lookback = timeframe switch
+        {
+            TimeframeEnum.Minutes => TimeSpan.FromMinutes(5), // "5m",
+            TimeframeEnum.Hour => TimeSpan.FromHours(1), //"1h",
+            TimeframeEnum.Hours => TimeSpan.FromHours(4), //"4h",
+            TimeframeEnum.Day => TimeSpan.FromHours(24), //"24h",
+            TimeframeEnum.Week => TimeSpan.FromDays(7), //"7d",
+            TimeframeEnum.Month => TimeSpan.FromDays(28), //"28d",
+            _ => throw new NotImplementedException()
+        };
+
+        var bininterval = timeframe switch
+        {
+            TimeframeEnum.Minutes =>  TimeSpan.FromSeconds(20), //"20s",
+            TimeframeEnum.Hour =>  TimeSpan.FromMinutes(2), //"2m",
+            TimeframeEnum.Hours =>  TimeSpan.FromMinutes(15), //"15m",
+            TimeframeEnum.Day =>  TimeSpan.FromHours(1), //"1h",
+            TimeframeEnum.Week =>  TimeSpan.FromDays(1), //"1d",
+            TimeframeEnum.Month => TimeSpan.FromDays(7), //"7d",
+            _ => throw new NotImplementedException()
+        };
+
+        var labelformat = timeframe switch
+        {
+            TimeframeEnum.Minutes => "mm:ss",
+            TimeframeEnum.Hour or 
+            TimeframeEnum.Hours or 
+            TimeframeEnum.Day => "H:mm",
+            TimeframeEnum.Week or 
+            TimeframeEnum.Month => "M/dd",
+            _ => throw new NotImplementedException()
+        };
+
+        // Get historical telemetry data for all components on this device
+        data = await _datasource.GetSingleDeviceTelemetryAsync(id, lookback, bininterval);
+        var dtmi = new DeviceModelDetails();
+        var result = BrewHub.Dashboard.Core.Charting.ChartMaker.CreateMultiLineChart(data, dtmi.VisualizeTelemetryDevice, labelformat);
+
+        return Ok(result);
     }
 
     [HttpGet]
