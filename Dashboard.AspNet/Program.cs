@@ -17,8 +17,8 @@ var logger = loggerFactory.CreateLogger("Startup");
 logger.LogInformation("*** STARTING ***");
 
 // Add services to the container.
-
 builder.Services.AddControllersWithViews();
+builder.Services.AddOpenApiDocument(); // registers a OpenAPI v3.0 document with the name "v1" (default)
 builder.Services.AddRazorPages()
                 .AddRazorRuntimeCompilation();
 builder.Services.AddHealthChecks();
@@ -71,9 +71,16 @@ else
 if (!runningincontainer)
     app.UseHttpsRedirection();
 
+ // Add OpenAPI/Swagger middlewares
+app.UseOpenApi(); // Serves the registered OpenAPI/Swagger documents by default on `/swagger/{documentName}/swagger.json`
+app.UseSwaggerUi3(); // Serves the Swagger UI 3 web ui to view the OpenAPI/Swagger documents by default on `/swagger`
+
 app.UseStaticFiles();
 app.UseRouting();
 app.MapRazorPages();
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller}/{action=Index}/{id?}");
 app.MapHealthChecks("/health");
 
 app.Run();
