@@ -1,3 +1,4 @@
+using BrewHub.Dashboard.Core.Providers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BrewHub.Dashboard.Controllers;
@@ -5,31 +6,36 @@ namespace BrewHub.Dashboard.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Produces("application/json")]
-public class DisplayController : ControllerBase
+public class DevicesController : ControllerBase
 {
-    private readonly ILogger<DisplayController> _logger;
+    private readonly IDataSource _datasource;
+    private readonly ILogger<DevicesController> _logger;
 
     private readonly string[] _devices = new[] { "A", "B", "C" };
 
-    public DisplayController(ILogger<DisplayController> logger)
+    public DevicesController(ILogger<DevicesController> logger, IDataSource datasource)
     {
         _logger = logger;
+        _datasource = datasource;
     }
 
     [HttpGet]
-    [Route("devices")]
+    [Route("")]
     [ProducesResponseType(typeof(string[]), StatusCodes.Status200OK)]
-    public ActionResult Devices()
+    public async Task<ActionResult> Devices()
     {
         _logger.LogInformation("Request: Devices");
 
-        return Ok(_devices);
+        var data = await _datasource.GetLatestDeviceTelemetryAllAsync();
+        var devices = data.Select(x => x.__Device).Distinct();
+
+        return Ok(devices);
     }
 
     [HttpGet]
-    [Route("devices/slabs")]
+    [Route("[action]")]
     [ProducesResponseType(typeof(Core.Dtmi.Slab[]),StatusCodes.Status200OK)]
-    public ActionResult DeviceSlabs()
+    public ActionResult Slabs()
     {
         _logger.LogInformation("Request: Device Slabs");
 
@@ -39,7 +45,7 @@ public class DisplayController : ControllerBase
     }
 
     [HttpGet]
-    [Route("device/{id}")]
+    [Route("{id}")]
     [ProducesResponseType(typeof(Core.Dtmi.Slab[]),StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public ActionResult Device([FromRoute] string id)
@@ -53,10 +59,10 @@ public class DisplayController : ControllerBase
     }
 
     [HttpGet]
-    [Route("device/{id}/component/{component}")]
+    [Route("{id}/component/{component}")]
     [ProducesResponseType(typeof(Core.Dtmi.Slab[]), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public ActionResult Component ([FromRoute] string id, [FromRoute] string component )
+    public ActionResult Component ([FromRoute] string id, [FromRoute] string? component )
     {
         _logger.LogInformation("Request: Device {device} Component {component}", id, component);
 
@@ -67,7 +73,7 @@ public class DisplayController : ControllerBase
     }
 
     [HttpPost]
-    [Route("device/{id}/component/{component}/command/{command}")]
+    [Route("{id}/component/{component}/command/{command}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -85,7 +91,7 @@ public class DisplayController : ControllerBase
     }
 
     [HttpPost]
-    [Route("device/{id}/component/{component}/property/{property}")]
+    [Route("{id}/component/{component}/property/{property}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
