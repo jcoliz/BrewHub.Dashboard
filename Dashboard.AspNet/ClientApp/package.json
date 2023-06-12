@@ -1,0 +1,31 @@
+{
+  "name": "clientapp",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@popperjs/core": "^2.11.8",
+    "@types/feather-icons": "^4.29.1",
+    "@types/bootstrap": "^5.2.6",
+    "bootstrap": "^5.2.6",
+    "bootstrap-icons": "^1.10.5",
+    "chart.js": "^4.3.0",
+    "feather-icons": "^4.29.0",
+    "jquery": "^3.7.0",
+    "vue": "^3.2.47",
+    "vue-chartjs": "^5.2.0",
+    "vue-github-button": "^3.1.0",
+    "vue-router": "^4.2.2"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.1.0",
+    "typescript": "^5.0.2",
+    "vite": "^4.3.9",
+    "vue-tsc": "^1.4.2"
+  }
+}
