@@ -31,10 +31,14 @@ async function getChart() {
   chartconfig.value = await chartsClient.telemetry();
 }
 
-//setInterval(getData, 2000);
+function update()
+{
+  getChart();
+  getData();
+}
 
-getChart()
-getData()
+update();
+setInterval(update, 2000);
 
 </script>
 
