@@ -2,13 +2,9 @@
 using BrewHub.Dashboard.Core.Dtmi;
 using BrewHub.Dashboard.Core.Models;
 using BrewHub.Dashboard.Core.Providers;
+using BrewHub.Dashboard.Core.Charting;
 using Common.ChartJS;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BrewHub.Dashboard.AspNet.Pages
 {
@@ -46,28 +42,33 @@ namespace BrewHub.Dashboard.AspNet.Pages
                 var data = await _datasource.GetLatestDeviceTelemetryAllAsync();
                 var dtmi = new DeviceModelDetails();
 
-                string ExtractComponentAndMetricName(Datapoint d)
+                DisplayMetricGroup FromDeviceComponentTelemetry(IGrouping<string,Datapoint> d)
                 {
-                    var f = dtmi.MapMetricName(d.__Field);
-                    return (d.__Component is null) ? f : $"{dtmi.MapMetricName(d.__Component)}/{f}";
+                    string ExtractComponentAndMetricName(Datapoint d)
+                    {
+                        var f = dtmi.MapMetricName(d.__Field);
+                        return (d.__Component is null) ? f : $"{dtmi.MapMetricName(d.__Component)}/{f}";
+                    }
+
+                    return new DisplayMetricGroup()
+                    {
+                        Title = d.Key,
+                        Id = d.Key,
+                        Telemetry = d.Select(y => new DisplayMetric()
+                        {
+                            Name = ExtractComponentAndMetricName(y),
+                            Value = dtmi!.FormatMetricValue(y)
+                        })
+                        .ToArray()
+                    };
                 }
 
                 Slabs = data
                         .GroupBy(x => x.__Device)
-                        .Select(x => new DisplayMetricGroup()
-                        {
-                            Title = x.Key,
-                            Id = x.Key,
-                            Telemetry = x.Select( y => new DisplayMetric()
-                            {
-                                Name = ExtractComponentAndMetricName(y),
-                                Value = dtmi.FormatMetricValue(y)
-                            })
-                            .ToArray()
-                        })
+                        .Select(FromDeviceComponentTelemetry)
                         .ToArray();
 
-                Chart = BrewHub.Dashboard.Core.Charting.ChartMaker.CreateMultiDeviceBarChart(data, dtmi.VisualizeTelemetryTop);
+                Chart = ChartMaker.CreateMultiDeviceBarChart(data, dtmi.VisualizeTelemetryTop);
             }
             catch (Exception ex)
             {
