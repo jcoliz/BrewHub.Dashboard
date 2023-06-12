@@ -25,7 +25,7 @@
 
     </div>
 
-    @if (Model.Telemetry is null)
+    @if (Model.Slabs is null)
     {
         <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
         <symbol id="check-circle-fill" fill="currentColor" viewBox="0 0 16 16">
@@ -49,8 +49,6 @@
     else
     {
 
- 
-
     <canvas class="my-4 w-100" id="chart" width="900" height="380"></canvas>
 
     <script>
@@ -61,28 +59,26 @@
 
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xxl-4 mb-3 text-center">
 
-    @foreach( var device in Model.Telemetry )
+    @foreach( var slab in Model.Slabs )
     {
         <div class="col">
             <div class="card mb-4 rounded-3 shadow-sm border-primary">
                 <div class="card-header py-3 text-bg-primary border-primary">
-                    <h4 class="my-0 fw-normal">@device.Key</h4>
+                    <h4 class="my-0 fw-normal">@slab.Title</h4>
                 </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table text-center">
-                            <tbody>
-                                @foreach( var (k,v) in device.Value ) 
-                                {
-                                    <tr>
-                                        <th scope="row" class="text-start">@k</th>
-                                        <td class="text-end">@v</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                <a class="w-100 btn btn-lg btn-outline-primary" asp-page="Device" asp-route-id="@device.Key">Details</a>
+                <div class="card-body text-start">
+                    <ul class="list-group mb-3">
+                        @foreach(var metric in slab.Telemetry)
+                        {
+                            <li class="list-group-item d-flex justify-content-between lh-sm">
+                                <div>
+                                    <h6 class="my-0">@metric.Name</h6>
+                                    <small class="text-body-secondary">@metric.Value</small>
+                                </div>
+                            </li>
+                        }
+                    </ul>                    
+                    <a class="w-100 btn btn-lg btn-outline-primary" asp-page="Device" asp-route-id="@slab.Id">Details</a>
                 </div>
             </div>
         </div>

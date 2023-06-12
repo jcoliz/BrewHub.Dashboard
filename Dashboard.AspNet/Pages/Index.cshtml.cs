@@ -1,4 +1,5 @@
-﻿using BrewHub.Dashboard.Core.Dtmi;
+﻿using BrewHub.Dashboard.Core.Display;
+using BrewHub.Dashboard.Core.Dtmi;
 using BrewHub.Dashboard.Core.Models;
 using BrewHub.Dashboard.Core.Providers;
 using Common.ChartJS;
@@ -20,7 +21,7 @@ namespace BrewHub.Dashboard.AspNet.Pages
 
         public TimeframeEnum Timeframe { get; set; } = TimeframeEnum.Hour;
 
-        public Dictionary<string,List<(string,string)>>? Telemetry { get; private set; }
+        public DisplayMetricGroup[] Slabs { get; private set; }
 
         public IndexModel(ILogger<IndexModel> logger, IDataSource datasource)
         {
@@ -51,13 +52,20 @@ namespace BrewHub.Dashboard.AspNet.Pages
                     return (d.__Component is null) ? f : $"{dtmi.MapMetricName(d.__Component)}/{f}";
                 }
 
-                Telemetry = data
+                Slabs = data
                         .GroupBy(x => x.__Device)
-                        .ToDictionary
-                        (
-                            x => x.Key,
-                            x => x.Select(y => (ExtractComponentAndMetricName(y), dtmi.FormatMetricValue(y))).ToList()
-                        );
+                        .Select(x => new DisplayMetricGroup()
+                        {
+                            Title = x.Key,
+                            Id = x.Key,
+                            Telemetry = x.Select( y => new DisplayMetric()
+                            {
+                                Name = ExtractComponentAndMetricName(y),
+                                Value = dtmi.FormatMetricValue(y)
+                            })
+                            .ToArray()
+                        })
+                        .ToArray();
 
                 Chart = BrewHub.Dashboard.Core.Charting.ChartMaker.CreateMultiDeviceBarChart(data, dtmi.VisualizeTelemetryTop);
             }
