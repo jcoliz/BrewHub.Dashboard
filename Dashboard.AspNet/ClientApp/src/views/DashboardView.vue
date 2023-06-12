@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { IWeatherForecast, WeatherForecastClient, TimeScale } from '../apiclients/apiclient';
 import ChartViewer from '../components/ChartViewer.vue';
 import FeatherIcon from '../components/FeatherIcon.vue';
 
@@ -8,67 +6,15 @@ import FeatherIcon from '../components/FeatherIcon.vue';
  * Primary data to display
  */
 
-const isbargraph = ref(true); // else it's a line graph
-const forecasts = ref<IWeatherForecast[]>([]);
-const chartlabels = ref<string[]>([]);
-const chartvalues = ref<number[]>([]);
 
 /*
  * Timescale of display
  */
 
-const timescale = ref<TimeScale>(1);
-
-export interface timescaleenum {
-  name: string,
-  value: TimeScale
-}
-
-const timescale_options: timescaleenum[] = [
-  {
-    name: 'Two Days',
-    value: 0
-  },
-  {
-    name: 'This Week',
-    value: 1
-  },
-  {
-    name: 'Next Week',
-    value: 2
-  },
-  {
-    name: 'This Month',
-    value: 3
-  },
-  {
-    name: 'Next Month',
-    value: 4
-  }
-];
-
-function updateTimescale(value:TimeScale)
-{
-  if (value != timescale.value)
-  {
-    timescale.value = value;
-    getData();
-  }
-}
 
 /*
  * Fetching from server
  */
-
-const client = new WeatherForecastClient();
-
-async function getData() {
-  forecasts.value = await client.get(timescale.value);
-  chartlabels.value = forecasts.value.map(f => f.date!.toLocaleDateString("en-us", { dateStyle: "short" }));
-  chartvalues.value = forecasts.value.map(f => f.temperatureF!);
-}
-
-getData()
 
 </script>
 
@@ -97,7 +43,6 @@ getData()
           <input 
             id="vbtn-radio1" 
             name="vbtn-radio" 
-            v-model="isbargraph"
             type="radio" 
             class="btn-check" 
             autocomplete="off" 
@@ -113,7 +58,6 @@ getData()
           <input 
             id="vbtn-radio2" 
             name="vbtn-radio" 
-            v-model="isbargraph"
             type="radio" 
             class="btn-check" 
             autocomplete="off" 
@@ -139,22 +83,20 @@ getData()
             data-bs-toggle="dropdown"
           >
             <FeatherIcon icon="calendar"/>
-            {{  timescale_options[ timescale ].name }}
           </button>
           <ul 
             class="dropdown-menu" 
             aria-labelledby="btnDropTimescale"
           >
             <li 
-              v-for="(option,index) in timescale_options" 
+              v-for="(option,index) in [ 'A', 'B' ]" 
               :key="index"
             >
               <a 
                 class="dropdown-item" 
-                @click="updateTimescale(option.value)" 
                 href="javascript:void(0)" 
               >
-                {{ option.name }}
+                {{ option }}
               </a>
             </li>
           </ul>
@@ -162,18 +104,13 @@ getData()
       </div>
     </div>
 
-    <ChartViewer 
-      :values="chartvalues" 
-      :labels="chartlabels" 
-      :bar="isbargraph"
-    />
+    <ChartViewer :bar="true" :labels="[]" :values="[]"/>
 
     <h2 class="h3">
       Forecasts
     </h2>
 
     <div 
-      v-if="forecasts" 
       class="table-responsive"
     >
       <table 
@@ -189,16 +126,6 @@ getData()
           </tr>
         </thead>
         <tbody>
-          <tr 
-            v-for="item in forecasts" 
-            :key="item.id"
-          >
-            <td>{{ item.id }}</td>
-            <td>{{ item.date?.toLocaleDateString("en-us", { dateStyle: "short" }) }}</td>
-            <td>{{ item.temperatureC }}</td>
-            <td>{{ item.temperatureF }}</td>
-            <td>{{ item.summary }}</td>
-          </tr>
         </tbody>
       </table>
     </div>
