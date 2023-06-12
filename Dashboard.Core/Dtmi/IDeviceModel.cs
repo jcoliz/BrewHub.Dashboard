@@ -1,3 +1,4 @@
+using BrewHub.Dashboard.Core.Display;
 using BrewHub.Dashboard.Core.Models;
 using System.Collections.Generic;
 
@@ -55,6 +56,6 @@ public interface IDeviceModel
     /// Return all the commands for a given component id
     /// </summary>
     /// <param name="componentid"></param>
-    /// <returns></returns>
-    IEnumerable<KeyValueUnits> GetCommands(string componentid);
-}
+    /// <returns>Displaymetrics for all the commands</returns>
+    IEnumerable<DisplayMetric> GetCommands(string componentid);
+} 

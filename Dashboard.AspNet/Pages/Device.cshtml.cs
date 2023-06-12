@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Common.ChartJS;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using BrewHub.Dashboard.Core.Display;
 
 namespace BrewHub.Dashboard.AspNet.Pages
 {
@@ -22,7 +23,7 @@ namespace BrewHub.Dashboard.AspNet.Pages
 
         public string DeviceId { get; set; } = "device-1";
 
-        public IEnumerable<Slab>? Slabs { get; private set; }
+        public DisplayMetricGroup[] Slabs { get; private set; }
 
         public DevicePageModel(ILogger<DevicePageModel> logger, IDataSource datasource)
         {
@@ -91,15 +92,33 @@ namespace BrewHub.Dashboard.AspNet.Pages
             // For starters, we will just directly translate results into slabs.
             // Next step will be breaking it apart, making it pretty
 
-            Slab FromComponent(IGrouping<string,Datapoint> c)
+            DisplayMetric FromDatapoint(Datapoint d)
+            {
+                return new DisplayMetric()
+                {
+                    Name = dtmi!.MapMetricName(d.__Field),
+                    Id = d.__Field,
+                    Value = dtmi.FormatMetricValue(d),
+                    Units = dtmi.GetWritableUnits(d.__Field)
+                };
+            }
+
+            DisplayMetricGroup FromComponent(IGrouping<string,Datapoint> c)
             {
                 string ValueOrEmpty(string s, string alt) => string.IsNullOrEmpty(s) ? alt : s;
 
-                var props = c.Select(x => new KeyValueUnits() { Key = dtmi.MapMetricName(x.__Field), Value = dtmi.FormatMetricValue(x), Writable = dtmi.IsMetricWritable(x.__Field), Units = dtmi.GetWritableUnits(x.__Field) }).ToList();
-                return new Slab() { Header = ValueOrEmpty(dtmi.MapMetricName(c.Key),"Device Details"), ComponentId = c.Key, Properties = props, Commands = dtmi.GetCommands(c.Key) };
+                var g = c.GroupBy(x => dtmi.IsMetricWritable(x.__Field));
+                return new DisplayMetricGroup() 
+                { 
+                    Title = ValueOrEmpty(dtmi.MapMetricName(c.Key),"Device Details"),
+                    Id = c.Key,
+                    ReadOnlyProperties = g.Where(x=>x.Key == false).SelectMany(x=>x).Select(FromDatapoint).ToArray(), 
+                    WritableProperties = g.Where(x=>x.Key == true).SelectMany(x=>x).Select(FromDatapoint).ToArray(), 
+                    Commands = dtmi.GetCommands(c.Key).ToArray()
+                };
             }
 
-            Slabs = data.GroupBy(x => x.__Component ?? string.Empty).Select(FromComponent).ToList();
+            Slabs = data.GroupBy(x => x.__Component ?? string.Empty).Select(FromComponent).ToArray();
         }
 
         private static readonly ChartColor[] palette = new ChartColor[]

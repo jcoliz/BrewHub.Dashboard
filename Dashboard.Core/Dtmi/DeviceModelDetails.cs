@@ -1,3 +1,4 @@
+using BrewHub.Dashboard.Core.Display;
 using BrewHub.Dashboard.Core.Models;
 using System.Collections.Generic;
 using System.Linq;
@@ -111,18 +112,18 @@ public class DeviceModelDetails: IDeviceModel
     /// </summary>
     /// <param name="componentid"></param>
     /// <returns></returns>
-    public IEnumerable<KeyValueUnits> GetCommands(string componentid) => componentid switch
+    public IEnumerable<DisplayMetric> GetCommands(string componentid) => componentid switch
     {
-        "" => new List<KeyValueUnits>()
+        "" => new List<DisplayMetric>()
                         {
-                            new() { Key = "Reboot", Value = "Delay", Units = "s" }
+                            new() { Name = "Reboot", Id = "reboot", Value = "Delay", Units = "s" }
                         }
         ,
         "thermostat1" or
-        "thermostat2" => new List<KeyValueUnits>()
+        "thermostat2" => new List<DisplayMetric>()
                         {
-                            new() { Key = "Get Max-Min report", Value = "Since", Units = "D/T" }                                    
+                            new() { Name = "Get Max-Min report", Id = "getMinMax", Value = "Since", Units = "D/T" }                                    
                         },
-        _ => Enumerable.Empty<KeyValueUnits>()
+        _ => Enumerable.Empty<DisplayMetric>()
     };
 }
