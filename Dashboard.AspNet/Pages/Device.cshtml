@@ -72,6 +72,15 @@
             <span class="text-primary">@slab.Title</span>
         </h4>
         <ul class="list-group mb-3">
+            @foreach(var prop in slab.Telemetry)
+            {
+                <li class="list-group-item d-flex justify-content-between lh-sm">
+                    <div>
+                        <h6 class="my-0">t/@prop.Name</h6>
+                        <small class="text-body-secondary">@prop.Value</small>
+                    </div>
+                </li>
+            }
             @foreach(var prop in slab.ReadOnlyProperties)
             {
                 <li class="list-group-item d-flex justify-content-between lh-sm">

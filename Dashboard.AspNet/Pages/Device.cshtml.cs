@@ -107,13 +107,13 @@ namespace BrewHub.Dashboard.AspNet.Pages
             {
                 string ValueOrEmpty(string s, string alt) => string.IsNullOrEmpty(s) ? alt : s;
 
-                var g = c.GroupBy(x => dtmi.IsMetricWritable(x.__Field));
                 return new DisplayMetricGroup() 
                 { 
                     Title = ValueOrEmpty(dtmi.MapMetricName(c.Key),"Device Details"),
                     Id = c.Key,
-                    ReadOnlyProperties = g.Where(x=>x.Key == false).SelectMany(x=>x).Select(FromDatapoint).ToArray(), 
-                    WritableProperties = g.Where(x=>x.Key == true).SelectMany(x=>x).Select(FromDatapoint).ToArray(), 
+                    Telemetry = c.Where(x=>dtmi.IsMetricTelemetry(x.__Field)).Select(FromDatapoint).ToArray(), 
+                    ReadOnlyProperties = c.Where(x=>!dtmi.IsMetricWritable(x.__Field) && !dtmi.IsMetricTelemetry(x.__Field)).Select(FromDatapoint).ToArray(), 
+                    WritableProperties = c.Where(x=>dtmi.IsMetricWritable(x.__Field)).Select(FromDatapoint).ToArray(), 
                     Commands = dtmi.GetCommands(c.Key).ToArray()
                 };
             }

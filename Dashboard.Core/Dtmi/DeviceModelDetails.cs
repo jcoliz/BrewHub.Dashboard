@@ -85,6 +85,18 @@ public class DeviceModelDetails: IDeviceModel
     }         
 
     /// <summary>
+    /// Whether a specific metric is telemetry metric
+    /// </summary>
+    /// <param name="metricid"></param>
+    /// <returns></returns>
+    public bool IsMetricTelemetry(string metricid) => metricid switch
+    {
+        "temperature" or
+        "workingSet" => true,
+        _ => false
+    };
+
+    /// <summary>
     /// Whether a specific metric is a writable property
     /// </summary>
     /// <param name="metricid"></param>
