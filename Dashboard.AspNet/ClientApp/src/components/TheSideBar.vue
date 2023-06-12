@@ -1,26 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import NavItemRouterLink from './NavItemRouterLink.vue';
+import NavItemLink from './NavItemLink.vue';
 import NavItemGroup from './NavItemGroup.vue';
 import NavItemHeader from './NavItemHeader.vue';
-import FeatherIcon from './FeatherIcon.vue';
 import { Collapse } from 'bootstrap'
-
-//
-// [User Can] Add a new report
-//
-
-const maxReports: number = 6;
-const numReports = ref<number>(0);
-
-function isOkToAddReport(): boolean {
-    return numReports.value < maxReports;
-}
-
-function addReport() {
-    if (isOkToAddReport())
-        numReports.value++;
-}
 
 //
 // Hide sidebar if it's shown from a collapsed state (small screens)
@@ -53,39 +37,33 @@ function unshow()
       <div class="position-sticky pt-3">
         <NavItemGroup>
             <NavItemRouterLink 
-              title="Dashboard" 
+              title="Devices" 
               link="/" 
-              icon="home"
+              icon="activity"
               @click="unshow"
             />
             <NavItemRouterLink 
-              title="Orders" 
+              title="Scripts" 
               link="/album/Orders" 
-              icon="file" 
+              icon="cpu" 
               @click="unshow"
             />
             <NavItemRouterLink 
-              title="Products" 
+              title="Notify" 
               link="/empty/Products" 
-              icon="shopping-cart" 
+              icon="alert-triangle" 
               @click="unshow"
             />
             <NavItemRouterLink 
-              title="Customers" 
+              title="Settings" 
               link="/empty/Customers" 
-              icon="users" 
+              icon="sliders" 
               @click="unshow"
             />
             <NavItemRouterLink 
-              title="Reports" 
+              title="About" 
               link="/empty/Reports" 
-              icon="bar-chart-2" 
-              @click="unshow"
-            />
-            <NavItemRouterLink 
-              title="Integrations" 
-              link="/empty/Integrations" 
-              icon="layers" 
+              icon="help-circle" 
               @click="unshow"
             />
             <NavItemRouterLink               
@@ -104,59 +82,49 @@ function unshow()
             />
           </NavItemGroup>
           <NavItemHeader 
-            title="Saved reports"
-            class="d-none d-md-block"
-          >
-            <a               
-              v-if="isOkToAddReport()"
-              data-test-id="AddReport"
-              @click="addReport()"
-              class="link-secondary link-clickable"
-              aria-label="Add a new report"
-            >
-              <FeatherIcon icon="plus-circle"/>
-            </a>
-          </NavItemHeader>
-          <NavItemGroup 
-            data-test-id="SavedReports"
-            class="d-none d-md-block"
-          >
-            <NavItemRouterLink 
-              title="Current month" 
-              link="/empty/Reports" 
-              icon="file-text"
-              tid="ReportCM"
+            title="Edge Components"
+          />
+          <NavItemGroup>
+            <NavItemLink 
+              title="Grafana" 
+              link="http://localhost:3000/"
+              icon="bar-chart"
               @click="unshow"
             />
-            <NavItemRouterLink 
-              title="Last quarter" 
-              link="/empty/Reports" 
-              icon="file-text"
-              tid="ReportLQ"
+            <NavItemLink 
+              title="InfluxDB" 
+              link="http://localhost:8086" 
+              icon="database"
               @click="unshow"
             />
-            <NavItemRouterLink 
-              title="Social engagement" 
-              link="/empty/Reports" 
-              icon="file-text"
-              tid="ReportSE"
+            <NavItemLink 
+              title="VerneMQ" 
+              link="http://localhost:8888/status" 
+              icon="radio"
               @click="unshow"
             />
-            <NavItemRouterLink 
-              title="Year-end sale" 
-              link="/empty/Reports" 
-              icon="file-text"
-              tid="ReportYE"
+          </NavItemGroup>
+          <NavItemHeader 
+            title="Azure Services"
+          />
+          <NavItemGroup>
+            <NavItemLink 
+              title="Digital Twins" 
+              link="https://explorer.digitaltwins.azure.net/"
+              icon="compass"
               @click="unshow"
             />
-            <NavItemRouterLink
-              v-for="i in numReports"
-              data-test-id="NewReport"
-              :key="i"
-              :title="`New Report ${i}`"
-              link="/empty/Reports" 
-              icon="file-text"
-              :tid="`ReportN${i}`"
+            <NavItemLink 
+              title="3D Scenes Studio" 
+              link="https://explorer.digitaltwins.azure.net/3dscenes"
+              icon="box"
+              @click="unshow"
+            />
+            <NavItemLink 
+              title="Power BI" 
+              link="https://app.powerbi.com/"
+              icon="bar-chart"
+              @click="unshow"
             />
           </NavItemGroup>
         </div>

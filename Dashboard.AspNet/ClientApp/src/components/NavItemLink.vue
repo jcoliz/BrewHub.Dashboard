@@ -2,6 +2,7 @@
 import FeatherIcon from './FeatherIcon.vue';
 
 defineProps<{ title: string, link: string, icon?: string }>();
+defineEmits([ 'click' ]);
 
 </script>
 
@@ -10,7 +11,9 @@ defineProps<{ title: string, link: string, icon?: string }>();
         <a 
             class="nav-link" 
             aria-current="page" 
+            target="_blank"
             :href="link"
+            @click="$emit('click')"
         >
             <FeatherIcon 
                 v-if="icon" 
