@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import ChartViewer from '../components/ChartViewer.vue';
-import FeatherIcon from '../components/FeatherIcon.vue';
+import ChartButtonToolbar from '../components/ChartButtonToolbar.vue';
 import DisplaySlab from '../components/DisplaySlab.vue';
-import { RouterLink } from 'vue-router';
+import BreadCrumbs from '../components/BreadCrumbs.vue';
 import { DevicesClient, IDisplayMetricGroup, ChartsClient, IChartConfig } from '../apiclients/apiclient.ts';
 
 /*
  * Route inputs
  */
 
-defineProps<{ deviceid?: string }>();
+const props = defineProps<{ deviceid?: string }>();
 
 /*
  * Primary data to display
@@ -22,7 +22,6 @@ const chartconfig = ref<IChartConfig | null>(null);
  * Timescale of display
  */
 
-
 /*
  * Fetching from server
  */
@@ -31,7 +30,10 @@ var devicesClient = new DevicesClient();
 var chartsClient = new ChartsClient();
 
 async function getData() {
-  slabs.value = await devicesClient.slabs();
+  if (props.deviceid)
+    slabs.value = await devicesClient.device(props.deviceid);
+  else
+    slabs.value = await devicesClient.slabs();
 }
 
 async function getChart() {
@@ -66,98 +68,9 @@ setInterval(update, 2000);
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
       <div>
         <h1 class="h2">Devices</h1>
-        <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-          <ol class="breadcrumb">
-            <li 
-              v-if="$props.deviceid"
-              class="breadcrumb-item" 
-            >
-              <RouterLink to="/">Home</RouterLink>
-            </li>
-            <li 
-              v-else
-              class="breadcrumb-item active" 
-              aria-current="page"
-            >
-              Home
-            </li>
-            <li 
-              v-if="$props.deviceid"
-              class="breadcrumb-item active" 
-              aria-current="page">
-              {{ deviceid }}
-            </li>
-          </ol>
-        </nav>    
+        <BreadCrumbs :links="[]" page="Home"/>
       </div>
-      <div class="btn-toolbar mb-2 mb-md-0">
-        <div 
-          class="btn-group me-2" 
-          role="group" 
-          aria-label="Chart style button group"
-        >
-          <input 
-            id="vbtn-radio1" 
-            name="vbtn-radio" 
-            type="radio" 
-            class="btn-check" 
-            autocomplete="off" 
-            :value="true" 
-          >
-          <label 
-            data-test-id="ShowBarChart"
-            for="vbtn-radio1"
-            class="btn btn-sm btn-outline-secondary" 
-          >
-            Bar
-          </label>
-          <input 
-            id="vbtn-radio2" 
-            name="vbtn-radio" 
-            type="radio" 
-            class="btn-check" 
-            autocomplete="off" 
-            :value="false" 
-          > 
-          <label 
-            data-test-id="ShowLineChart"
-            for="vbtn-radio2"
-            class="btn btn-sm btn-outline-secondary" 
-          >
-            Line
-          </label>
-        </div>
-
-        <div 
-          class="btn-group dropdown" 
-          role="group">
-          <button 
-            id="btnDropTimescale" 
-            data-test-id="TimescaleDropDown"
-            type="button" 
-            class="btn btn-sm btn-outline-secondary dropdown-toggle" 
-            data-bs-toggle="dropdown"
-          >
-            <FeatherIcon icon="calendar"/>
-          </button>
-          <ul 
-            class="dropdown-menu" 
-            aria-labelledby="btnDropTimescale"
-          >
-            <li 
-              v-for="(option,index) in [ 'A', 'B' ]" 
-              :key="index"
-            >
-              <a 
-                class="dropdown-item" 
-                href="javascript:void(0)" 
-              >
-                {{ option }}
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div>
+      <ChartButtonToolbar/>
     </div>
 
     <div 
@@ -170,7 +83,7 @@ setInterval(update, 2000);
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xxl-4 mb-3 text-center">
       <DisplaySlab 
         v-for="slab in slabs"
-        :key="slab.id"
+        :key="`${slab.kind}-${slab.id}`"
         :slab="slab"
         :href="`/devices/${slab.id}`"
       />

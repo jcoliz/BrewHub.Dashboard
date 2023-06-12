@@ -27,9 +27,16 @@ defineProps<{ slab?: IDisplayMetricGroup, href?: string }>();
                             <small class="text-body-secondary">{{ metric.value }}</small>
                         </div>
                     </li>
-                </ul>
-
-                
+                    <li 
+                        v-for="metric in slab?.readOnlyProperties" :key="slab?.id"
+                        class="list-group-item d-flex justify-content-between lh-sm"
+                    >
+                        <div>
+                            <h6 class="my-0">{{ metric.name }}</h6>
+                            <small class="text-body-secondary">{{ metric.value }}</small>
+                        </div>
+                    </li>
+                </ul>               
                 <RouterLink 
                     v-if="href"
                     :to="href"
