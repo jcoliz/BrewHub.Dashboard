@@ -188,4 +188,48 @@ public class DeviceModelDetails: IDeviceModel
             Commands = GetCommands(c.Key).ToArray()
         };
     }
+
+    public DisplayMetricGroup[] FromSingleComponent(IEnumerable<Datapoint> c)
+    {
+        var result = new List<DisplayMetricGroup>();
+
+        var telemetry = c.Where(x => IsMetricTelemetry(x.__Field));
+        if (telemetry.Any())
+        {
+            result.Add(new DisplayMetricGroup()
+            {
+                Title = "Telemetry",
+                Telemetry = telemetry.Select(FromDatapoint).ToArray()
+            });
+        }
+        var ro = c.Where(x=>!IsMetricWritable(x.__Field) && !IsMetricTelemetry(x.__Field));
+        if (ro.Any())
+        {
+            result.Add(new DisplayMetricGroup()
+            {
+                Title = "Properties",
+                ReadOnlyProperties = ro.Select(FromDatapoint).ToArray()
+            });
+        }
+        var writable = c.Where(x=>IsMetricWritable(x.__Field));
+        if (writable.Any())
+        {
+            result.Add(new DisplayMetricGroup()
+            {
+                Title = "Writable Properties",
+                ReadOnlyProperties = writable.Select(FromDatapoint).ToArray()
+            });
+        }
+        var commands = GetCommands(c.First()?.__Component ?? string.Empty);
+        if (commands.Any())
+        {
+            result.Add(new DisplayMetricGroup()
+            {
+                Title = "Commands",
+                Commands = commands.ToArray()
+            });
+        }
+
+        return result.ToArray();
+    }
 }

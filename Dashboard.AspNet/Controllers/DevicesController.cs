@@ -1,5 +1,4 @@
 using BrewHub.Dashboard.Core.Dtmi;
-using BrewHub.Dashboard.Core.Models;
 using BrewHub.Dashboard.Core.Providers;
 using BrewHub.Dashboard.Core.Display;
 using Microsoft.AspNetCore.Mvc;
@@ -88,7 +87,6 @@ public class DevicesController : ControllerBase
             return NotFound();
         }
 
-
         // Query InfluxDB, compose into UI slabs
         data = await _datasource.GetLatestDevicePropertiesAsync(device);
         var dtmi = new DeviceModelDetails();
@@ -134,14 +132,13 @@ public class DevicesController : ControllerBase
             return NotFound();
         }
 
-        var slab = new DisplayMetricGroup()
-        {
-            Title = "Properties",
-            Kind = DisplayMetricGroupKind.Grouping,
-            ReadOnlyProperties = componentprops.Select(y => new DisplayMetric() { Name = y.__Field, Id = y.__Field, Value = y.__Value.ToString() ?? "null" }).ToArray()
-        };
+        // Query InfluxDB, compose into UI slabs
+        data = await _datasource.GetLatestDevicePropertiesAsync(device);
+        var dtmi = new DeviceModelDetails();
+        var metrics = data.Where(x => component == (x.__Component ?? "device"));
+        var slabs = dtmi!.FromSingleComponent(metrics);
 
-        return Ok(new DisplayMetricGroup[] { slab });
+        return Ok(slabs);
     }
 
     /// <summary>
