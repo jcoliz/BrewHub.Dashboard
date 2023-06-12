@@ -8,7 +8,7 @@ import { RouterView } from 'vue-router';
 
 <template>
   <div class="body">
-    <TheHeader title="Vue.JS + .NET" />
+    <TheHeader title="BrewHub.Net" />
     <div class="container-fluid">
       <div class="row">
         <TheSideBar/>
