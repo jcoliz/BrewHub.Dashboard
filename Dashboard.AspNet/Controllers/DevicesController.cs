@@ -35,11 +35,22 @@ public class DevicesController : ControllerBase
     [HttpGet]
     [Route("[action]")]
     [ProducesResponseType(typeof(Core.Dtmi.Slab[]),StatusCodes.Status200OK)]
-    public ActionResult Slabs()
+    public async Task<ActionResult> Slabs()
     {
         _logger.LogInformation("Request: Device Slabs");
 
-        var slabs = _devices.Select(x=> new Core.Dtmi.Slab(){ Header = $"Device {x}" });
+        var data = await _datasource.GetLatestDeviceTelemetryAllAsync();
+
+        var slabs = data
+                    .GroupBy(x => x.__Device)
+                    .Select(x =>
+                        new Core.Dtmi.Slab()
+                        {
+                            Header = x.Key,
+                            Properties = x.Select(y => new Core.Dtmi.KeyValueUnits() { Key = y.__Field, Value = y.__Value.ToString() ?? "null" })
+                        }
+                    )
+                    .ToArray();
 
         return Ok(slabs);
     }
@@ -48,28 +59,65 @@ public class DevicesController : ControllerBase
     [Route("{id}")]
     [ProducesResponseType(typeof(Core.Dtmi.Slab[]),StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public ActionResult Device([FromRoute] string id)
+    public async Task<ActionResult> Device([FromRoute] string id)
     {
         _logger.LogInformation("Request: Device {device}", id);
 
-        if (!_devices.Contains(id))
+        var data = await _datasource.GetLatestDeviceTelemetryAllAsync();
+        var devices = data.Select(x => x.__Device).Distinct();
+
+        if (!devices.Contains(id))
             return NotFound();
 
-        return Ok(new Core.Dtmi.Slab[] { new(){ Header = $"Device {id}" } });
+        var props = await _datasource.GetLatestDevicePropertiesAsync(id);
+
+        var slabs = props
+                    .GroupBy(x => x.__Component ?? "device")
+                    .Select(x =>
+                        new Core.Dtmi.Slab()
+                        {
+                            Header = x.Key,
+                            Properties = x.Select(y => new Core.Dtmi.KeyValueUnits() { Key = y.__Field, Value = y.__Value.ToString() ?? "null" })
+                        }
+                    )
+                    .ToArray();
+
+        return Ok(slabs);
     }
 
     [HttpGet]
     [Route("{id}/component/{component}")]
     [ProducesResponseType(typeof(Core.Dtmi.Slab[]), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public ActionResult Component ([FromRoute] string id, [FromRoute] string? component )
+    public async Task<ActionResult> Component ([FromRoute] string id, [FromRoute] string? component )
     {
         _logger.LogInformation("Request: Device {device} Component {component}", id, component);
 
-        if (!_devices.Contains(id))
+        var data = await _datasource.GetLatestDeviceTelemetryAllAsync();
+        var devices = data.Select(x => x.__Device).Distinct();
+
+        if (!devices.Contains(id))
             return NotFound();
 
-        return Ok(new Core.Dtmi.Slab[] { new(){ Header = $"Device {id}", ComponentId = component } });
+        var props = await _datasource.GetLatestDevicePropertiesAsync(id);
+
+        var componentprops = props.Where(x => component == (x.__Component ?? "device"));
+
+        if (!componentprops.Any())
+            return NotFound();
+
+        var slabs = componentprops
+                    .GroupBy(x => x.__Component ?? "device")
+                    .Select(x =>
+                        new Core.Dtmi.Slab()
+                        {
+                            Header = x.Key,
+                            Properties = x.Select(y => new Core.Dtmi.KeyValueUnits() { Key = y.__Field, Value = y.__Value.ToString() ?? "null" })
+                        }
+                    )
+                    .ToArray();
+
+        return Ok(slabs);
     }
 
     [HttpPost]
