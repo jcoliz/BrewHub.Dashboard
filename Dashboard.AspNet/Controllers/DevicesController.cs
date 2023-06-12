@@ -7,6 +7,9 @@ namespace BrewHub.Dashboard.Controllers;
 
 public enum TimeframeEnum { Minutes = 0, Hour, Hours, Day, Week, Month };
 
+/// <summary>
+/// Read and modify device metrics
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 [Produces("application/json")]
@@ -14,8 +17,6 @@ public class DevicesController : ControllerBase
 {
     private readonly IDataSource _datasource;
     private readonly ILogger<DevicesController> _logger;
-
-    private readonly string[] _devices = new[] { "A", "B", "C" };
 
     public DevicesController(ILogger<DevicesController> logger, IDataSource datasource)
     {
@@ -68,48 +69,28 @@ public class DevicesController : ControllerBase
     }
 
     /// <summary>
-    /// Get summary chart of all device telemetry
-    /// </summary>
-    /// <returns>Summary chart</returns>
-    [HttpGet]
-    [Route("[action]")]
-    [ProducesResponseType(typeof(Common.ChartJS.ChartConfig),StatusCodes.Status200OK)]
-    public async Task<ActionResult> Chart()
-    {
-        _logger.LogInformation("Chart");
-
-        // Pull raw telemetry from database
-        // TODO: Need to get all telemetry in this call
-        var data = await _datasource.GetLatestDeviceTelemetryAllAsync();
-        var dtmi = new DeviceModelDetails();
-        var result = BrewHub.Dashboard.Core.Charting.ChartMaker.CreateMultiDeviceBarChart(data, dtmi.VisualizeTelemetryTop);
-
-        return Ok(result);
-    }
-
-    /// <summary>
     /// Get details for a single device
     /// </summary>
-    /// <param name="id">Which device</param>
+    /// <param name="device">Which device</param>
     /// <returns>Detail slabs, one for each component</returns>
     [HttpGet]
-    [Route("{id}")]
+    [Route("{device}")]
     [ProducesResponseType(typeof(Core.Dtmi.Slab[]),StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> Device([FromRoute] string id)
+    public async Task<ActionResult> Device([FromRoute] string device)
     {
-        _logger.LogInformation("Device: {device}", id);
+        _logger.LogInformation("Device: {device}", device);
 
         var data = await _datasource.GetLatestDeviceTelemetryAllAsync();
         var devices = data.Select(x => x.__Device).Distinct();
 
-        if (!devices.Contains(id))
+        if (!devices.Contains(device))
         {
-            _logger.LogError("Device: {status} Unknown device {device}",StatusCodes.Status404NotFound,id);
+            _logger.LogError("Device: {status} Unknown device {device}",StatusCodes.Status404NotFound,device);
             return NotFound();
         }
 
-        var props = await _datasource.GetLatestDevicePropertiesAsync(id);
+        var props = await _datasource.GetLatestDevicePropertiesAsync(device);
 
         var slabs = props
                     .GroupBy(x => x.__Component ?? "device")
@@ -126,116 +107,41 @@ public class DevicesController : ControllerBase
     }
 
     /// <summary>
-    /// Get telemetry across all components for this device
-    /// </summary>
-    /// <param name="id">Which device</param>
-    /// <param name="timeframe">Timeframe to covert</param>
-    /// <returns>Chart</returns>
-    [HttpGet]
-    [Route("{id}/Chart/{timeframe}")]
-    [ProducesResponseType(typeof(Common.ChartJS.ChartConfig),StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> DeviceChart([FromRoute] string id, [FromRoute] TimeframeEnum timeframe)
-    {
-        _logger.LogInformation("Request: Device Chart {device}", id);
-
-        var data = await _datasource.GetLatestDeviceTelemetryAllAsync();
-        var devices = data.Select(x => x.__Device).Distinct();
-
-        if (!devices.Contains(id))
-        {
-            _logger.LogError("DeviceChart: {status} Unknown device {device}",StatusCodes.Status404NotFound,id);
-            return NotFound();
-        }
-
-        TimeSpan lookback = TimeSpan.Zero;
-        TimeSpan bininterval = TimeSpan.Zero;
-        string labelformat = string.Empty;
-
-        try
-        {
-            lookback = timeframe switch
-            {
-                TimeframeEnum.Minutes => TimeSpan.FromMinutes(5), // "5m",
-                TimeframeEnum.Hour => TimeSpan.FromHours(1), //"1h",
-                TimeframeEnum.Hours => TimeSpan.FromHours(4), //"4h",
-                TimeframeEnum.Day => TimeSpan.FromHours(24), //"24h",
-                TimeframeEnum.Week => TimeSpan.FromDays(7), //"7d",
-                TimeframeEnum.Month => TimeSpan.FromDays(28), //"28d",
-                _ => throw new NotImplementedException()
-            };
-
-            bininterval = timeframe switch
-            {
-                TimeframeEnum.Minutes =>  TimeSpan.FromSeconds(20), //"20s",
-                TimeframeEnum.Hour =>  TimeSpan.FromMinutes(2), //"2m",
-                TimeframeEnum.Hours =>  TimeSpan.FromMinutes(15), //"15m",
-                TimeframeEnum.Day =>  TimeSpan.FromHours(1), //"1h",
-                TimeframeEnum.Week =>  TimeSpan.FromDays(1), //"1d",
-                TimeframeEnum.Month => TimeSpan.FromDays(7), //"7d",
-                _ => throw new NotImplementedException()
-            };
-
-            labelformat = timeframe switch
-            {
-                TimeframeEnum.Minutes => "mm:ss",
-                TimeframeEnum.Hour or 
-                TimeframeEnum.Hours or 
-                TimeframeEnum.Day => "H:mm",
-                TimeframeEnum.Week or 
-                TimeframeEnum.Month => "M/dd",
-                _ => throw new NotImplementedException()
-            };
-        }
-        catch (NotImplementedException)
-        {
-            _logger.LogError("DeviceChart: {status} Unxpected timeframe {timeframe}",StatusCodes.Status400BadRequest,timeframe);
-            return BadRequest();
-        }
-
-        // Get historical telemetry data for all components on this device
-        data = await _datasource.GetSingleDeviceTelemetryAsync(id, lookback, bininterval);
-        var dtmi = new DeviceModelDetails();
-        var result = BrewHub.Dashboard.Core.Charting.ChartMaker.CreateMultiLineChart(data, dtmi.VisualizeTelemetryDevice, labelformat);
-
-        return Ok(result);
-    }
-
-    /// <summary>
     /// Get details for a single component
     /// </summary>
-    /// <param name="id">Which device</param>
+    /// <param name="device">Which device</param>
     /// <param name="component">Which component, or "device" for device details</param>
     /// <returns>Detail slabs, one for each kind of metric</returns>
     [HttpGet]
-    [Route("{id}/Component/{component}")]
+    [Route("{device}/Component/{component}")]
     [ProducesResponseType(typeof(Core.Dtmi.Slab[]), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> Component ([FromRoute] string id, [FromRoute] string? component )
+    public async Task<ActionResult> Component ([FromRoute] string device, [FromRoute] string component )
     {
-        _logger.LogInformation("Component: Device {device} Component {component}", id, component);
+        _logger.LogInformation("Component: Device {device} Component {component}", device, component);
 
         var data = await _datasource.GetLatestDeviceTelemetryAllAsync();
         var devices = data.Select(x => x.__Device).Distinct();
-        if (!devices.Contains(id))
+        if (!devices.Contains(device))
         {
-            _logger.LogError("Component: {status} Unknown device {device}",StatusCodes.Status404NotFound,id);
+            _logger.LogError("Component: {status} Unknown device {device}",StatusCodes.Status404NotFound,device);
             return NotFound();
         }
-        var components = data.Where(x => x.__Device == id).Select(x=>x.__Component ?? "device").Distinct();
-        if (!components.Contains(id))
+        var components = data.Where(x => x.__Device == device).Select(x=>x.__Component ?? "device").Distinct();
+        if (!components.Contains(device))
         {
             _logger.LogError("Component: {status} Unknown component {component}",StatusCodes.Status404NotFound,component);
             return NotFound();
         }
 
-        var props = await _datasource.GetLatestDevicePropertiesAsync(id);
-
+        var props = await _datasource.GetLatestDevicePropertiesAsync(device);
         var componentprops = props.Where(x => component == (x.__Component ?? "device"));
 
         if (!componentprops.Any())
+        {
+            _logger.LogError("Component: {status} No data for component {component}",StatusCodes.Status404NotFound,component);
             return NotFound();
+        }
 
         var slabs = componentprops
                     .GroupBy(x => x.__Component ?? "device")
@@ -255,28 +161,28 @@ public class DevicesController : ControllerBase
     /// Execute command on device
     /// </summary>
     /// <param name="payload">Parameters to send to command</param>
-    /// <param name="id">Name of device</param>
+    /// <param name="device">Name of device</param>
     /// <param name="component">Name of component, or "device"</param>
     /// <param name="command">Name of command</param>
     [HttpPost]
-    [Route("{id}/Component/{component}/Command/{command}")]
+    [Route("{device}/Component/{component}/Command/{command}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> ExecuteCommand([FromBody] object payload, [FromRoute] string id, [FromRoute] string component, [FromRoute] string command)
+    public async Task<IActionResult> ExecuteCommand([FromBody] object payload, [FromRoute] string device, [FromRoute] string component, [FromRoute] string command)
     {
-        _logger.LogInformation("ExecuteCommand: Device {device} Component {component} payload {payload}", id, component ?? "null", payload);
+        _logger.LogInformation("ExecuteCommand: Device {device} Component {component} payload {payload}", device, component ?? "null", payload);
 
         // Not found if we don't know about the device, or component
         var data = await _datasource.GetLatestDeviceTelemetryAllAsync();
         var devices = data.Select(x => x.__Device).Distinct();
-        if (!devices.Contains(id))
+        if (!devices.Contains(device))
         {
-            _logger.LogError("ExecuteCommand: {status} Unknown device {device}",StatusCodes.Status404NotFound,id);
+            _logger.LogError("ExecuteCommand: {status} Unknown device {device}",StatusCodes.Status404NotFound,device);
             return NotFound();
         }
-        var components = data.Where(x => x.__Device == id).Select(x=>x.__Component ?? "device").Distinct();
-        if (!components.Contains(id))
+        var components = data.Where(x => x.__Device == device).Select(x=>x.__Component ?? "device").Distinct();
+        if (!components.Contains(device))
         {
             _logger.LogError("ExecuteCommand: {status} Unknown component {component}",StatusCodes.Status404NotFound,component);
             return NotFound();
@@ -291,28 +197,28 @@ public class DevicesController : ControllerBase
     /// Set property on device
     /// </summary>
     /// <param name="payload">Value to set on property</param>
-    /// <param name="id">Name of device</param>
+    /// <param name="device">Name of device</param>
     /// <param name="component">Name of component, or "device"</param>
     /// <param name="property">Name of property</param>
     [HttpPost]
-    [Route("{id}/Component/{component}/Property/{property}")]
+    [Route("{device}/Component/{component}/Property/{property}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> SetProperty([FromBody] object payload, [FromRoute] string id, [FromRoute] string component, [FromRoute] string property)
+    public async Task<IActionResult> SetProperty([FromBody] object payload, [FromRoute] string device, [FromRoute] string component, [FromRoute] string property)
     {
-        _logger.LogInformation("SetProperty: Device {device} Component {component} payload {payload}", id, component ?? "null", payload);
+        _logger.LogInformation("SetProperty: Device {device} Component {component} payload {payload}", device, component ?? "null", payload);
 
         // Not found if we don't know about the device, or component
         var data = await _datasource.GetLatestDeviceTelemetryAllAsync();
         var devices = data.Select(x => x.__Device).Distinct();
-        if (!devices.Contains(id))
+        if (!devices.Contains(device))
         {
-            _logger.LogError("SetProperty: {status} Unknown device {device}",StatusCodes.Status404NotFound,id);
+            _logger.LogError("SetProperty: {status} Unknown device {device}",StatusCodes.Status404NotFound,device);
             return NotFound();
         }
-        var components = data.Where(x => x.__Device == id).Select(x=>x.__Component ?? "device").Distinct();
-        if (!components.Contains(id))
+        var components = data.Where(x => x.__Device == device).Select(x=>x.__Component ?? "device").Distinct();
+        if (!components.Contains(device))
         {
             _logger.LogError("SetProperty: {status} Unknown component {component}",StatusCodes.Status404NotFound,component);
             return NotFound();
