@@ -3,6 +3,7 @@ using BrewHub.Dashboard.Core.Providers;
 using BrewHub.Dashboard.Core.Display;
 using Microsoft.AspNetCore.Mvc;
 using System.Runtime.CompilerServices;
+using Microsoft.AspNetCore.Cors;
 
 namespace BrewHub.Dashboard.Controllers;
 

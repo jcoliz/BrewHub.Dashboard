@@ -1,11 +1,13 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import ChartViewer from '../components/ChartViewer.vue';
 import FeatherIcon from '../components/FeatherIcon.vue';
+import { DevicesClient } from '../apiclients/apiclient.ts';
 
 /*
  * Primary data to display
  */
-
+const devices = ref<string[]>([]);
 
 /*
  * Timescale of display
@@ -15,6 +17,14 @@ import FeatherIcon from '../components/FeatherIcon.vue';
 /*
  * Fetching from server
  */
+
+var devicesClient = new DevicesClient();
+
+async function getData() {
+  devices.value = await devicesClient.devices();
+}
+
+getData()
 
 </script>
 
@@ -118,14 +128,15 @@ import FeatherIcon from '../components/FeatherIcon.vue';
         class="table table-striped table-sm">
         <thead>
           <tr>
-            <th scope="col">#</th>
-            <th scope="col">Date</th>
-            <th scope="col">Temp C</th>
-            <th scope="col">Temp F</th>
-            <th scope="col">Summary</th>
+            <th scope="col">Device</th>
           </tr>
         </thead>
         <tbody>
+          <tr v-for="device in devices">
+            <td>
+              {{ device }}
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>

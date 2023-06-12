@@ -17,6 +17,24 @@ var logger = loggerFactory.CreateLogger("Startup");
 logger.LogInformation("*** STARTING ***");
 
 // Add services to the container.
+
+// This is PROBABLY only needed in development
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(
+        policy =>
+        {
+            policy.AllowAnyOrigin() /*WithOrigins
+                    (
+                        "http://localhost",
+                        "https://localhost"
+                    )*/
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    ;
+        });
+});
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddOpenApiDocument(); // registers a OpenAPI v3.0 document with the name "v1" (default)
 builder.Services.AddRazorPages()
@@ -77,6 +95,7 @@ app.UseSwaggerUi3(); // Serves the Swagger UI 3 web ui to view the OpenAPI/Swagg
 
 app.UseStaticFiles();
 app.UseRouting();
+app.UseCors();
 app.MapRazorPages();
 app.MapControllerRoute(
     name: "default",
