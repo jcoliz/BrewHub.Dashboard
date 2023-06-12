@@ -53,20 +53,15 @@ public class DevicesController : ControllerBase
     {
         _logger.LogInformation("Slabs");
 
+        // Pull raw telemetry from database
+        // TODO: Need to get all telemetry in this call
         var data = await _datasource.GetLatestDeviceTelemetryAllAsync();
+        var dtmi = new DeviceModelDetails();
 
         var slabs = data
-                    .GroupBy(x => x.__Device)
-                    .Select(x =>
-                        new DisplayMetricGroup()
-                        {
-                            Title = x.Key,
-                            Id = x.Key,
-                            Kind = DisplayMetricGroupKind.Device,
-                            ReadOnlyProperties = x.Select(y => new DisplayMetric() { Name = y.__Field, Id = y.__Field, Value = y.__Value.ToString() ?? "null" }).ToArray()
-                        }
-                    )
-                    .ToArray();
+                .GroupBy(x => x.__Device)
+                .Select(dtmi!.FromDeviceComponentTelemetry)
+                .ToArray();
 
         return Ok(slabs);
     }
@@ -93,20 +88,11 @@ public class DevicesController : ControllerBase
             return NotFound();
         }
 
-        var props = await _datasource.GetLatestDevicePropertiesAsync(device);
 
-        var slabs = props
-                    .GroupBy(x => x.__Component ?? "device")
-                    .Select(x =>
-                        new DisplayMetricGroup()
-                        {
-                            Title = x.Key,
-                            Id = x.Key,
-                            Kind = DisplayMetricGroupKind.Component,
-                            ReadOnlyProperties = x.Select(y => new DisplayMetric() { Name = y.__Field, Id = y.__Field, Value = y.__Value.ToString() ?? "null" }).ToArray()
-                        }
-                    )
-                    .ToArray();
+        // Query InfluxDB, compose into UI slabs
+        data = await _datasource.GetLatestDevicePropertiesAsync(device);
+        var dtmi = new DeviceModelDetails();
+        var slabs = data.GroupBy(x => x.__Component ?? string.Empty).Select(dtmi!.FromComponent).ToArray();
 
         return Ok(slabs);
     }
