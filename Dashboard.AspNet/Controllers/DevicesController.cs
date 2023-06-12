@@ -1,6 +1,7 @@
 using BrewHub.Dashboard.Core.Dtmi;
 using BrewHub.Dashboard.Core.Models;
 using BrewHub.Dashboard.Core.Providers;
+using BrewHub.Dashboard.Core.Display;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BrewHub.Dashboard.Controllers;
@@ -47,7 +48,7 @@ public class DevicesController : ControllerBase
     /// <returns>Summaries</returns>
     [HttpGet]
     [Route("[action]")]
-    [ProducesResponseType(typeof(Core.Dtmi.Slab[]),StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(DisplayMetricGroup[]),StatusCodes.Status200OK)]
     public async Task<ActionResult> Slabs()
     {
         _logger.LogInformation("Slabs");
@@ -57,10 +58,12 @@ public class DevicesController : ControllerBase
         var slabs = data
                     .GroupBy(x => x.__Device)
                     .Select(x =>
-                        new Core.Dtmi.Slab()
+                        new DisplayMetricGroup()
                         {
-                            Header = x.Key,
-                            Properties = x.Select(y => new Core.Dtmi.KeyValueUnits() { Key = y.__Field, Value = y.__Value.ToString() ?? "null" })
+                            Title = x.Key,
+                            Id = x.Key,
+                            Kind = DisplayMetricGroupKind.Device,
+                            ReadOnlyProperties = x.Select(y => new DisplayMetric() { Name = y.__Field, Id = y.__Field, Value = y.__Value.ToString() ?? "null" }).ToArray()
                         }
                     )
                     .ToArray();
@@ -75,7 +78,7 @@ public class DevicesController : ControllerBase
     /// <returns>Detail slabs, one for each component</returns>
     [HttpGet]
     [Route("{device}")]
-    [ProducesResponseType(typeof(Core.Dtmi.Slab[]),StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(DisplayMetricGroup[]),StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Device([FromRoute] string device)
     {
@@ -95,10 +98,12 @@ public class DevicesController : ControllerBase
         var slabs = props
                     .GroupBy(x => x.__Component ?? "device")
                     .Select(x =>
-                        new Core.Dtmi.Slab()
+                        new DisplayMetricGroup()
                         {
-                            Header = x.Key,
-                            Properties = x.Select(y => new Core.Dtmi.KeyValueUnits() { Key = y.__Field, Value = y.__Value.ToString() ?? "null" })
+                            Title = x.Key,
+                            Id = x.Key,
+                            Kind = DisplayMetricGroupKind.Component,
+                            ReadOnlyProperties = x.Select(y => new DisplayMetric() { Name = y.__Field, Id = y.__Field, Value = y.__Value.ToString() ?? "null" }).ToArray()
                         }
                     )
                     .ToArray();
@@ -114,7 +119,7 @@ public class DevicesController : ControllerBase
     /// <returns>Detail slabs, one for each kind of metric</returns>
     [HttpGet]
     [Route("{device}/Component/{component}")]
-    [ProducesResponseType(typeof(Core.Dtmi.Slab[]), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(DisplayMetricGroup[]), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Component ([FromRoute] string device, [FromRoute] string component )
     {
@@ -128,7 +133,7 @@ public class DevicesController : ControllerBase
             return NotFound();
         }
         var components = data.Where(x => x.__Device == device).Select(x=>x.__Component ?? "device").Distinct();
-        if (!components.Contains(device))
+        if (!components.Contains(component))
         {
             _logger.LogError("Component: {status} Unknown component {component}",StatusCodes.Status404NotFound,component);
             return NotFound();
@@ -143,18 +148,14 @@ public class DevicesController : ControllerBase
             return NotFound();
         }
 
-        var slabs = componentprops
-                    .GroupBy(x => x.__Component ?? "device")
-                    .Select(x =>
-                        new Core.Dtmi.Slab()
-                        {
-                            Header = x.Key,
-                            Properties = x.Select(y => new Core.Dtmi.KeyValueUnits() { Key = y.__Field, Value = y.__Value.ToString() ?? "null" })
-                        }
-                    )
-                    .ToArray();
+        var slab = new DisplayMetricGroup()
+        {
+            Title = "Properties",
+            Kind = DisplayMetricGroupKind.Grouping,
+            ReadOnlyProperties = componentprops.Select(y => new DisplayMetric() { Name = y.__Field, Id = y.__Field, Value = y.__Value.ToString() ?? "null" }).ToArray()
+        };
 
-        return Ok(slabs);
+        return Ok(new DisplayMetricGroup[] { slab });
     }
 
     /// <summary>
