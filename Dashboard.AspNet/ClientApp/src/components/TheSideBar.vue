@@ -44,39 +44,39 @@ function unshow()
             />
             <NavItemRouterLink 
               title="Scripts" 
-              link="/album/Orders" 
+              link="/empty/Scripts" 
               icon="cpu" 
               @click="unshow"
             />
             <NavItemRouterLink 
               title="Notify" 
-              link="/empty/Products" 
+              link="/empty/Notify" 
               icon="alert-triangle" 
               @click="unshow"
             />
             <NavItemRouterLink 
               title="Settings" 
-              link="/empty/Customers" 
+              link="/empty/Settings" 
               icon="sliders" 
               @click="unshow"
             />
             <NavItemRouterLink 
               title="About" 
-              link="/empty/Reports" 
+              link="/empty/About" 
               icon="help-circle" 
               @click="unshow"
             />
             <NavItemRouterLink               
               title="Search" 
               class="d-md-none"
-              link="/empty/Integrations" 
+              link="/empty/Search" 
               icon="search" 
               @click="unshow"
             />
             <NavItemRouterLink 
               title="Login" 
               class="d-md-none"
-              link="/empty/Integrations" 
+              link="/empty/Login" 
               icon="log-in" 
               @click="unshow"
             />
