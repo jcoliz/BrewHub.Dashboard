@@ -2,12 +2,13 @@
 import { ref } from 'vue'
 import ChartViewer from '../components/ChartViewer.vue';
 import FeatherIcon from '../components/FeatherIcon.vue';
-import { DevicesClient } from '../apiclients/apiclient.ts';
+import DisplaySlab from '../components/DisplaySlab.vue';
+import { DevicesClient, IDisplayMetricGroup } from '../apiclients/apiclient.ts';
 
 /*
  * Primary data to display
  */
-const devices = ref<string[]>([]);
+const slabs = ref<IDisplayMetricGroup[]>([]);
 
 /*
  * Timescale of display
@@ -21,7 +22,7 @@ const devices = ref<string[]>([]);
 var devicesClient = new DevicesClient();
 
 async function getData() {
-  devices.value = await devicesClient.devices();
+  slabs.value = await devicesClient.slabs();
 }
 
 getData()
@@ -114,32 +115,19 @@ getData()
       </div>
     </div>
 
-    <ChartViewer :bar="true" :labels="[]" :values="[]"/>
-
-    <h2 class="h3">
-      Forecasts
-    </h2>
-
-    <div 
-      class="table-responsive"
-    >
-      <table 
-        data-test-id="Forecasts"
-        class="table table-striped table-sm">
-        <thead>
-          <tr>
-            <th scope="col">Device</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="device in devices">
-            <td>
-              {{ device }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="my-5 w-100">
+      <ChartViewer :bar="true" :labels="[]" :values="[]" />
     </div>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xxl-4 mb-3 text-center">
+      <DisplaySlab 
+        v-for="slab in slabs"
+        :key="slab.id"
+        :slab="slab"
+      />
+
+    </div>
+
   </main>
 </template>
 
