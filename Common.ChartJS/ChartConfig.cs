@@ -57,8 +57,8 @@ namespace Common.ChartJS
             foreach (var dataset in result.Data.Datasets)
             {
                 var setcolors = colors.Select(x => x.WithAlpha(alpha)).ToList();
-                dataset.BackgroundColor = setcolors;
-                dataset.BorderColor = setcolors;
+                dataset.BackgroundColor = setcolors.Select(x => x.ToString());
+                dataset.BorderColor = setcolors.Select(x => x.ToString());
                 alpha /= 2;
             }
 
@@ -101,8 +101,8 @@ namespace Common.ChartJS
             Data.Datasets = new List<ChartDataSet>() { new ChartDataSet() { Data = points.Select(x => x.Data), BorderWidth = 2 } };
 
             // Set colors            
-            Data.Datasets.Last().BorderColor = colors.Take(numitems);
-            Data.Datasets.Last().BackgroundColor = colors.Take(numitems).Select(x => x.WithAlpha(0.8));
+            Data.Datasets.Last().BorderColor = colors.Take(numitems).Select(x => x.ToString());
+            Data.Datasets.Last().BackgroundColor = colors.Take(numitems).Select(x => x.WithAlpha(0.8)).Select(x => x.ToString());
         }
 
         private void FillMulti(IEnumerable<string> labels, IEnumerable<(string Label, IEnumerable<int> Data)> series, IEnumerable<ChartColor> colors)
@@ -116,7 +116,7 @@ namespace Common.ChartJS
             }
 
             Data.Labels = labels;
-            Data.Datasets = series.Select((x, i) => new ChartDataSet() { Label = x.Label, Data = x.Data, BackgroundColor = new ChartColor[] { colors.Skip(i).First() }, BorderColor = new ChartColor[] { colors.Skip(i).First() } });
+            Data.Datasets = series.Select((x, i) => new ChartDataSet() { Label = x.Label, Data = x.Data, BackgroundColor = (new ChartColor[] { colors.Skip(i).First() }).Select(x=>x.ToString()), BorderColor = (new ChartColor[] { colors.Skip(i).First() }).Select(x=>x.ToString()) });
         }
 
     };
@@ -125,8 +125,8 @@ namespace Common.ChartJS
     {
         public string Label { get; set; } = null;
         public IEnumerable<int> Data { get; set; }
-        public IEnumerable<ChartColor> BackgroundColor { get; set; }
-        public IEnumerable<ChartColor> BorderColor { get; set; }
+        public IEnumerable<string> BackgroundColor { get; set; }
+        public IEnumerable<string> BorderColor { get; set; }
         public int? BorderWidth { get; set; }
     }
 

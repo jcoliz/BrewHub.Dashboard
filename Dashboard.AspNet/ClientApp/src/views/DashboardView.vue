@@ -3,12 +3,13 @@ import { ref } from 'vue'
 import ChartViewer from '../components/ChartViewer.vue';
 import FeatherIcon from '../components/FeatherIcon.vue';
 import DisplaySlab from '../components/DisplaySlab.vue';
-import { DevicesClient, IDisplayMetricGroup } from '../apiclients/apiclient.ts';
+import { DevicesClient, IDisplayMetricGroup, ChartsClient, IChartConfig } from '../apiclients/apiclient.ts';
 
 /*
  * Primary data to display
  */
 const slabs = ref<IDisplayMetricGroup[]>([]);
+const chartconfig = ref<IChartConfig | null>(null);
 
 /*
  * Timescale of display
@@ -20,13 +21,19 @@ const slabs = ref<IDisplayMetricGroup[]>([]);
  */
 
 var devicesClient = new DevicesClient();
+var chartsClient = new ChartsClient();
 
 async function getData() {
   slabs.value = await devicesClient.slabs();
 }
 
-setInterval(getData, 2000);
+async function getChart() {
+  chartconfig.value = await chartsClient.telemetry();
+}
 
+//setInterval(getData, 2000);
+
+getChart()
 getData()
 
 </script>
@@ -117,8 +124,11 @@ getData()
       </div>
     </div>
 
-    <div class="my-5 w-100">
-      <ChartViewer :bar="true" :labels="[]" :values="[]" />
+    <div 
+      v-if="chartconfig?.data"
+      class="my-5 w-100"
+    >
+      <ChartViewer :bar="true" :cdata="chartconfig?.data!" :coptions="chartconfig?.options" />
     </div>
 
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xxl-4 mb-3 text-center">

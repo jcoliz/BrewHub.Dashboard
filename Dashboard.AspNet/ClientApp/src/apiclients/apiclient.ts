@@ -685,8 +685,8 @@ export interface IChartData {
 export class ChartDataSet implements IChartDataSet {
     label?: string | undefined;
     data?: number[] | undefined;
-    backgroundColor?: ChartColor[] | undefined;
-    borderColor?: ChartColor[] | undefined;
+    backgroundColor?: string[] | undefined;
+    borderColor?: string[] | undefined;
     borderWidth?: number | undefined;
 
     constructor(data?: IChartDataSet) {
@@ -709,12 +709,12 @@ export class ChartDataSet implements IChartDataSet {
             if (Array.isArray(_data["backgroundColor"])) {
                 this.backgroundColor = [] as any;
                 for (let item of _data["backgroundColor"])
-                    this.backgroundColor!.push(ChartColor.fromJS(item));
+                    this.backgroundColor!.push(item);
             }
             if (Array.isArray(_data["borderColor"])) {
                 this.borderColor = [] as any;
                 for (let item of _data["borderColor"])
-                    this.borderColor!.push(ChartColor.fromJS(item));
+                    this.borderColor!.push(item);
             }
             this.borderWidth = _data["borderWidth"];
         }
@@ -738,12 +738,12 @@ export class ChartDataSet implements IChartDataSet {
         if (Array.isArray(this.backgroundColor)) {
             data["backgroundColor"] = [];
             for (let item of this.backgroundColor)
-                data["backgroundColor"].push(item.toJSON());
+                data["backgroundColor"].push(item);
         }
         if (Array.isArray(this.borderColor)) {
             data["borderColor"] = [];
             for (let item of this.borderColor)
-                data["borderColor"].push(item.toJSON());
+                data["borderColor"].push(item);
         }
         data["borderWidth"] = this.borderWidth;
         return data;
@@ -753,39 +753,9 @@ export class ChartDataSet implements IChartDataSet {
 export interface IChartDataSet {
     label?: string | undefined;
     data?: number[] | undefined;
-    backgroundColor?: ChartColor[] | undefined;
-    borderColor?: ChartColor[] | undefined;
+    backgroundColor?: string[] | undefined;
+    borderColor?: string[] | undefined;
     borderWidth?: number | undefined;
-}
-
-export class ChartColor implements IChartColor {
-
-    constructor(data?: IChartColor) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-    }
-
-    static fromJS(data: any): ChartColor {
-        data = typeof data === 'object' ? data : {};
-        let result = new ChartColor();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        return data;
-    }
-}
-
-export interface IChartColor {
 }
 
 export class ChartOptions implements IChartOptions {
