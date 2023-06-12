@@ -18,6 +18,7 @@ import { createRouter, createWebHashHistory } from 'vue-router';
 // - Each route should map to a component.
 const routes = [
   { path: '/', component: DashboardView },
+  { path: '/devices/:deviceid', component: DashboardView, props: true },
   { path: '/album/:title', component: AlbumView, props: true },
   { path: '/empty/:title', component: EmptyView, props: true },
 ]

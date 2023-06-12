@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { defineProps } from 'vue';
+import { defineProps, defineEmits } from 'vue';
 import { IDisplayMetricGroup } from '../apiclients/apiclient.ts';
+import { RouterLink } from 'vue-router';
 
-defineProps<{ slab?: IDisplayMetricGroup }>();
+defineProps<{ slab?: IDisplayMetricGroup, href?: string }>();
 
 </script>
 
@@ -26,8 +27,17 @@ defineProps<{ slab?: IDisplayMetricGroup }>();
                             <small class="text-body-secondary">{{ metric.value }}</small>
                         </div>
                     </li>
-                </ul>                    
-                <a class="w-100 btn btn-lg btn-outline-primary" href="#">Details</a>
+                </ul>
+
+                
+                <RouterLink 
+                    v-if="href"
+                    :to="href"
+                >
+                    <button class="w-100 btn btn-lg btn-outline-primary">
+                        Details
+                    </button>
+                </RouterLink>
             </div>
         </div>
     </div>

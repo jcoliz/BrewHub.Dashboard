@@ -3,7 +3,14 @@ import { ref } from 'vue'
 import ChartViewer from '../components/ChartViewer.vue';
 import FeatherIcon from '../components/FeatherIcon.vue';
 import DisplaySlab from '../components/DisplaySlab.vue';
+import { RouterLink } from 'vue-router';
 import { DevicesClient, IDisplayMetricGroup, ChartsClient, IChartConfig } from '../apiclients/apiclient.ts';
+
+/*
+ * Route inputs
+ */
+
+defineProps<{ deviceid?: string }>();
 
 /*
  * Primary data to display
@@ -44,7 +51,7 @@ setInterval(update, 2000);
 
 <template>
   <main 
-    data-test-id="Dashboard" 
+    data-test-id="Devices" 
     class="col-md-9 ms-sm-auto col-lg-10 px-md-4"
   >
     <div class="chartjs-size-monitor">
@@ -57,7 +64,32 @@ setInterval(update, 2000);
     </div>
 
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-      <h1 class="h2">Dashboard</h1>
+      <div>
+        <h1 class="h2">Devices</h1>
+        <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li 
+              v-if="$props.deviceid"
+              class="breadcrumb-item" 
+            >
+              <RouterLink to="/">Home</RouterLink>
+            </li>
+            <li 
+              v-else
+              class="breadcrumb-item active" 
+              aria-current="page"
+            >
+              Home
+            </li>
+            <li 
+              v-if="$props.deviceid"
+              class="breadcrumb-item active" 
+              aria-current="page">
+              {{ deviceid }}
+            </li>
+          </ol>
+        </nav>    
+      </div>
       <div class="btn-toolbar mb-2 mb-md-0">
         <div 
           class="btn-group me-2" 
@@ -140,6 +172,7 @@ setInterval(update, 2000);
         v-for="slab in slabs"
         :key="slab.id"
         :slab="slab"
+        :href="`/devices/${slab.id}`"
       />
 
     </div>
