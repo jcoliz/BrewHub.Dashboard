@@ -2,6 +2,7 @@ using BrewHub.Dashboard.Core.Dtmi;
 using BrewHub.Dashboard.Core.Providers;
 using BrewHub.Dashboard.Core.Display;
 using Microsoft.AspNetCore.Mvc;
+using System.Runtime.CompilerServices;
 
 namespace BrewHub.Dashboard.Controllers;
 
@@ -78,17 +79,11 @@ public class DevicesController : ControllerBase
     {
         _logger.LogInformation("Device: {device}", device);
 
-        var data = await _datasource.GetLatestDeviceTelemetryAllAsync();
-        var devices = data.Select(x => x.__Device).Distinct();
-
-        if (!devices.Contains(device))
-        {
-            _logger.LogError("Device: {status} Unknown device {device}",StatusCodes.Status404NotFound,device);
+        if (!(await DoesDeviceExistAsync(device)))
             return NotFound();
-        }
 
         // Query InfluxDB, compose into UI slabs
-        data = await _datasource.GetLatestDevicePropertiesAsync(device);
+        var data = await _datasource.GetLatestDevicePropertiesAsync(device);
         var dtmi = new DeviceModelDetails();
         var slabs = data.GroupBy(x => x.__Component ?? string.Empty).Select(dtmi!.FromComponent).ToArray();
 
@@ -109,31 +104,11 @@ public class DevicesController : ControllerBase
     {
         _logger.LogInformation("Component: Device {device} Component {component}", device, component);
 
-        var data = await _datasource.GetLatestDeviceTelemetryAllAsync();
-        var devices = data.Select(x => x.__Device).Distinct();
-        if (!devices.Contains(device))
-        {
-            _logger.LogError("Component: {status} Unknown device {device}",StatusCodes.Status404NotFound,device);
+        if (!(await DoesDeviceAndComponentExistAsync(device,component)))
             return NotFound();
-        }
-        var components = data.Where(x => x.__Device == device).Select(x=>x.__Component ?? "device").Distinct();
-        if (!components.Contains(component))
-        {
-            _logger.LogError("Component: {status} Unknown component {component}",StatusCodes.Status404NotFound,component);
-            return NotFound();
-        }
-
-        var props = await _datasource.GetLatestDevicePropertiesAsync(device);
-        var componentprops = props.Where(x => component == (x.__Component ?? "device"));
-
-        if (!componentprops.Any())
-        {
-            _logger.LogError("Component: {status} No data for component {component}",StatusCodes.Status404NotFound,component);
-            return NotFound();
-        }
 
         // Query InfluxDB, compose into UI slabs
-        data = await _datasource.GetLatestDevicePropertiesAsync(device);
+        var data = await _datasource.GetLatestDevicePropertiesAsync(device);
         var dtmi = new DeviceModelDetails();
         var metrics = data.Where(x => component == (x.__Component ?? "device"));
         var slabs = dtmi!.FromSingleComponent(metrics);
@@ -155,26 +130,20 @@ public class DevicesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> ExecuteCommand([FromBody] object payload, [FromRoute] string device, [FromRoute] string component, [FromRoute] string command)
     {
-        _logger.LogInformation("ExecuteCommand: Device {device} Component {component} payload {payload}", device, component ?? "null", payload);
+        _logger.LogInformation("ExecuteCommand: Device {device} Component {component} payload {payload}", device, component, payload);
 
-        // Not found if we don't know about the device, or component
-        var data = await _datasource.GetLatestDeviceTelemetryAllAsync();
-        var devices = data.Select(x => x.__Device).Distinct();
-        if (!devices.Contains(device))
-        {
-            _logger.LogError("ExecuteCommand: {status} Unknown device {device}",StatusCodes.Status404NotFound,device);
+        if (!(await DoesDeviceAndComponentExistAsync(device,component)))
             return NotFound();
-        }
-        var components = data.Where(x => x.__Device == device).Select(x=>x.__Component ?? "device").Distinct();
-        if (!components.Contains(device))
-        {
-            _logger.LogError("ExecuteCommand: {status} Unknown component {component}",StatusCodes.Status404NotFound,component);
-            return NotFound();
-        }
 
         // Bad request if fails DTMI, e.g. wrong command or payload
+        var dtmi = new DeviceModelDetails();
+        if (!dtmi.GetCommands(component).Any(x=>x.Id == command))
+        {
+            _logger.LogError("{caller}: {status} Not known command {command}","ExecuteCommand",StatusCodes.Status400BadRequest,command);
+            return BadRequest();
+        }
 
-        return Ok();
+        return NoContent();
     }
 
     /// <summary>
@@ -191,25 +160,53 @@ public class DevicesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> SetProperty([FromBody] object payload, [FromRoute] string device, [FromRoute] string component, [FromRoute] string property)
     {
-        _logger.LogInformation("SetProperty: Device {device} Component {component} payload {payload}", device, component ?? "null", payload);
+        _logger.LogInformation("SetProperty: Device {device} Component {component} payload {payload}", device, component, payload);
 
-        // Not found if we don't know about the device, or component
-        var data = await _datasource.GetLatestDeviceTelemetryAllAsync();
-        var devices = data.Select(x => x.__Device).Distinct();
-        if (!devices.Contains(device))
-        {
-            _logger.LogError("SetProperty: {status} Unknown device {device}",StatusCodes.Status404NotFound,device);
+        if (!(await DoesDeviceAndComponentExistAsync(device,component)))
             return NotFound();
-        }
-        var components = data.Where(x => x.__Device == device).Select(x=>x.__Component ?? "device").Distinct();
-        if (!components.Contains(device))
-        {
-            _logger.LogError("SetProperty: {status} Unknown component {component}",StatusCodes.Status404NotFound,component);
-            return NotFound();
-        }
 
         // Bad request if fails DTMI, e.g. wrong command or payload
+        var dtmi = new DeviceModelDetails();
+        if (!dtmi.IsMetricWritable(property))
+        {
+            _logger.LogError("{caller}: {status} Not a writable property {property}","SetProperty",StatusCodes.Status400BadRequest,property);
+            return BadRequest();
+        }
 
-        return Ok();
+        return NoContent();
     }
+
+    private async Task<bool> DoesDeviceExistAsync(string device, [CallerMemberName] string caller = "")
+    {
+        var data = await _datasource.GetLatestDeviceTelemetryAllAsync();
+        var devices = data.Select(x => x.__Device).Distinct();
+        var result = devices.Contains(device);
+
+        if (!result)
+            _logger.LogError("{caller}: {status} Unknown device {device}",caller,StatusCodes.Status404NotFound,device);
+
+        return result;
+    }
+
+    private async Task<bool> DoesDeviceAndComponentExistAsync(string device, string component, [CallerMemberName] string caller = "")
+    {
+        var data = await _datasource.GetLatestDeviceTelemetryAllAsync();
+        var devices = data.Select(x => x.__Device).Distinct();
+        var result = devices.Contains(device);
+
+        if (result)
+        {
+            var components = data.Where(x => x.__Device == device).Select(x=>x.__Component ?? "device").Distinct();
+            result = components.Contains(component);
+            if (!result)
+                _logger.LogError("{caller}: {status} Unknown component {component}",caller,StatusCodes.Status404NotFound,component);
+        }
+        else
+        {
+            _logger.LogError("{caller}: {status} Unknown device {device}",caller,StatusCodes.Status404NotFound,device);
+        }
+
+        return result;
+    }
+
 }
