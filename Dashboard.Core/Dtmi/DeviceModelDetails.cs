@@ -138,4 +138,54 @@ public class DeviceModelDetails: IDeviceModel
                         },
         _ => Enumerable.Empty<DisplayMetric>()
     };
+
+    public DisplayMetricGroup FromDeviceComponentTelemetry(IGrouping<string,Datapoint> d)
+    {
+        string ExtractComponentAndMetricName(Datapoint d)
+        {
+            var f = MapMetricName(d.__Field);
+            return (d.__Component is null) ? f : $"{MapMetricName(d.__Component)}/{f}";
+        }
+
+        return new DisplayMetricGroup()
+        {
+            Title = d.Key,
+            Id = d.Key,
+            Telemetry = d.Select(y => new DisplayMetric()
+            {
+                Name = ExtractComponentAndMetricName(y),
+                Value = FormatMetricValue(y)
+            })
+            .ToArray()
+        };
+    }
+
+    private DisplayMetric FromDatapoint(Datapoint d)
+    {
+        return new DisplayMetric()
+        {
+            Name = MapMetricName(d.__Field),
+            Id = d.__Field,
+            Value = FormatMetricValue(d),
+            Units = GetWritableUnits(d.__Field)
+        };
+    }
+
+    public DisplayMetricGroup FromComponent(IGrouping<string,Datapoint> c)
+    {
+        string ValueOrEmpty(string s, string alt) => string.IsNullOrEmpty(s) ? alt : s;
+
+        // TODO: Augment with DTMI information
+        //raw[string.Empty]["Schema"] = dtmi.SchemaName;
+
+        return new DisplayMetricGroup() 
+        { 
+            Title = ValueOrEmpty(MapMetricName(c.Key),"Device Details"),
+            Id = c.Key,
+            Telemetry = c.Where(x=>IsMetricTelemetry(x.__Field)).Select(FromDatapoint).ToArray(), 
+            ReadOnlyProperties = c.Where(x=>!IsMetricWritable(x.__Field) && !IsMetricTelemetry(x.__Field)).Select(FromDatapoint).ToArray(), 
+            WritableProperties = c.Where(x=>IsMetricWritable(x.__Field)).Select(FromDatapoint).ToArray(), 
+            Commands = GetCommands(c.Key).ToArray()
+        };
+    }
 }

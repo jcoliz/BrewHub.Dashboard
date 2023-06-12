@@ -83,42 +83,8 @@ namespace BrewHub.Dashboard.AspNet.Pages
             Chart = BrewHub.Dashboard.Core.Charting.ChartMaker.CreateMultiLineChart(data, dtmi.VisualizeTelemetryDevice, labelformat);
 
             // Query InfluxDB, compose into UI slabs
-
             data = await _datasource.GetLatestDevicePropertiesAsync(DeviceId);
-
-            // Augment with DTMI information
-            //raw[string.Empty]["Schema"] = dtmi.SchemaName;
-
-            // For starters, we will just directly translate results into slabs.
-            // Next step will be breaking it apart, making it pretty
-
-            DisplayMetric FromDatapoint(Datapoint d)
-            {
-                return new DisplayMetric()
-                {
-                    Name = dtmi!.MapMetricName(d.__Field),
-                    Id = d.__Field,
-                    Value = dtmi.FormatMetricValue(d),
-                    Units = dtmi.GetWritableUnits(d.__Field)
-                };
-            }
-
-            DisplayMetricGroup FromComponent(IGrouping<string,Datapoint> c)
-            {
-                string ValueOrEmpty(string s, string alt) => string.IsNullOrEmpty(s) ? alt : s;
-
-                return new DisplayMetricGroup() 
-                { 
-                    Title = ValueOrEmpty(dtmi.MapMetricName(c.Key),"Device Details"),
-                    Id = c.Key,
-                    Telemetry = c.Where(x=>dtmi.IsMetricTelemetry(x.__Field)).Select(FromDatapoint).ToArray(), 
-                    ReadOnlyProperties = c.Where(x=>!dtmi.IsMetricWritable(x.__Field) && !dtmi.IsMetricTelemetry(x.__Field)).Select(FromDatapoint).ToArray(), 
-                    WritableProperties = c.Where(x=>dtmi.IsMetricWritable(x.__Field)).Select(FromDatapoint).ToArray(), 
-                    Commands = dtmi.GetCommands(c.Key).ToArray()
-                };
-            }
-
-            Slabs = data.GroupBy(x => x.__Component ?? string.Empty).Select(FromComponent).ToArray();
+            Slabs = data.GroupBy(x => x.__Component ?? string.Empty).Select(dtmi!.FromComponent).ToArray();
         }
 
         private static readonly ChartColor[] palette = new ChartColor[]

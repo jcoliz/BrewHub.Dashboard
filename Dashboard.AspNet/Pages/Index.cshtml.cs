@@ -42,30 +42,9 @@ namespace BrewHub.Dashboard.AspNet.Pages
                 var data = await _datasource.GetLatestDeviceTelemetryAllAsync();
                 var dtmi = new DeviceModelDetails();
 
-                DisplayMetricGroup FromDeviceComponentTelemetry(IGrouping<string,Datapoint> d)
-                {
-                    string ExtractComponentAndMetricName(Datapoint d)
-                    {
-                        var f = dtmi.MapMetricName(d.__Field);
-                        return (d.__Component is null) ? f : $"{dtmi.MapMetricName(d.__Component)}/{f}";
-                    }
-
-                    return new DisplayMetricGroup()
-                    {
-                        Title = d.Key,
-                        Id = d.Key,
-                        Telemetry = d.Select(y => new DisplayMetric()
-                        {
-                            Name = ExtractComponentAndMetricName(y),
-                            Value = dtmi!.FormatMetricValue(y)
-                        })
-                        .ToArray()
-                    };
-                }
-
                 Slabs = data
                         .GroupBy(x => x.__Device)
-                        .Select(FromDeviceComponentTelemetry)
+                        .Select(dtmi!.FromDeviceComponentTelemetry)
                         .ToArray();
 
                 Chart = ChartMaker.CreateMultiDeviceBarChart(data, dtmi.VisualizeTelemetryTop);
