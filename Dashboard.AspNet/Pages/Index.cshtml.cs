@@ -21,7 +21,7 @@ namespace BrewHub.Dashboard.AspNet.Pages
 
         public TimeframeEnum Timeframe { get; set; } = TimeframeEnum.Hour;
 
-        public DisplayMetricGroup[] Slabs { get; private set; }
+        public DisplayMetricGroup[] Slabs { get; private set; } = Array.Empty<DisplayMetricGroup>();
 
         public IndexModel(ILogger<IndexModel> logger, IDataSource datasource)
         {

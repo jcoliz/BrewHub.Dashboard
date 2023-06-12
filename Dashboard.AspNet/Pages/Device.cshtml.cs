@@ -23,7 +23,7 @@ namespace BrewHub.Dashboard.AspNet.Pages
 
         public string DeviceId { get; set; } = "device-1";
 
-        public DisplayMetricGroup[] Slabs { get; private set; }
+        public DisplayMetricGroup[] Slabs { get; private set; } = Array.Empty<DisplayMetricGroup>();
 
         public DevicePageModel(ILogger<DevicePageModel> logger, IDataSource datasource)
         {
