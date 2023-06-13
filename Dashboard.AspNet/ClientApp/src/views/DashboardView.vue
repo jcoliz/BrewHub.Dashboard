@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import ChartViewer from '../components/ChartViewer.vue';
 import ChartButtonToolbar from '../components/ChartButtonToolbar.vue';
 import DisplaySlab from '../components/DisplaySlab.vue';
@@ -31,14 +31,29 @@ async function getChart() {
   chartconfig.value = await chartsClient.telemetry();
 }
 
-function update()
-{
+function update() {
   getChart();
   getData();
 }
 
-update();
-setInterval(update, 2000);
+/*
+ * Manage interval timers so as to not leak them
+ */
+
+const interval = ref<NodeJS.Timer|undefined>(undefined);
+onMounted(() => {
+  interval.value = setInterval(update, 10000);
+  console.log(`Set interval ${interval.value}`);
+  update();
+});
+onUnmounted(() => {
+  console.log(`Clearing interval ${interval.value}`);
+  if (interval.value)
+  {
+    clearInterval(interval.value);
+    console.log("Cleared");
+  }
+});
 
 </script>
 
