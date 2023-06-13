@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import DisplaySlabItem from './DisplaySlabItem.vue';
 import { IDisplayMetricGroup } from '../apiclients/apiclient.ts';
 import { RouterLink } from 'vue-router';
 
@@ -17,24 +18,12 @@ defineProps<{ slab?: IDisplayMetricGroup, href?: string }>();
             </div>
             <div class="card-body text-start">
                 <ul class="list-group mb-3">
-                    <li 
-                        v-for="metric in slab?.telemetry" :key="slab?.id"
-                        class="list-group-item d-flex justify-content-between lh-sm"
-                    >
-                        <div>
-                            <h6 class="my-0">{{ metric.name }}</h6>
-                            <small class="text-body-secondary">{{ metric.value }}</small>
-                        </div>
-                    </li>
-                    <li 
-                        v-for="metric in slab?.readOnlyProperties" :key="slab?.id"
-                        class="list-group-item d-flex justify-content-between lh-sm"
-                    >
-                        <div>
-                            <h6 class="my-0">{{ metric.name }}</h6>
-                            <small class="text-body-secondary">{{ metric.value }}</small>
-                        </div>
-                    </li>
+                    <DisplaySlabItem
+                        v-for="metric in slab?.telemetry" :metric="metric"
+                    />
+                    <DisplaySlabItem
+                        v-for="metric in slab?.readOnlyProperties" :metric="metric"
+                    />
                 </ul>               
                 <RouterLink 
                     v-if="href"
