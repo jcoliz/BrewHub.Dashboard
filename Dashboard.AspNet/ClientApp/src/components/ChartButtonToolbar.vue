@@ -8,9 +8,28 @@ import { computed } from 'vue'
 import FeatherIcon from '../components/FeatherIcon.vue';
 import { TimeframeEnum } from '../apiclients/apiclient.ts';
 
-defineProps<{ showtimeframe: boolean, timeframe: number }>();
+defineProps<{
+    /**
+     * Whether to include the timeframe picker at all
+     */
+    showtimeframe: boolean,
+
+    /**
+     * The timeframe to show in the timeframe picker
+     */
+    timeframe: TimeframeEnum
+}>();
+
 defineEmits<{
+    /**
+     * User has chosen a new value in the timeframe picker
+     */
     (e: 'update:timeframe', value: number): void,
+
+    /**
+     * User wishes to refresh the data display
+     */
+    (e: 'refresh'): void,
 }>();
 
 const timeframes = computed(() => {
@@ -35,14 +54,18 @@ const timeframes = computed(() => {
                     <li 
                         v-for="text in timeframes"
                         class="dropdown-item"
-                        @click="$emit('update:timeframe',TimeframeEnum[text])"
+                        @click="$emit('update:timeframe',TimeframeEnum[text]); $emit('refresh');"
                     >
                         {{ text }}
                     </li>
                 </ul>
             </div>
             <div class="btn-group" role="group">
-                <button  type="button" class="btn btn-sm btn-outline-secondary" >
+                <button 
+                    type="button" 
+                    class="btn btn-sm btn-outline-secondary" 
+                    @click="$emit('refresh')"
+                >
                     <FeatherIcon icon="refresh-cw"/>
                 </button>
             </div>

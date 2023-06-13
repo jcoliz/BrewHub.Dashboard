@@ -95,9 +95,9 @@ async function getData(deviceid?: string, componentid?: string) {
 
 async function getChart(deviceid?: string, componentid?: string) {
   if (componentid)
-    chartconfig.value = await chartsClient.componentChart(deviceid!,componentid,0);
+    chartconfig.value = await chartsClient.componentChart(deviceid!,componentid,timescale.value);
   else if (deviceid)
-    chartconfig.value = await chartsClient.deviceChart(deviceid,0);
+    chartconfig.value = await chartsClient.deviceChart(deviceid,timescale.value);
   else
     chartconfig.value = await chartsClient.telemetry();
 }
@@ -168,7 +168,11 @@ function slabhref (slab: IDisplayMetricGroup): string | undefined
         <h1 class="h2">Devices</h1>
         <BreadCrumbs :links="breadcrumbs" :page="currentpage"/>
       </div>
-      <ChartButtonToolbar :showtimeframe="!!deviceid" v-model:timeframe="timescale"/>
+      <ChartButtonToolbar 
+        :showtimeframe="!!deviceid" 
+        v-model:timeframe="timescale"
+        @refresh="update($props.deviceid,$props.componentid)"
+      />
     </div>
 
     <div 
