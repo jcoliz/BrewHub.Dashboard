@@ -67,7 +67,7 @@ function unshow()
             />
             <NavItemRouterLink 
               title="About" 
-              link="/empty/About" 
+              link="/about" 
               icon="help-circle" 
               @click="unshow"
             />
