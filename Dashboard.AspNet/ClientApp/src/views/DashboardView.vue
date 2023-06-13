@@ -6,7 +6,7 @@ import ChartViewer from '../components/ChartViewer.vue';
 import ChartButtonToolbar from '../components/ChartButtonToolbar.vue';
 import DisplaySlab from '../components/DisplaySlab.vue';
 import BreadCrumbs from '../components/BreadCrumbs.vue';
-import { DevicesClient, IDisplayMetricGroup, ChartsClient, IChartConfig } from '../apiclients/apiclient.ts';
+import { DevicesClient, IDisplayMetricGroup, IDisplayMetric, ChartsClient, IChartConfig } from '../apiclients/apiclient.ts';
 
 /*
  * Route inputs
@@ -59,6 +59,20 @@ const chartconfig = ref<IChartConfig | null>(null);
 /*
  * Timescale of display
  */
+
+/*
+ * Handling posting data back to server
+ */
+
+function postCommand(slabid: string, metric: IDisplayMetric, payload: string)
+{
+  console.log(`postCommand: device ${props.deviceid} component ${props.componentid} slab ${slabid} metric ${metric.name} payload ${payload}`);
+}
+
+function postUpdate(slabid: string, metric: IDisplayMetric, payload: string)
+{
+  console.log(`postUpdate: device ${props.deviceid} component ${props.componentid} slab ${slabid} metric ${metric.name} payload ${payload}`);
+}
 
 /*
  * Fetching from server
@@ -169,6 +183,8 @@ function slabhref (slab: IDisplayMetricGroup): string | undefined
         :key="`${slab.kind}-${slab.id}`"
         :slab="slab"
         :href="slabhref(slab)"
+        @command="(metric,payload) => postCommand(slab.id!,metric,payload)"
+        @property="(metric,payload) => postUpdate(slab.id!,metric,payload)"
       />
 
     </div>
