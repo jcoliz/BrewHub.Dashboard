@@ -23,6 +23,15 @@ const chartconfig = ref<IChartConfig | null>(null);
  */
 
 /*
+ * Handling posting data back to server
+ */
+
+function postCommand(component: string, command: string, payload: string)
+{
+  console.log(`postCommand: device ${props.deviceid} component ${component} command ${command} payload ${payload}`);
+}
+
+/*
  * Fetching from server
  */
 
@@ -84,6 +93,7 @@ setInterval(update, 2000);
         :key="`${slab.kind}-${slab.id}`"
         :slab="slab"
         :href="`/components/${deviceid}/${slab.id}`"
+        @command="(command,payload) => postCommand(slab.id!,command,payload)"
       />
 
     </div>

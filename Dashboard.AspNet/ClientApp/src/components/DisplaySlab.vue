@@ -6,6 +6,7 @@ import { IDisplayMetricGroup } from '../apiclients/apiclient.ts';
 import { RouterLink } from 'vue-router';
 
 defineProps<{ slab?: IDisplayMetricGroup, href?: string }>();
+defineEmits<{ (e: 'command', id: string, payload: string): void }>();
 
 </script>
 
@@ -31,6 +32,7 @@ defineProps<{ slab?: IDisplayMetricGroup, href?: string }>();
                     />
                     <DisplaySlabItemCommand
                         v-for="metric in slab?.commands" :metric="metric"
+                        @go="(text) => $emit('command',metric.id,text)"
                     />
                 </ul>
                 <RouterLink 
