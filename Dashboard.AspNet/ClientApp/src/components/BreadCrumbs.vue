@@ -1,6 +1,20 @@
 <script setup lang="ts">
 
-defineProps<{ links: { title:string, href:string }[], page:string }>();
+/**
+ * Navigation breadcrumbs, so you can find your way home
+ */
+
+defineProps<{
+    /**
+     * List of links back to previous pages
+     */
+    links: { title: string, href: string }[],
+
+    /**
+     * Display name of the page we're on
+     */
+    page: string
+}>();
 
 </script>
 

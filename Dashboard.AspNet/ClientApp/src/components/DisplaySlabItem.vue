@@ -1,4 +1,9 @@
 <script setup lang="ts">
+
+/**
+ * Displays a single readonly metric on a DisplaySlab
+ */
+
 import { IDisplayMetric } from '../apiclients/apiclient.ts';
 defineProps<{ metric?: IDisplayMetric}> ();
 </script>

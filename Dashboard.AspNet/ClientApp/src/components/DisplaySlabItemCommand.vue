@@ -1,4 +1,9 @@
 <script setup lang="ts">
+
+/**
+ * Displays a single command metric on a DisplaySlab
+ */
+
 import { ref } from 'vue';
 import { IDisplayMetric } from '../apiclients/apiclient.ts';
 defineProps<{ metric?: IDisplayMetric }>();

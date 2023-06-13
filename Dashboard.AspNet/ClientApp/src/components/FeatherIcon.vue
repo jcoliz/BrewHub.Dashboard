@@ -1,4 +1,9 @@
 <script setup lang="ts">
+
+/**
+ * Displays a single feather icon
+ */
+
 import { computed } from 'vue'
 import { icons, FeatherIconNames } from 'feather-icons'
 

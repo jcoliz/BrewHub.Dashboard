@@ -1,4 +1,9 @@
 <script setup lang="ts">
+
+/**
+ * Displays a single writable property metric on a DisplaySlab
+ */
+
 import { ref, onMounted } from 'vue';
 import { IDisplayMetric } from '../apiclients/apiclient.ts';
 const props = defineProps<{ metric?: IDisplayMetric}> ();

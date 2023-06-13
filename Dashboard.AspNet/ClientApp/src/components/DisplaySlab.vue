@@ -1,4 +1,9 @@
 <script setup lang="ts">
+
+/**
+ * Displays a group of metrics in a nice-looking card
+ */
+
 import DisplaySlabItem from './DisplaySlabItem.vue';
 import DisplaySlabItemWritable from './DisplaySlabItemWritable.vue';
 import DisplaySlabItemCommand from './DisplaySlabItemCommand.vue';
