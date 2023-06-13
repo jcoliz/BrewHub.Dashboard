@@ -18,10 +18,16 @@ import { createRouter, createWebHashHistory } from 'vue-router';
 // Define some routes
 // - Each route should map to a component.
 const routes = [
-  { path: '/', component: DashboardView },
-  { path: '/devices/:deviceid', component: DevicesView, props: true },
-  { path: '/components/:title', component: EmptyView, props: true },
-  { path: '/components/:title/:any', component: EmptyView, props: true },
+  {
+    path: '/devices',
+    alias: [
+      '/',
+      '/devices/:deviceid',
+      '/devices/:deviceid/:componentid',
+    ],
+    component: DashboardView,
+    props: true
+  },
   { path: '/album/:title', component: AlbumView, props: true },
   { path: '/empty/:title', component: EmptyView, props: true },
 ]

@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { onBeforeRouteUpdate } from 'vue-router'
+
 import ChartViewer from '../components/ChartViewer.vue';
 import ChartButtonToolbar from '../components/ChartButtonToolbar.vue';
 import DisplaySlab from '../components/DisplaySlab.vue';
@@ -7,8 +9,49 @@ import BreadCrumbs from '../components/BreadCrumbs.vue';
 import { DevicesClient, IDisplayMetricGroup, ChartsClient, IChartConfig } from '../apiclients/apiclient.ts';
 
 /*
+ * Route inputs
+ */
+
+const props = defineProps<{ deviceid?: string, componentid?: string }>();
+
+interface IBreadcrumbLink {
+  title: string,
+  href: string
+};
+
+const breadcrumbs = computed(():IBreadcrumbLink[] => {
+  if (props.componentid) {
+    return [{ title: 'Home', href: '/devices' }, { title: props.deviceid!, href: `/devices/${props.deviceid}` }];
+  }
+  else if (props.deviceid) {
+    return [{ title: 'Home', href: '/devices' }];
+  }
+  else {
+    return [];
+  }
+})
+
+const currentpage = computed((): string => {
+  if (props.componentid) {
+    return props.componentid;
+  }
+  else if (props.deviceid) {
+    return props.deviceid;
+  }
+  else {
+    return 'Home';
+  }
+});
+
+onBeforeRouteUpdate(async (to, _) => {
+  const deviceid = to.params["deviceid"] as string;
+  update(deviceid);
+});
+
+/*
  * Primary data to display
  */
+
 const slabs = ref<IDisplayMetricGroup[]>([]);
 const chartconfig = ref<IChartConfig | null>(null);
 
@@ -23,29 +66,40 @@ const chartconfig = ref<IChartConfig | null>(null);
 var devicesClient = new DevicesClient();
 var chartsClient = new ChartsClient();
 
-async function getData() {
-  slabs.value = await devicesClient.slabs();
+async function getData(deviceid?: string) {
+  console.log(`getData: ${deviceid ?? "empty"} `)
+  if (deviceid)
+    slabs.value = await devicesClient.device(deviceid);
+  else
+    slabs.value = await devicesClient.slabs();
 }
 
-async function getChart() {
-  chartconfig.value = await chartsClient.telemetry();
+async function getChart(deviceid?: string) {
+  if (deviceid)
+    chartconfig.value = await chartsClient.deviceChart(deviceid,0);
+  else
+    chartconfig.value = await chartsClient.telemetry();
 }
 
-function update() {
-  getChart();
-  getData();
+function update(deviceid?: string) {
+  getChart(deviceid);
+  getData(deviceid);
 }
 
 /*
  * Manage interval timers so as to not leak them
  */
 
+const usetimer:boolean = false;
 // Note that this shouldn't be faster than the minimum time slice on the smallest chart
-const interval = ref<NodeJS.Timer|undefined>(undefined);
+const interval = ref<NodeJS.Timer | undefined>(undefined);
 onMounted(() => {
-  interval.value = setInterval(update, 20000);
-  console.log(`Set interval ${interval.value}`);
-  update();
+  if (usetimer)
+  {
+    interval.value = setInterval(update, 20000);
+    console.log(`Set interval ${interval.value}`);
+  }
+  update(props.deviceid);
 });
 onUnmounted(() => {
   console.log(`Clearing interval ${interval.value}`);
@@ -55,7 +109,6 @@ onUnmounted(() => {
     console.log("Cleared");
   }
 });
-
 </script>
 
 <template>
@@ -75,7 +128,7 @@ onUnmounted(() => {
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
       <div>
         <h1 class="h2">Devices</h1>
-        <BreadCrumbs :links="[]" page="Home"/>
+        <BreadCrumbs :links="breadcrumbs" :page="currentpage"/>
       </div>
       <ChartButtonToolbar/>
     </div>
