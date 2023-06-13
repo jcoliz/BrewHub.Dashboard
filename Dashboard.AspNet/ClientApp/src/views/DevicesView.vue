@@ -26,9 +26,14 @@ const chartconfig = ref<IChartConfig | null>(null);
  * Handling posting data back to server
  */
 
-function postCommand(component: string, command: IDisplayMetric, payload: string)
+function postCommand(component: string, metric: IDisplayMetric, payload: string)
 {
-  console.log(`postCommand: device ${props.deviceid} component ${component} command ${command.name} payload ${payload}`);
+  console.log(`postCommand: device ${props.deviceid} component ${component} metric ${metric.name} payload ${payload}`);
+}
+
+function postUpdate(component: string, metric: IDisplayMetric, payload: string)
+{
+  console.log(`postUpdate: device ${props.deviceid} component ${component} metric ${metric.name} payload ${payload}`);
 }
 
 /*
@@ -108,7 +113,8 @@ onUnmounted(() => {
         :key="`${slab.kind}-${slab.id}`"
         :slab="slab"
         :href="`/components/${deviceid}/${slab.id}`"
-        @command="(command,payload) => postCommand(slab.id!,command,payload)"
+        @command="(metric,payload) => postCommand(slab.id!,metric,payload)"
+        @property="(metric,payload) => postUpdate(slab.id!,metric,payload)"
       />
 
     </div>

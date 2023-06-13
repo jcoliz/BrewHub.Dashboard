@@ -6,7 +6,10 @@ import { IDisplayMetricGroup, IDisplayMetric } from '../apiclients/apiclient.ts'
 import { RouterLink } from 'vue-router';
 
 defineProps<{ slab?: IDisplayMetricGroup, href?: string }>();
-defineEmits<{ (e: 'command', metric: IDisplayMetric, payload: string): void }>();
+defineEmits<{
+    (e: 'command', metric: IDisplayMetric, payload: string): void,
+    (e: 'property', metric: IDisplayMetric, payload: string): void,
+}>();
 
 </script>
 
@@ -29,6 +32,7 @@ defineEmits<{ (e: 'command', metric: IDisplayMetric, payload: string): void }>()
                     />
                     <DisplaySlabItemWritable
                         v-for="metric in slab?.writableProperties" :metric="metric"
+                        @update="(text) => $emit('property',metric,text)"
                     />
                     <DisplaySlabItemCommand
                         v-for="metric in slab?.commands" :metric="metric"
