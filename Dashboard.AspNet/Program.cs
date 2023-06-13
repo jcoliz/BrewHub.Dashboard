@@ -96,6 +96,16 @@ app.UseSwaggerUi3(); // Serves the Swagger UI 3 web ui to view the OpenAPI/Swagg
 app.UseStaticFiles();
 app.UseRouting();
 app.UseCors();
+
+if (app.Environment.IsDevelopment())
+{
+    //TODO
+}
+else
+{
+    app.MapFallbackToFile("index.html");
+}
+
 app.MapRazorPages();
 app.MapControllerRoute(
     name: "default",
