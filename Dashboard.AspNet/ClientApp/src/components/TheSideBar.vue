@@ -61,7 +61,7 @@ function unshow()
             />
             <NavItemRouterLink 
               title="Settings" 
-              link="/empty/Settings" 
+              link="/settings" 
               icon="sliders" 
               @click="unshow"
             />

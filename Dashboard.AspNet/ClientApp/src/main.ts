@@ -12,6 +12,7 @@ import AlbumView from './views/AlbumView.vue'
 import EmptyView from './views/EmptyView.vue'
 import ScriptsPage from './views/ScriptsPage.vue'
 import NotifyPage from './views/NotifyPage.vue'
+import SettingsPage from './views/SettingsPage.vue'
 
 /*
  * Set up routing
@@ -28,6 +29,7 @@ const routes = [
   { path: '/', redirect: '/devices' },
   { path: '/scripts', component: ScriptsPage, props: true },
   { path: '/notify', component: NotifyPage, props: true },
+  { path: '/settings', component: SettingsPage, props: true },
   { path: '/album/:title', component: AlbumView, props: true },
   { path: '/empty/:title', component: EmptyView, props: true },
   { path: '/:pathMatch(.*)*', redirect: '/empty/NotFound' }
