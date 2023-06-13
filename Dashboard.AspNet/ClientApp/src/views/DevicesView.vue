@@ -44,7 +44,7 @@ function update()
 }
 
 update();
-//setInterval(update, 2000);
+setInterval(update, 2000);
 
 </script>
 
@@ -72,7 +72,8 @@ update();
 
     <div 
       v-if="chartconfig?.data"
-      class="my-5 w-100"
+      class="chart-container my-5 w-100"
+      style="position: relative;"
     >
       <ChartViewer :bar="false" :cdata="chartconfig?.data!" :coptions="chartconfig?.options" />
     </div>

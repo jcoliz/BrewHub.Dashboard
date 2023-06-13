@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import DisplaySlabItem from './DisplaySlabItem.vue';
+import DisplaySlabItemWritable from './DisplaySlabItemWritable.vue';
+import DisplaySlabItemCommand from './DisplaySlabItemCommand.vue';
 import { IDisplayMetricGroup } from '../apiclients/apiclient.ts';
 import { RouterLink } from 'vue-router';
 
@@ -24,7 +26,13 @@ defineProps<{ slab?: IDisplayMetricGroup, href?: string }>();
                     <DisplaySlabItem
                         v-for="metric in slab?.readOnlyProperties" :metric="metric"
                     />
-                </ul>               
+                    <DisplaySlabItemWritable
+                        v-for="metric in slab?.writableProperties" :metric="metric"
+                    />
+                    <DisplaySlabItemCommand
+                        v-for="metric in slab?.commands" :metric="metric"
+                    />
+                </ul>
                 <RouterLink 
                     v-if="href"
                     :to="href"

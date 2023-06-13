@@ -66,7 +66,8 @@ setInterval(update, 2000);
 
     <div 
       v-if="chartconfig?.data"
-      class="my-5 w-100"
+      class="chart-container w-100 my-5"
+      style="position: relative;"
     >
       <ChartViewer :bar="true" :cdata="chartconfig?.data!" :coptions="chartconfig?.options" />
     </div>
