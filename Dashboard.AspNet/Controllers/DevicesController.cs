@@ -81,7 +81,12 @@ public class DevicesController : ControllerBase
         _logger.LogInformation("Device: {device}", device);
 
         if (!(await DoesDeviceExistAsync(device)))
-            return NotFound();
+            return Problem(
+                title: "Not Found",
+                statusCode: StatusCodes.Status404NotFound,
+                instance: Request.Path,
+                detail: $"Device {device} does not exist in the database"
+            );
 
         // Query InfluxDB, compose into UI slabs
         var data = await _datasource.GetLatestDevicePropertiesAsync(device);
@@ -105,8 +110,23 @@ public class DevicesController : ControllerBase
     {
         _logger.LogInformation("Component: Device {device} Component {component}", device, component);
 
+        // Note that this flow is pretty inefficient. It involves THREE queries to the server, when
+        // it really could be optimized to complete in ONE
+        if (!(await DoesDeviceExistAsync(device)))
+            return Problem(
+                title: "Not Found",
+                statusCode: StatusCodes.Status404NotFound,
+                instance: Request.Path,
+                detail: $"Device {device} does not exist in the database"
+            );
+
         if (!(await DoesDeviceAndComponentExistAsync(device,component)))
-            return NotFound();
+            return Problem(
+                title: "Not Found",
+                statusCode: StatusCodes.Status404NotFound,
+                instance: Request.Path,
+                detail: $"Component {component} does not exist in the database on device {device}"
+            );
 
         // Query InfluxDB, compose into UI slabs
         var data = await _datasource.GetLatestDevicePropertiesAsync(device);

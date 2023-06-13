@@ -6,7 +6,7 @@
 
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { onBeforeRouteUpdate } from 'vue-router'
-import { DevicesClient, IDisplayMetricGroup, IDisplayMetric, ChartsClient, IChartConfig, TimeframeEnum } from '../apiclients/apiclient.ts';
+import { DevicesClient, IDisplayMetricGroup, IDisplayMetric, ChartsClient, IChartConfig, TimeframeEnum, ProblemDetails, ApiException } from '../apiclients/apiclient.ts';
 
 import ChartViewer from '../components/ChartViewer.vue';
 import ChartButtonToolbar from '../components/ChartButtonToolbar.vue';
@@ -73,7 +73,7 @@ onBeforeRouteUpdate(async (to, _) => {
 
 const slabs = ref<IDisplayMetricGroup[]>([]);
 const chartconfig = ref<IChartConfig | null>(null);
-
+const showproblem = ref<ProblemDetails | null>(null);
 /*
  * Timescale of display
  */
@@ -121,8 +121,27 @@ async function getChart(deviceid?: string, componentid?: string) {
 }
 
 function update(deviceid?: string, componentid?: string) {
-  getChart(deviceid, componentid);
-  getData(deviceid, componentid);
+  showproblem.value = null;
+    getChart(deviceid, componentid)
+      .catch(reason => {
+        console.log(`ERROR loading chart: ${reason}`);    
+       })
+    getData(deviceid, componentid)
+      .catch(reason => {
+        console.log(`ERROR loading data: ${typeof reason} ${reason}`);
+        if (reason instanceof ApiException)
+        {
+          var apiex = reason as ApiException;
+          showproblem.value = new ProblemDetails({ status: apiex.status, title: apiex.message });
+          console.log(`API EXCEPTION loading data: ${apiex.status} ${apiex.message}`);
+        }
+        if (reason instanceof ProblemDetails)
+        {
+          var problem = reason as ProblemDetails;
+          console.log(`PROBLEM loading data: ${problem.status} ${problem.title} detail:${problem.detail} instance:${problem.instance}`);
+          showproblem.value = problem;
+        }
+       })
 }
 
 /*
@@ -185,6 +204,26 @@ function slabhref (slab: IDisplayMetricGroup): string | undefined
       <div>
         <h1 class="h2">Devices</h1>
         <BreadCrumbs :links="breadcrumbs" :page="currentpage"/>
+        <div
+          v-if="showproblem"
+        >
+        <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+          <symbol id="exclamation-triangle-fill" viewBox="0 0 16 16">
+            <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+          </symbol>
+        </svg>
+
+        <div class="alert alert-danger d-flex align-items-center" role="alert">
+          <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+          <div class="ms-2">
+            <p class="my-0">
+              <strong>{{ showproblem.status }} {{ showproblem.title }}</strong>
+            </p>
+            <p v-if="showproblem.instance" class="my-0">{{ showproblem.instance }}</p>
+            <p v-if="showproblem.detail" class="my-0">{{ showproblem.detail }}</p>
+          </div>
+        </div>
+        </div>
       </div>
       <ChartButtonToolbar 
         :showtimeframe="!!deviceid" 
@@ -219,5 +258,10 @@ function slabhref (slab: IDisplayMetricGroup): string | undefined
 <style scoped>
 .dropdown-menu li:hover {
     cursor: pointer;
+}
+.bi {
+    fill: currentcolor;
+    width: 3em;
+    height: 3em;
 }
 </style>
