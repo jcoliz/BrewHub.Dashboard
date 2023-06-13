@@ -8,7 +8,6 @@ import { createApp } from 'vue'
 import { createRouter, createWebHistory } from 'vue-router';
 
 import DashboardView from './views/DashboardView.vue'
-import AlbumView from './views/AlbumView.vue'
 import EmptyView from './views/EmptyView.vue'
 import ScriptsPage from './views/ScriptsPage.vue'
 import NotifyPage from './views/NotifyPage.vue'
