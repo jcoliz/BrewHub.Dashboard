@@ -5,8 +5,9 @@
  */
 
 import { computed } from 'vue'
-import FeatherIcon from '../components/FeatherIcon.vue';
 import { TimeframeEnum } from '../apiclients/apiclient.ts';
+
+import FeatherIcon from '../components/FeatherIcon.vue';
 
 defineProps<{
     /**
