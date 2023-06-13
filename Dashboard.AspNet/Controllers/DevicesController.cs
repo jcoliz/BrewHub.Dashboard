@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Cors;
 
-namespace BrewHub.Dashboard.Controllers;
+namespace BrewHub.Dashboard.Api;
 
 public enum TimeframeEnum { Minutes = 0, Hour, Hours, Day, Week, Month };
 

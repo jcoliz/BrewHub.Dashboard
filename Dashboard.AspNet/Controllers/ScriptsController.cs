@@ -1,7 +1,7 @@
 using BrewHub.Dashboard.Core.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BrewHub.Dashboard.Controllers;
+namespace BrewHub.Dashboard.Api;
 
 [ApiController]
 [Route("api/[controller]")]
