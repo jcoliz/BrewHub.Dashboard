@@ -3,6 +3,14 @@
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /source
 
+# Install Node
+RUN apt-get update -yq \
+    && apt-get -yq install curl gnupg ca-certificates \
+    && curl -L https://deb.nodesource.com/setup_20.x | bash \
+    && apt-get update -yq \
+    && apt-get install -yq \
+        nodejs
+
 # copy csproj and restore as distinct layers
 COPY Dashboard.AspNet/*.csproj Dashboard.AspNet/
 COPY Dashboard.Core/*.csproj Dashboard.Core/
