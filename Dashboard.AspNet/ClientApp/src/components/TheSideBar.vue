@@ -55,7 +55,7 @@ function unshow()
             />
             <NavItemRouterLink 
               title="Notify" 
-              link="/empty/Notify" 
+              link="/notify" 
               icon="alert-triangle" 
               @click="unshow"
             />
