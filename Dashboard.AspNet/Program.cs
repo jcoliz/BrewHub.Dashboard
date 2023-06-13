@@ -36,7 +36,10 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddControllersWithViews();
-builder.Services.AddOpenApiDocument(); // registers a OpenAPI v3.0 document with the name "v1" (default)
+builder.Services.AddOpenApiDocument( o => {
+    o.Title = "BrewHub.Net Dashboard Backend API";
+    o.Description = "Application boundary between .NET backend and Vue.JS frontend.";
+});
 builder.Services.AddRazorPages()
                 .AddRazorRuntimeCompilation();
 builder.Services.AddHealthChecks();
