@@ -6,7 +6,7 @@ import ChartViewer from '../components/ChartViewer.vue';
 import ChartButtonToolbar from '../components/ChartButtonToolbar.vue';
 import DisplaySlab from '../components/DisplaySlab.vue';
 import BreadCrumbs from '../components/BreadCrumbs.vue';
-import { DevicesClient, IDisplayMetricGroup, IDisplayMetric, ChartsClient, IChartConfig } from '../apiclients/apiclient.ts';
+import { DevicesClient, IDisplayMetricGroup, IDisplayMetric, ChartsClient, IChartConfig, TimeframeEnum } from '../apiclients/apiclient.ts';
 
 /*
  * Route inputs
@@ -59,6 +59,8 @@ const chartconfig = ref<IChartConfig | null>(null);
 /*
  * Timescale of display
  */
+
+const timescale = ref(TimeframeEnum.Minutes);
 
 /*
  * Handling posting data back to server
@@ -166,7 +168,7 @@ function slabhref (slab: IDisplayMetricGroup): string | undefined
         <h1 class="h2">Devices</h1>
         <BreadCrumbs :links="breadcrumbs" :page="currentpage"/>
       </div>
-      <ChartButtonToolbar/>
+      <ChartButtonToolbar :showtimeframe="!!deviceid" v-model:timeframe="timescale"/>
     </div>
 
     <div 
