@@ -82,6 +82,7 @@ namespace DashboardIoT.InfluxDB
             return new Datapoint() 
             { 
                 __Device = d["device"].ToString()!, 
+                __Model = d["_measurement"].ToString()!, 
                 __Component = d.GetValueOrDefault("component")?.ToString(),
                 __Time = d.ContainsKey("_time") ? ((NodaTime.Instant)d["_time"]).ToDateTimeOffset() : DateTimeOffset.MinValue,
                 __Field = d["_field"].ToString()!, 
@@ -114,7 +115,7 @@ namespace DashboardIoT.InfluxDB
                 " |> range(start: -10m)" +
                 " |> filter(fn: (r) => r[\"_field\"] == \"workingSet\" or r[\"_field\"] == \"temperature\")" +
                 " |> last()" +
-                " |> keep(columns: [ \"device\", \"component\", \"_field\", \"_value\" ])";
+                " |> keep(columns: [ \"device\", \"component\", \"_field\", \"_value\", \"_measurement\" ])";
 
             return await DoFluxQueryAsync(flux);
         }
@@ -133,7 +134,7 @@ namespace DashboardIoT.InfluxDB
                 $" |> filter(fn: (r) => r[\"device\"] == \"{deviceid}\")" +
                 " |> filter(fn: (r) => r[\"_field\"] != \"Seq\" and r[\"_field\"] != \"__t\")" +
                 " |> last()" +
-                " |> keep(columns: [ \"device\", \"component\", \"_field\", \"_value\" ])";
+                " |> keep(columns: [ \"device\", \"component\", \"_field\", \"_value\", \"_measurement\" ])";
 
             return await DoFluxQueryAsync(flux);
         }
@@ -152,7 +153,7 @@ namespace DashboardIoT.InfluxDB
                     $" |> range(start: -{lookbackstr})" +
                     $" |> filter(fn: (r) => r[\"device\"] == \"{deviceid}\")" +
                      " |> filter(fn: (r) => r[\"_field\"] == \"temperature\")" +
-                     " |> keep(columns: [ \"device\", \"component\", \"_field\", \"_value\", \"_time\" ])" +
+                     " |> keep(columns: [ \"device\", \"component\", \"_field\", \"_value\", \"_time\", \"_measurement\" ])" +
                     $" |> aggregateWindow(every: {intervalstr}, fn: mean, createEmpty: false)" +
                      " |> yield(name: \"mean\")";
 
