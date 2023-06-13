@@ -1,18 +1,36 @@
 <script setup lang="ts">
+
+/**
+ * Dashboard Page: Primary features of dashboard web app are contained herein
+ */
+
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { onBeforeRouteUpdate } from 'vue-router'
+import { DevicesClient, IDisplayMetricGroup, IDisplayMetric, ChartsClient, IChartConfig, TimeframeEnum } from '../apiclients/apiclient.ts';
 
 import ChartViewer from '../components/ChartViewer.vue';
 import ChartButtonToolbar from '../components/ChartButtonToolbar.vue';
 import DisplaySlab from '../components/DisplaySlab.vue';
 import BreadCrumbs from '../components/BreadCrumbs.vue';
-import { DevicesClient, IDisplayMetricGroup, IDisplayMetric, ChartsClient, IChartConfig, TimeframeEnum } from '../apiclients/apiclient.ts';
+
+const props = defineProps<{
+  /**
+   * ID for the device we're viewing, or undefined for show summary of all devices
+   */
+  deviceid?: string,
+
+  /**
+   * ID for the component we're viewing, or undefined for show summary of all
+   * components on this device.
+   * 
+   * NOTE: If a componentid is set, then a deviceid MUST be set.
+   */
+  componentid?: string
+}>();
 
 /*
- * Route inputs
+ * Routing
  */
-
-const props = defineProps<{ deviceid?: string, componentid?: string }>();
 
 interface IBreadcrumbLink {
   title: string,

@@ -1,6 +1,15 @@
 <script setup lang="ts">
 
-defineProps<{ title: string }>();
+/**
+ * Header to define a section in a <nav>
+ */
+
+defineProps<{
+  /**
+   * Text to show the user on this header
+   */
+  title: string
+}>();
 
 </script>
 

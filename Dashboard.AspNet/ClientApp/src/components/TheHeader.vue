@@ -1,7 +1,17 @@
 <script setup lang="ts">
+
+/**
+ * Standard site header
+ */
+
 import FeatherIcon from './FeatherIcon.vue';
 
-defineProps<{ title: string }>();
+defineProps<{
+  /**
+   * Brand wording to use in upper-left corner of site
+   */
+  title: string
+}>();
 </script>
 
 <template>

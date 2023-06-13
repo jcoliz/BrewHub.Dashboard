@@ -5,7 +5,14 @@
  */
 
 import { IDisplayMetric } from '../apiclients/apiclient.ts';
-defineProps<{ metric?: IDisplayMetric}> ();
+
+defineProps<{
+    /**
+     * Which metric are we displaying
+     */
+    metric?: IDisplayMetric
+}>();
+
 </script>
 
 <template>

@@ -1,4 +1,9 @@
 <script setup lang="ts">
+
+/**
+ * Standard site footer
+ */
+
 import GithubButton from 'vue-github-button'
 import versionText from '../assets/version.txt?raw';
 </script>

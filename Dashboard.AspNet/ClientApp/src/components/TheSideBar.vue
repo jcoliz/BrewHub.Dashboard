@@ -1,4 +1,9 @@
 <script setup lang="ts">
+
+/**
+ * Application sidebar for navigation
+ */
+
 import { ref } from 'vue';
 import NavItemRouterLink from './NavItemRouterLink.vue';
 import NavItemLink from './NavItemLink.vue';

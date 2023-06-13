@@ -1,4 +1,7 @@
 <script setup lang="ts">
+/**
+ * Holds a group of items within a <nav>
+ */
 </script>
 
 <template>

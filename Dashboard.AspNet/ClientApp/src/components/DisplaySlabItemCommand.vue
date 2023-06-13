@@ -6,8 +6,20 @@
 
 import { ref } from 'vue';
 import { IDisplayMetric } from '../apiclients/apiclient.ts';
-defineProps<{ metric?: IDisplayMetric }>();
-defineEmits<{ (e: 'go', text: string): void }>();
+
+defineProps<{
+    /**
+     * Which metric are we displaying
+     */
+     metric?: IDisplayMetric
+}>();
+
+defineEmits<{
+    /**
+     * User desires to send a command back to the device on this metric
+     */
+    (e: 'go', text: string): void
+}>();
 
 const text = ref<string>("");
 

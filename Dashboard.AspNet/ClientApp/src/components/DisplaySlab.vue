@@ -10,10 +10,28 @@ import DisplaySlabItemCommand from './DisplaySlabItemCommand.vue';
 import { IDisplayMetricGroup, IDisplayMetric } from '../apiclients/apiclient.ts';
 import { RouterLink } from 'vue-router';
 
-defineProps<{ slab?: IDisplayMetricGroup, href?: string }>();
+defineProps<{
+    /**
+     * Contents to display
+     */
+    slab?: IDisplayMetricGroup,
+
+    /**
+     * Where to link to for more details
+     */
+    href?: string
+}>();
+
 defineEmits<{
+    /**
+     * User desires to send a command back to the device
+     */
     (e: 'command', metric: IDisplayMetric, payload: string): void,
-    (e: 'property', metric: IDisplayMetric, payload: string): void,
+
+    /**
+     * User desires to update a writable property on the device
+     */
+     (e: 'property', metric: IDisplayMetric, payload: string): void,
 }>();
 
 </script>

@@ -1,10 +1,30 @@
 <script setup lang="ts">
+
+/**
+ * Site-specific conventions for displaying a chart
+ */
+
 import { Bar, Line } from 'vue-chartjs'
 import { Chart as ChartJS, Title, Tooltip, Legend, LineElement, BarElement, PointElement, CategoryScale, LinearScale } from 'chart.js'
 
 ChartJS.register(Title, Tooltip, Legend, LineElement, BarElement, PointElement, CategoryScale, LinearScale)
 
-defineProps<{ bar: boolean, cdata: any, coptions: any }>();
+defineProps<{
+  /**
+   * Whether to display a bar chart (false for line chart)
+   */
+  bar: boolean,
+
+  /**
+   * Chart.js chart data object
+   */
+  cdata: any,
+
+  /**
+   * Chart.js chart options object
+   */
+  coptions: any
+}>();
 
 </script>
 

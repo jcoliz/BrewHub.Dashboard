@@ -6,8 +6,20 @@
 
 import { ref, onMounted } from 'vue';
 import { IDisplayMetric } from '../apiclients/apiclient.ts';
-const props = defineProps<{ metric?: IDisplayMetric}> ();
-defineEmits<{ (e: 'update', text: string): void }>();
+
+const props = defineProps<{
+    /**
+     * Which metric are we displaying
+     */
+     metric?: IDisplayMetric
+}>();
+
+defineEmits<{
+    /**
+     * User desires to update this metric on the device
+     */
+    (e: 'update', text: string): void
+}>();
 
 const text = ref<string|undefined>(undefined);
 

@@ -7,9 +7,14 @@
 import { computed } from 'vue'
 import { icons, FeatherIconNames } from 'feather-icons'
 
-// TODO: Figure out how to validate that this string IS one of 
-// feather.FeatherIconNames
-const props = defineProps<{ icon:string }>();
+const props = defineProps<{
+  /**
+   * Name of the icon, as defined by feather-icons (feather.FeatherIconNames)
+   * 
+   * TODO: Need to figure out how to validate this!
+   */
+  icon: string
+}>();
 
 const iconSvg = computed(() => {
   return icons[ props.icon as FeatherIconNames ].toSvg()
