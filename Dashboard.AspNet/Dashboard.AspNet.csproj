@@ -26,14 +26,11 @@
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
     <Exec Command="pwsh --command &quot; &amp;&apos;$(ProjectDir)scripts\Get-Version.ps1&apos; &gt; &apos;$(ProjectDir)version.txt&apos; &quot;" />
+    <Exec Command="pwsh --command &quot; &amp;'$(ProjectDir)scripts\Get-Version.ps1' &gt; '$(ProjectDir)ClientApp\src\assets\version.txt' &quot;" />
   </Target>
 
   <ItemGroup>
     <EmbeddedResource Include="version.txt" />  
   </ItemGroup>
-
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="pwsh --command &quot; &amp;'$(ProjectDir)scripts\Get-Version.ps1' &gt; '$(ProjectDir)ClientApp\src\assets\version.txt' &quot;" />
-  </Target>
 
 </Project>
