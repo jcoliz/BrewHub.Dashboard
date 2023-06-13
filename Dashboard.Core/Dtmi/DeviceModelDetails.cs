@@ -11,12 +11,9 @@ namespace BrewHub.Dashboard.Core.Dtmi;
 /// <remarks>
 /// Currently this is hard-coded. In the future, it should be more dynamic
 /// </remarks>
-public class DeviceModelDetails: IDeviceModel
+public class DeviceModelDetails
 {
-    /// <summary>
-    /// Human-readable name of this schema
-    /// </summary>
-    public string SchemaName => "Temperature Controller";
+    #region Schema-Specific Formatting
 
     /// <summary>
     /// Telemetry values to be shown when looking at the solution overall
@@ -33,13 +30,9 @@ public class DeviceModelDetails: IDeviceModel
     /// </summary>
     /// <param name="metricid">Schema-defined identifier for metric (could be separated by `/`)</param>
     /// <returns>Human readable name</returns>
-    public string MapMetricName(string metricid) => metricid switch
+    private string MapMetricName(Datapoint d) => d.__Field switch
     {
-        "thermostat1/temperature" => "Thermostat1/Temperature",
-        "thermostat2/temperature" => "Thermostat2/Temperature",
         "serialNumber" => "Serial Number",
-        "thermostat1" => "Thermostat One",
-        "thermostat2" => "Thermostat Two",
         "deviceInformation" => "Device Information",
         "manufacturer" => "Manufacturer",
         "model" => "Device Model",
@@ -53,7 +46,15 @@ public class DeviceModelDetails: IDeviceModel
         "targetTemperature" => "Target Temperature",
         "workingSet" => $"Working Set",
         "telemetryPeriod" => "Telemetry Period",
-        _ => metricid
+        _ => d.__Field
+    };
+
+    private string? MapComponentName(Datapoint d) => d.__Component switch
+    {
+        "deviceInformation" => "Device Information",
+        "thermostat1" => "Thermostat One",
+        "thermostat2" => "Thermostat Two",
+        _ => d.__Component
     };
 
     /// <summary>
@@ -61,7 +62,7 @@ public class DeviceModelDetails: IDeviceModel
     /// </summary>
     /// <param name="metric"></param>
     /// <returns></returns>
-    public string FormatMetricValue(Datapoint metric)
+    private string FormatMetricValue(Datapoint metric)
     {
         return metric.__Field switch
         {
@@ -89,7 +90,7 @@ public class DeviceModelDetails: IDeviceModel
     /// </summary>
     /// <param name="metricid"></param>
     /// <returns></returns>
-    public bool IsMetricTelemetry(string metricid) => metricid switch
+    private bool IsMetricTelemetry(Datapoint d) => d.__Field switch
     {
         "temperature" or
         "workingSet" => true,
@@ -101,7 +102,7 @@ public class DeviceModelDetails: IDeviceModel
     /// </summary>
     /// <param name="metricid"></param>
     /// <returns></returns>
-    public bool IsMetricWritable(string metricid) => metricid switch
+    private bool IsMetricWritable(Datapoint d) => d.__Field switch
     {
         "targetTemperature" or
         "telemetryPeriod" => true,
@@ -113,7 +114,7 @@ public class DeviceModelDetails: IDeviceModel
     /// </summary>
     /// <param name="metricid"></param>
     /// <returns></returns>
-    public string? GetWritableUnits(string metricid) => metricid switch
+    private string? GetWritableUnits(Datapoint d) => d.__Field switch
     {
         "targetTemperature" => "°C",
         _ => null
@@ -124,8 +125,9 @@ public class DeviceModelDetails: IDeviceModel
     /// </summary>
     /// <param name="componentid"></param>
     /// <returns></returns>
-    public IEnumerable<DisplayMetric> GetCommands(string componentid) => componentid switch
+    private IEnumerable<DisplayMetric> GetCommands(Datapoint d) => d.__Component switch
     {
+        null or
         "" => new List<DisplayMetric>()
                         {
                             new() { Name = "Reboot", Id = "reboot", Value = "Delay", Units = "s" }
@@ -139,12 +141,14 @@ public class DeviceModelDetails: IDeviceModel
         _ => Enumerable.Empty<DisplayMetric>()
     };
 
+    #endregion
+
     public DisplayMetricGroup FromDeviceComponentTelemetry(IGrouping<string,Datapoint> d)
     {
         string ExtractComponentAndMetricName(Datapoint d)
         {
-            var f = MapMetricName(d.__Field);
-            return (d.__Component is null) ? f : $"{MapMetricName(d.__Component)}/{f}";
+            var f = MapMetricName(d);
+            return (d.__Component is null) ? f : $"{MapComponentName(d)}/{f}";
         }
 
         return new DisplayMetricGroup()
@@ -164,28 +168,25 @@ public class DeviceModelDetails: IDeviceModel
     {
         return new DisplayMetric()
         {
-            Name = MapMetricName(d.__Field),
+            Name = MapMetricName(d),
             Id = d.__Field,
             Value = FormatMetricValue(d),
-            Units = GetWritableUnits(d.__Field)
+            Units = GetWritableUnits(d)
         };
     }
 
     public DisplayMetricGroup FromComponent(IGrouping<string,Datapoint> c)
     {
-        string ValueOrEmpty(string s, string alt) => string.IsNullOrEmpty(s) ? alt : s;
-
-        // TODO: Augment with DTMI information
-        //raw[string.Empty]["Schema"] = dtmi.SchemaName;
+        var schema = new DisplayMetric() { Name = "Schema", Id = "schema", Value = c.First().__Model };
 
         return new DisplayMetricGroup() 
         { 
-            Title = ValueOrEmpty(MapMetricName(c.Key),"Device Details"),
+            Title = MapComponentName(c.First()) ?? "Device Details",
             Id = c.Key,
-            Telemetry = c.Where(x=>IsMetricTelemetry(x.__Field)).Select(FromDatapoint).ToArray(), 
-            ReadOnlyProperties = c.Where(x=>!IsMetricWritable(x.__Field) && !IsMetricTelemetry(x.__Field)).Select(FromDatapoint).ToArray(), 
-            WritableProperties = c.Where(x=>IsMetricWritable(x.__Field)).Select(FromDatapoint).ToArray(), 
-            Commands = GetCommands(c.Key).ToArray()
+            Telemetry = c.Where(x=>IsMetricTelemetry(x)).Select(FromDatapoint).ToArray(), 
+            ReadOnlyProperties = c.Where(x=>!IsMetricWritable(x) && !IsMetricTelemetry(x)).Select(FromDatapoint).Concat(new[] { schema }).ToArray(), 
+            WritableProperties = c.Where(x=>IsMetricWritable(x)).Select(FromDatapoint).ToArray(), 
+            Commands = GetCommands(c.First()).ToArray()
         };
     }
 
@@ -193,7 +194,9 @@ public class DeviceModelDetails: IDeviceModel
     {
         var result = new List<DisplayMetricGroup>();
 
-        var telemetry = c.Where(x => IsMetricTelemetry(x.__Field));
+        var schema = new DisplayMetric() { Name = "Schema", Id = "schema", Value = c.First().__Model };
+
+        var telemetry = c.Where(x => IsMetricTelemetry(x));
         if (telemetry.Any())
         {
             result.Add(new DisplayMetricGroup()
@@ -202,16 +205,16 @@ public class DeviceModelDetails: IDeviceModel
                 Telemetry = telemetry.Select(FromDatapoint).ToArray()
             });
         }
-        var ro = c.Where(x=>!IsMetricWritable(x.__Field) && !IsMetricTelemetry(x.__Field));
+        var ro = c.Where(x=>!IsMetricWritable(x) && !IsMetricTelemetry(x));
         if (ro.Any())
         {
             result.Add(new DisplayMetricGroup()
             {
                 Title = "Properties",
-                ReadOnlyProperties = ro.Select(FromDatapoint).ToArray()
+                ReadOnlyProperties = ro.Select(FromDatapoint).Concat(new[] { schema }).ToArray()
             });
         }
-        var writable = c.Where(x=>IsMetricWritable(x.__Field));
+        var writable = c.Where(x=>IsMetricWritable(x));
         if (writable.Any())
         {
             result.Add(new DisplayMetricGroup()
@@ -220,7 +223,7 @@ public class DeviceModelDetails: IDeviceModel
                 ReadOnlyProperties = writable.Select(FromDatapoint).ToArray()
             });
         }
-        var commands = GetCommands(c.First()?.__Component ?? string.Empty);
+        var commands = GetCommands(c.First());
         if (commands.Any())
         {
             result.Add(new DisplayMetricGroup()

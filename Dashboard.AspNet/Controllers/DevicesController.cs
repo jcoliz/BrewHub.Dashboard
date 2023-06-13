@@ -137,13 +137,14 @@ public class DevicesController : ControllerBase
             return NotFound();
 
         // Bad request if fails DTMI, e.g. wrong command or payload
+#if false
         var dtmi = new DeviceModelDetails();
         if (!dtmi.GetCommands(component).Any(x=>x.Id == command))
         {
             _logger.LogError("{caller}: {status} Not known command {command}","ExecuteCommand",StatusCodes.Status400BadRequest,command);
             return BadRequest();
         }
-
+#endif
         return NoContent();
     }
 
@@ -167,13 +168,14 @@ public class DevicesController : ControllerBase
             return NotFound();
 
         // Bad request if fails DTMI, e.g. wrong command or payload
+#if false
         var dtmi = new DeviceModelDetails();
         if (!dtmi.IsMetricWritable(property))
         {
             _logger.LogError("{caller}: {status} Not a writable property {property}","SetProperty",StatusCodes.Status400BadRequest,property);
             return BadRequest();
         }
-
+#endif
         return NoContent();
     }
 

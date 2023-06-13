@@ -29,7 +29,7 @@ public interface IDeviceModel
     /// </summary>
     /// <param name="metricid">Schema-defined identifier for metric (could be separated by `/`)</param>
     /// <returns>Human readable name</returns>
-    string MapMetricName(string metricid);
+    string MapMetricName(Datapoint metric);
 
     /// <summary>
     /// Format a metric to human-readable form
@@ -43,19 +43,19 @@ public interface IDeviceModel
     /// </summary>
     /// <param name="metricid"></param>
     /// <returns></returns>
-    bool IsMetricWritable(string metricid);
+    bool IsMetricWritable(Datapoint metric);
 
     /// <summary> 
     /// Returns the units to be displayed with a metric, or null if metric is not writable, or no units need to be displayed
     /// </summary>
     /// <param name="metricid"></param>
     /// <returns></returns>
-    string? GetWritableUnits(string metricid);
+    string? GetWritableUnits(Datapoint metric);
 
     /// <summary>
     /// Return all the commands for a given component id
     /// </summary>
     /// <param name="componentid"></param>
     /// <returns>Displaymetrics for all the commands</returns>
-    IEnumerable<DisplayMetric> GetCommands(string componentid);
+    IEnumerable<DisplayMetric> GetCommands(Datapoint metric);
 } 
