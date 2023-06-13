@@ -4,11 +4,13 @@ import 'bootstrap-icons/font/bootstrap-icons.css'
 import 'feather-icons/dist/feather.min.js'
 import 'bootstrap'
 import App from './App.vue'
+import { createApp } from 'vue'
+import { createRouter, createWebHistory } from 'vue-router';
+
 import DashboardView from './views/DashboardView.vue'
 import AlbumView from './views/AlbumView.vue'
 import EmptyView from './views/EmptyView.vue'
-import { createApp } from 'vue'
-import { createRouter, createWebHistory } from 'vue-router';
+import ScriptsPage from './views/ScriptsPage.vue'
 
 /*
  * Set up routing
@@ -23,6 +25,7 @@ const routes = [
     props: true
   },
   { path: '/', redirect: '/devices' },
+  { path: '/scripts', component: ScriptsPage, props: true },
   { path: '/album/:title', component: AlbumView, props: true },
   { path: '/empty/:title', component: EmptyView, props: true },
   { path: '/:pathMatch(.*)*', redirect: '/empty/NotFound' }

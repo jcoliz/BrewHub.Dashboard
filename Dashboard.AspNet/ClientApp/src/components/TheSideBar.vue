@@ -49,7 +49,7 @@ function unshow()
             />
             <NavItemRouterLink 
               title="Scripts" 
-              link="/empty/Scripts" 
+              link="/scripts" 
               icon="cpu" 
               @click="unshow"
             />
