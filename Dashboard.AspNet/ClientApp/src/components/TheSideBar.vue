@@ -43,7 +43,7 @@ function unshow()
         <NavItemGroup>
             <NavItemRouterLink 
               title="Devices" 
-              link="/" 
+              link="/devices" 
               icon="activity"
               @click="unshow"
             />

@@ -8,7 +8,7 @@ import DashboardView from './views/DashboardView.vue'
 import AlbumView from './views/AlbumView.vue'
 import EmptyView from './views/EmptyView.vue'
 import { createApp } from 'vue'
-import { createRouter, createWebHashHistory } from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router';
 
 /*
  * Set up routing
@@ -18,23 +18,20 @@ import { createRouter, createWebHashHistory } from 'vue-router';
 // - Each route should map to a component.
 const routes = [
   {
-    path: '/devices',
-    alias: [
-      '/',
-      '/devices/:deviceid',
-      '/devices/:deviceid/:componentid',
-    ],
+    path: '/devices/:deviceid?/:componentid?',
     component: DashboardView,
     props: true
   },
+  { path: '/', redirect: '/devices' },
   { path: '/album/:title', component: AlbumView, props: true },
   { path: '/empty/:title', component: EmptyView, props: true },
+  { path: '/:pathMatch(.*)*', redirect: '/empty/NotFound' }
 ]
 
 // Create the router instance and pass the `routes` option
 const router = createRouter({
   // 4. Provide the history implementation to use. We are using the hash history for simplicity here.
-  history: createWebHashHistory(),
+  history: createWebHistory(),
   routes, // short for `routes: routes`
 })
 
