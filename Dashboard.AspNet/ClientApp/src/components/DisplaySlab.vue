@@ -2,11 +2,11 @@
 import DisplaySlabItem from './DisplaySlabItem.vue';
 import DisplaySlabItemWritable from './DisplaySlabItemWritable.vue';
 import DisplaySlabItemCommand from './DisplaySlabItemCommand.vue';
-import { IDisplayMetricGroup } from '../apiclients/apiclient.ts';
+import { IDisplayMetricGroup, IDisplayMetric } from '../apiclients/apiclient.ts';
 import { RouterLink } from 'vue-router';
 
 defineProps<{ slab?: IDisplayMetricGroup, href?: string }>();
-defineEmits<{ (e: 'command', id: string, payload: string): void }>();
+defineEmits<{ (e: 'command', metric: IDisplayMetric, payload: string): void }>();
 
 </script>
 
@@ -32,7 +32,7 @@ defineEmits<{ (e: 'command', id: string, payload: string): void }>();
                     />
                     <DisplaySlabItemCommand
                         v-for="metric in slab?.commands" :metric="metric"
-                        @go="(text) => $emit('command',metric.id,text)"
+                        @go="(text) => $emit('command',metric,text)"
                     />
                 </ul>
                 <RouterLink 
