@@ -86,7 +86,7 @@ public class DevicesController : ControllerBase
         // Query InfluxDB, compose into UI slabs
         var data = await _datasource.GetLatestDevicePropertiesAsync(device);
         var dtmi = new DeviceModelDetails();
-        var slabs = data.GroupBy(x => x.__Component ?? string.Empty).Select(dtmi!.FromComponent).ToArray();
+        var slabs = data.GroupBy(x => x.__Component ?? "device").Select(dtmi!.FromComponent).ToArray();
 
         return Ok(slabs);
     }

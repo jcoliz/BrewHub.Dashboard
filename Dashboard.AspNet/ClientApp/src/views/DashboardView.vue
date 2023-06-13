@@ -45,7 +45,8 @@ const currentpage = computed((): string => {
 
 onBeforeRouteUpdate(async (to, _) => {
   const deviceid = to.params["deviceid"] as string;
-  update(deviceid);
+  const componentid = to.params["componentid"] as string;
+  update(deviceid,componentid);
 });
 
 /*
@@ -66,24 +67,28 @@ const chartconfig = ref<IChartConfig | null>(null);
 var devicesClient = new DevicesClient();
 var chartsClient = new ChartsClient();
 
-async function getData(deviceid?: string) {
-  console.log(`getData: ${deviceid ?? "empty"} `)
-  if (deviceid)
+async function getData(deviceid?: string, componentid?: string) {
+  console.log(`getData: ${deviceid ?? "empty"} ${componentid ?? "empty"} `)
+  if (componentid)
+    slabs.value = await devicesClient.component(deviceid!, componentid);
+  else if (deviceid)
     slabs.value = await devicesClient.device(deviceid);
   else
     slabs.value = await devicesClient.slabs();
 }
 
-async function getChart(deviceid?: string) {
-  if (deviceid)
+async function getChart(deviceid?: string, componentid?: string) {
+  if (componentid)
+    chartconfig.value = await chartsClient.componentChart(deviceid!,componentid,0);
+  else if (deviceid)
     chartconfig.value = await chartsClient.deviceChart(deviceid,0);
   else
     chartconfig.value = await chartsClient.telemetry();
 }
 
-function update(deviceid?: string) {
-  getChart(deviceid);
-  getData(deviceid);
+function update(deviceid?: string, componentid?: string) {
+  getChart(deviceid, componentid);
+  getData(deviceid, componentid);
 }
 
 /*
@@ -99,7 +104,7 @@ onMounted(() => {
     interval.value = setInterval(update, 20000);
     console.log(`Set interval ${interval.value}`);
   }
-  update(props.deviceid);
+  update(props.deviceid, props.componentid);
 });
 onUnmounted(() => {
   console.log(`Clearing interval ${interval.value}`);
@@ -109,6 +114,23 @@ onUnmounted(() => {
     console.log("Cleared");
   }
 });
+
+/*
+ * Helpers, to reduce code in HTML
+ */
+
+function slabhref (slab: IDisplayMetricGroup): string | undefined
+{
+  switch (slab.kind) {
+    case 1: // device
+      return `/devices/${slab.id}`;
+    case 2: // component
+      return `/devices/${props.deviceid}/${slab.id ?? "device"}`;
+    default: // empty=0, grouping=3, or erroneous value
+      return undefined;
+  }
+}
+
 </script>
 
 <template>
@@ -146,7 +168,7 @@ onUnmounted(() => {
         v-for="slab in slabs"
         :key="`${slab.kind}-${slab.id}`"
         :slab="slab"
-        :href="`/devices/${slab.id}`"
+        :href="slabhref(slab)"
       />
 
     </div>

@@ -154,6 +154,7 @@ public class DeviceModelDetails
         return new DisplayMetricGroup()
         {
             Title = d.Key,
+            Kind = DisplayMetricGroupKind.Device,
             Id = d.Key,
             Telemetry = d.Select(y => new DisplayMetric()
             {
@@ -182,6 +183,7 @@ public class DeviceModelDetails
         return new DisplayMetricGroup() 
         { 
             Title = MapComponentName(c.First()) ?? "Device Details",
+            Kind = DisplayMetricGroupKind.Component,
             Id = c.Key,
             Telemetry = c.Where(x=>IsMetricTelemetry(x)).Select(FromDatapoint).ToArray(), 
             ReadOnlyProperties = c.Where(x=>!IsMetricWritable(x) && !IsMetricTelemetry(x)).Select(FromDatapoint).Concat(new[] { schema }).ToArray(), 
@@ -202,6 +204,8 @@ public class DeviceModelDetails
             result.Add(new DisplayMetricGroup()
             {
                 Title = "Telemetry",
+                Id = "telemetry",
+                Kind = DisplayMetricGroupKind.Grouping,
                 Telemetry = telemetry.Select(FromDatapoint).ToArray()
             });
         }
@@ -211,6 +215,8 @@ public class DeviceModelDetails
             result.Add(new DisplayMetricGroup()
             {
                 Title = "Properties",
+                Id = "roprops",
+                Kind = DisplayMetricGroupKind.Grouping,
                 ReadOnlyProperties = ro.Select(FromDatapoint).Concat(new[] { schema }).ToArray()
             });
         }
@@ -220,7 +226,9 @@ public class DeviceModelDetails
             result.Add(new DisplayMetricGroup()
             {
                 Title = "Writable Properties",
-                ReadOnlyProperties = writable.Select(FromDatapoint).ToArray()
+                Id = "wprops",
+                Kind = DisplayMetricGroupKind.Grouping,
+                WritableProperties = writable.Select(FromDatapoint).ToArray()
             });
         }
         var commands = GetCommands(c.First());
@@ -229,6 +237,8 @@ public class DeviceModelDetails
             result.Add(new DisplayMetricGroup()
             {
                 Title = "Commands",
+                Id = "commands",
+                Kind = DisplayMetricGroupKind.Grouping,
                 Commands = commands.ToArray()
             });
         }

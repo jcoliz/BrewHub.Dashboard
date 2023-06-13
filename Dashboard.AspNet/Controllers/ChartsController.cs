@@ -140,7 +140,7 @@ public class ChartsController : ControllerBase
             return NotFound();
         }
         var components = data.Where(x => x.__Device == device).Select(x=>x.__Component ?? "device").Distinct();
-        if (!components.Contains(device))
+        if (!components.Contains(component))
         {
             _logger.LogError("ComponentChart: {status} Unknown component {component}",StatusCodes.Status404NotFound,component);
             return NotFound();

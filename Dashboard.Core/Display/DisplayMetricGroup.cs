@@ -13,7 +13,11 @@ public record DisplayMetricGroup
     /// <summary>
     /// How we are known in the database
     /// </summary>
-    public string? Id { get; init; } = null;
+    /// <remarks>
+    /// The frontend needs this to be set. And it must be a valid HTML
+    /// identifier.
+    /// </remarks>
+    public string Id { get; init; } = string.Empty;
 
     public DisplayMetricGroupKind Kind { get; init; } = DisplayMetricGroupKind.Empty;
 
