@@ -40,9 +40,10 @@ function update() {
  * Manage interval timers so as to not leak them
  */
 
+// Note that this shouldn't be faster than the minimum time slice on the smallest chart
 const interval = ref<NodeJS.Timer|undefined>(undefined);
 onMounted(() => {
-  interval.value = setInterval(update, 10000);
+  interval.value = setInterval(update, 20000);
   console.log(`Set interval ${interval.value}`);
   update();
 });
