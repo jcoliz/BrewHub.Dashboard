@@ -97,19 +97,29 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseCors();
 
+#pragma warning disable ASP0014
+// https://alexpotter.dev/net-6-with-vue-3/
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapRazorPages();
+    endpoints.MapControllerRoute(
+        name: "default",
+        pattern: "{controller}/{action=Index}/{id?}");
+    endpoints.MapHealthChecks("/health");
+});
+#pragma warning restore ASP0014
+
 if (app.Environment.IsDevelopment())
 {
-    //TODO
+    app.UseSpa(spa =>
+    {
+        // Set this to `https` if https is enabled in `ClientApp/vite.config.ts`
+        spa.UseProxyToSpaDevelopmentServer("http://localhost:5173");
+    });
 }
 else
 {
     app.MapFallbackToFile("index.html");
 }
-
-app.MapRazorPages();
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller}/{action=Index}/{id?}");
-app.MapHealthChecks("/health");
 
 app.Run();
