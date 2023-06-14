@@ -6,7 +6,7 @@
 
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { onBeforeRouteUpdate } from 'vue-router'
-import { DevicesClient, IDisplayMetricGroup, IDisplayMetric, DisplayMetricGroupKind, ChartsClient, IChartConfig, TimeframeEnum, ProblemDetails, ApiException } from '../apiclients/apiclient.ts';
+import * as api from '../apiclients/apiclient.ts';
 
 import ChartViewer from '../components/ChartViewer.vue';
 import ChartButtonToolbar from '../components/ChartButtonToolbar.vue';
@@ -82,26 +82,26 @@ onBeforeRouteUpdate(async (to, {}) => {
 // Primary data to display
 //
 
-const slabs = ref<IDisplayMetricGroup[]>([]);
-const chartconfig = ref<IChartConfig | undefined>(undefined);
-const showproblem = ref<ProblemDetails | undefined>(undefined);
+const slabs = ref<api.IDisplayMetricGroup[]>([]);
+const chartconfig = ref<api.IChartConfig | undefined>(undefined);
+const showproblem = ref<api.ProblemDetails | undefined>(undefined);
 
 //
 // Timescale of display
 //
 
-const timescale = ref(TimeframeEnum.Minutes);
+const timescale = ref(api.TimeframeEnum.Minutes);
 
 //
 // Communication back to server
 //
 
-function postCommand(slabid: string, metric: IDisplayMetric, payload: string)
+function postCommand(slabid: string, metric: api.IDisplayMetric, payload: string)
 {
   console.log(`postCommand: device ${props.deviceid} component ${props.componentid} slab ${slabid} metric ${metric.name} payload ${payload}`);
 }
 
-function postUpdate(slabid: string, metric: IDisplayMetric, payload: string)
+function postUpdate(slabid: string, metric: api.IDisplayMetric, payload: string)
 {
   console.log(`postUpdate: device ${props.deviceid} component ${props.componentid} slab ${slabid} metric ${metric.name} payload ${payload}`);
 }
@@ -110,8 +110,8 @@ function postUpdate(slabid: string, metric: IDisplayMetric, payload: string)
 // Fetching from server
 //
 
-var devicesClient = new DevicesClient();
-var chartsClient = new ChartsClient();
+var devicesClient = new api.DevicesClient();
+var chartsClient = new api.ChartsClient();
 
 async function getData(deviceid?: string, componentid?: string) {
   console.log(`getData: ${deviceid ?? "empty"} ${componentid ?? "empty"} `)
@@ -143,12 +143,12 @@ function update(deviceid?: string, componentid?: string) {
        })
     getData(deviceid, componentid)
       .catch(reason => {
-        if (reason instanceof ApiException)
+        if (reason instanceof api.ApiException)
         {
-          showproblem.value = new ProblemDetails({ status: reason.status, title: reason.message });
+          showproblem.value = new api.ProblemDetails({ status: reason.status, title: reason.message });
           console.log(`API EXCEPTION loading data: ${reason.status} ${reason.message}`);
         }
-        else if (reason instanceof ProblemDetails)
+        else if (reason instanceof api.ProblemDetails)
         {
           console.log(`PROBLEM loading data: ${reason.status} ${reason.title} detail:${reason.detail} instance:${reason.instance}`);
           showproblem.value = reason;
@@ -156,20 +156,20 @@ function update(deviceid?: string, componentid?: string) {
         else if (typeof reason === "string")
         {
           console.log(`ERROR loading data: ${reason}`);
-          showproblem.value = new ProblemDetails({ title: reason });
+          showproblem.value = new api.ProblemDetails({ title: reason });
         }
         else
         {
           var detail = JSON.stringify(reason);
           console.log(`ERROR loading data: ${detail}`);
-          showproblem.value = new ProblemDetails({ title: "Unrecognized Error", detail });
+          showproblem.value = new api.ProblemDetails({ title: "Unrecognized Error", detail });
         }
        })
 }
 
-/*
- * Manage interval timers so as to not leak them
- */
+//
+// Manage interval timers so as to not leak them
+//
 
 const usetimer:boolean = false;
 // Note that this shouldn't be faster than the minimum time slice on the smallest chart
@@ -183,11 +183,15 @@ onMounted(() => {
   update(props.deviceid, props.componentid);
 });
 onUnmounted(() => {
-  console.log(`Clearing interval ${interval.value}`);
   if (interval.value)
   {
+    console.log(`Clearing interval ${interval.value}`);
     clearInterval(interval.value);
     console.log("Cleared");
+  }
+  else
+  {
+    console.log("No interval to clear");
   }
 });
 
@@ -195,12 +199,12 @@ onUnmounted(() => {
  * Helpers, to reduce code in HTML
  */
 
-function slabhref (slab: IDisplayMetricGroup): string | undefined
+function slabhref (slab: api.IDisplayMetricGroup): string | undefined
 {
   switch (slab.kind) {
-    case DisplayMetricGroupKind.Device:
+    case api.DisplayMetricGroupKind.Device:
       return `/devices/${slab.id}`;
-    case DisplayMetricGroupKind.Component:
+    case api.DisplayMetricGroupKind.Component:
       return `/devices/${props.deviceid}/${slab.id ?? "device"}`;
     default: // Empty, or erroneous value
       return undefined;
