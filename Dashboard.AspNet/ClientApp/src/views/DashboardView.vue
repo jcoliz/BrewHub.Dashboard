@@ -282,15 +282,6 @@ function slabhref (slab: api.IDisplayMetricGroup): string | undefined
     data-test-id="Devices" 
     class="col-md-9 ms-sm-auto col-lg-10 px-md-4"
   >
-    <div class="chartjs-size-monitor">
-      <div class="chartjs-size-monitor-expand">
-        <div class=""></div>
-      </div>
-      <div class="chartjs-size-monitor-shrink">
-        <div class=""></div>
-      </div>    
-    </div>
-
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
       <div>
         <ThePageTitle title="Devices"/>
@@ -308,19 +299,14 @@ function slabhref (slab: api.IDisplayMetricGroup): string | undefined
         v-model:timeframe="timescale"
         @refresh="update($props.deviceid,$props.componentid)"
       />
-    </div>
+    </div> 
 
-    <div 
+    <ChartViewer 
       v-if="chartconfig?.data?.datasets?.length"
-      class="chart-container w-100 my-5"
-      style="position: relative;"
-    >
-      <ChartViewer 
-        :bar="true" 
-        :cdata="chartconfig?.data!" 
-        :coptions="chartconfig?.options" 
+      :bar="chartconfig?.type === 'bar'" 
+      :cdata="chartconfig?.data!" 
+      :coptions="chartconfig?.options" 
       />
-    </div>
 
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xxl-4 mb-3 text-center">
       <DisplaySlab 
