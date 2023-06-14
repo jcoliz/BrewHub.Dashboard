@@ -18,6 +18,9 @@ import ThePageTitle from '../components/ThePageTitle.vue';
 const props = defineProps<{
   /**
    * ID for the device we're viewing, or undefined for show summary of all devices
+   * 
+   * NOTE: Use the `hasValue` function to determine whether this actually contains
+   * a value. Technically there are valid names which would resolve to falsy.
    */
   deviceid?: string,
 
@@ -26,9 +29,16 @@ const props = defineProps<{
    * components on this device.
    * 
    * NOTE: If a componentid is set, then a deviceid MUST be set.
+   * 
+   * NOTE: Use the `hasValue` function to determine whether this actually contains
+   * a value. Technically there are valid names which would resolve to falsy.
    */
   componentid?: string
 }>();
+
+function hasValue(value: string | undefined): boolean {
+  return (value != undefined) && value.length > 0; 
+}
 
 //
 // Routing
@@ -40,7 +50,7 @@ interface IBreadcrumbLink {
 };
 
 const breadcrumbs = computed(():IBreadcrumbLink[] => {
-  if (props.componentid) {
+  if (hasValue(props.componentid)) {
     return [{
       title: 'Home',
       href: '/devices'
@@ -50,7 +60,7 @@ const breadcrumbs = computed(():IBreadcrumbLink[] => {
       href: `/devices/${props.deviceid}`
     }];
   }
-  else if (props.deviceid) {
+  else if (hasValue(props.deviceid)) {
     return [{
       title: 'Home',
       href: '/devices'
@@ -74,9 +84,11 @@ const currentpage = computed((): string => {
 });
 
 onBeforeRouteUpdate(async (to, { }) => {
-  // Note that if deviceid or componentid are missing, they will be "" here
+
+  // If deviceid or componentid are missing, they will be "" here
   const deviceid = to.params["deviceid"] as string;
   const componentid = to.params["componentid"] as string;
+
   update(deviceid,componentid);
 });
 
@@ -116,20 +128,19 @@ var devicesClient = new api.DevicesClient();
 var chartsClient = new api.ChartsClient();
 
 async function getData(deviceid?: string, componentid?: string) {
-  console.log(`getData: ${deviceid ?? "empty"} ${componentid ?? "empty"} `)
-  if (componentid)
-    slabs.value = await devicesClient.component(deviceid!, componentid);
-  else if (deviceid)
-    slabs.value = await devicesClient.device(deviceid);
+  if (hasValue(componentid))
+    slabs.value = await devicesClient.component(deviceid!, componentid!);
+  else if (hasValue(deviceid))
+    slabs.value = await devicesClient.device(deviceid!);
   else
     slabs.value = await devicesClient.slabs();
 }
 
 async function getChart(deviceid?: string, componentid?: string) {
-  if (componentid)
-    chartconfig.value = await chartsClient.componentChart(deviceid!,componentid,timescale.value);
-  else if (deviceid)
-    chartconfig.value = await chartsClient.deviceChart(deviceid,timescale.value);
+  if (hasValue(componentid))
+    chartconfig.value = await chartsClient.componentChart(deviceid!,componentid!,timescale.value);
+  else if (hasValue(deviceid))
+    chartconfig.value = await chartsClient.deviceChart(deviceid!,timescale.value);
   else
     chartconfig.value = await chartsClient.telemetry();
 }
@@ -141,7 +152,7 @@ function update(deviceid?: string, componentid?: string) {
         // Note that we don't bother really with getchart failures, on the idea that if
         // chart fails to load, probably also the device data will fail to load, so that's
         // where we'll deal with it
-        console.log(`ERROR loading chart: ${reason}`);    
+        console.log(`ERROR loading chart: ${JSON.stringify(reason)}`);    
        })
     getData(deviceid, componentid)
       .catch(reason => {
