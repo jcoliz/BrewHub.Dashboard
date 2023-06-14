@@ -110,9 +110,19 @@ const timescale = ref(api.TimeframeEnum.Minutes);
 // Communication back to server
 //
 
+var devicesClient = new api.DevicesClient();
+var chartsClient = new api.ChartsClient();
+
 function postCommand(slabid: string, metric: api.IDisplayMetric, payload: string)
 {
   console.log(`postCommand: device ${props.deviceid} component ${props.componentid} slab ${slabid} metric ${metric.name} payload ${payload}`);
+
+  devicesClient
+    .executeCommand(props.deviceid!, hasValue(props.componentid) ? props.componentid! : "device", metric.id!, payload)
+    .catch(reason => {
+      const problem = getProblemDetails(reason);
+      console.log(`PROBLEM: ${JSON.stringify(problem)}`);
+    });
 }
 
 function postUpdate(slabid: string, metric: api.IDisplayMetric, payload: string)
@@ -123,9 +133,6 @@ function postUpdate(slabid: string, metric: api.IDisplayMetric, payload: string)
 //
 // Fetching from server
 //
-
-var devicesClient = new api.DevicesClient();
-var chartsClient = new api.ChartsClient();
 
 async function getData(deviceid?: string, componentid?: string) {
   if (hasValue(componentid))
@@ -145,39 +152,39 @@ async function getChart(deviceid?: string, componentid?: string) {
     chartconfig.value = await chartsClient.telemetry();
 }
 
+function getProblemDetails(reason: any): api.ProblemDetails
+{
+  if (reason instanceof api.ProblemDetails)
+  {
+    return reason;
+  }
+  if (reason instanceof api.ApiException)
+  {
+    return new api.ProblemDetails({ status: reason.status, title: reason.message });
+  }
+  if (typeof reason === "string")
+  {
+    return new api.ProblemDetails({ title: reason });
+  }
+
+  var detail = JSON.stringify(reason);
+  return new api.ProblemDetails({ title: "Unrecognized Error", detail });
+}
+
 function update(deviceid?: string, componentid?: string) {
   showproblem.value = undefined;
-    getChart(deviceid, componentid)
-      .catch(reason => {
-        // Note that we don't bother really with getchart failures, on the idea that if
-        // chart fails to load, probably also the device data will fail to load, so that's
-        // where we'll deal with it
-        console.log(`ERROR loading chart: ${JSON.stringify(reason)}`);    
-       })
-    getData(deviceid, componentid)
-      .catch(reason => {
-        if (reason instanceof api.ApiException)
-        {
-          showproblem.value = new api.ProblemDetails({ status: reason.status, title: reason.message });
-          console.log(`API EXCEPTION loading data: ${reason.status} ${reason.message}`);
-        }
-        else if (reason instanceof api.ProblemDetails)
-        {
-          console.log(`PROBLEM loading data: ${reason.status} ${reason.title} detail:${reason.detail} instance:${reason.instance}`);
-          showproblem.value = reason;
-        }
-        else if (typeof reason === "string")
-        {
-          console.log(`ERROR loading data: ${reason}`);
-          showproblem.value = new api.ProblemDetails({ title: reason });
-        }
-        else
-        {
-          var detail = JSON.stringify(reason);
-          console.log(`ERROR loading data: ${detail}`);
-          showproblem.value = new api.ProblemDetails({ title: "Unrecognized Error", detail });
-        }
-       })
+  getChart(deviceid, componentid)
+    .catch(reason => {
+      // Note that we don't bother really with getchart failures, on the idea that if
+      // chart fails to load, probably also the device data will fail to load, so that's
+      // where we'll deal with it
+      console.log(`ERROR loading chart: ${JSON.stringify(reason)}`);    
+      })
+  getData(deviceid, componentid)
+    .catch(reason =>
+    { 
+      showproblem.value = getProblemDetails(reason);
+    });
 }
 
 //
