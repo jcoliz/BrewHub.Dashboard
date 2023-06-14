@@ -17,7 +17,7 @@ import { Collapse } from 'bootstrap'
 // Bug 1562: Navigation menu stays open after selecting item
 // Note: See discussion this bug for alternatives considered
 //
-const sidebar = ref<HTMLElement|null>(null);
+const sidebar = ref<HTMLElement|undefined>(undefined);
 function unshow()
 {
   if (sidebar.value && sidebar.value.classList.contains("show"))
