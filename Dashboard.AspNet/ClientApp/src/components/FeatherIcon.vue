@@ -24,3 +24,14 @@ const iconSvg = computed(() => {
 <template>
     <span v-html="iconSvg"></span>
 </template>
+
+<style>
+/* Doesn't apply if I scope it?? */
+
+svg.feather {
+  width: 16px;
+  height: 16px;
+  vertical-align: text-bottom;
+}
+
+</style>

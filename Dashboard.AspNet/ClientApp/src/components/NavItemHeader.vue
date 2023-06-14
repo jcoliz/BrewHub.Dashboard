@@ -21,3 +21,11 @@ defineProps<{
         </h6>
     </div>
 </template>
+
+<style scoped>
+.sidebar-heading {
+  font-size: .75rem;
+  text-transform: uppercase;
+}
+
+</style>

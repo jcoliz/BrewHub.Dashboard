@@ -78,3 +78,9 @@ const timeframes = computed(() => {
         </div>
     </div>
 </template>
+
+<style scoped>
+.dropdown-menu li:hover {
+    cursor: pointer;
+}
+</style>

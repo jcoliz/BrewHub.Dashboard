@@ -49,3 +49,7 @@ defineEmits<{
         </a>
     </li>
 </template>
+
+
+<style scoped>
+</style>
