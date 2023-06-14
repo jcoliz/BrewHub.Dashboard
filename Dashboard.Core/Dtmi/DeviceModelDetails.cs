@@ -57,43 +57,59 @@ public class DeviceModelDetails
         _ => d.__Component
     };
 
+    Func<object, string> degreesCelcius = x => $"{x:F1}°C";
+    Func<object, string> floatNoUnits = x => $"{x:F1}";
+    Func<object, string> kibiBits = x => $"{(double)x / 7812.5:F1}MB";
+    Func<object, string> noFormatting = x => x.ToString() ?? string.Empty;
+    Func<object, string> kBytes = x => (double)x switch
+    {
+        > 1000000 => $"{(double)x / 1000000:F1} GB",
+        > 1000 => $"{(double)x / 1000:F1} MB",
+        _ => $"{(double)x:F1} kB"
+    };
+
     /// <summary>
     /// Format a metric to human-readable form
     /// </summary>
     /// <param name="metric"></param>
     /// <returns></returns>
-    private string FormatMetricValue(Datapoint metric)
+    private string FormatMetricValue(Datapoint d)
     {
-        return metric.__Field switch
+        var format = d.__Model switch
         {
-            "maxTempSinceLastReboot" or
-            "thermostat1/temperature" or
-            "thermostat2/temperature" or
-            "temperature"
-                    => $"{metric.__Value:F1}°C",
-            "targetTemperature" => $"{metric.__Value:F1}",
-            "workingSet" => $"{(double)metric.__Value / 7812.5:F1}MB",
-            "totalStorage" or
-            "totalMemory"
-                => (double)metric.__Value switch
-                {
-                    > 1000000 => $"{(double)metric.__Value / 1000000:F1} GB",
-                    > 1000 => $"{(double)metric.__Value / 1000:F1} MB",
-                    _ => $"{(double)metric.__Value:F1} kB"
-                },
-            _ => metric.__Value.ToString()
-        } ?? string.Empty;
-    }         
+            "DeviceInformation;1" => d.__Field switch 
+            {
+                "totalStorage" or
+                "totalMemory" => kBytes,
+                _ => noFormatting
+            },
+            "Thermostat;1" => d.__Field switch
+            {
+                "targetTemperature" => floatNoUnits,
+                "maxTempSinceLastReboot" or
+                "temperature" => degreesCelcius,
+                _ => noFormatting
+            },
+             "TemperatureController;2" => d.__Field switch
+            {
+                "workingSet" => kibiBits,
+                _ => noFormatting
+            },
+            _ => noFormatting
+        };
+
+        return format(d.__Value);
+    } 
 
     /// <summary>
     /// Whether a specific metric is telemetry metric
     /// </summary>
     /// <param name="metricid"></param>
     /// <returns></returns>
-    private bool IsMetricTelemetry(Datapoint d) => d.__Field switch
+    private bool IsMetricTelemetry(Datapoint d) => d.__Model switch
     {
-        "temperature" or
-        "workingSet" => true,
+        "TemperatureController;2" => d.__Field == "workingSet",
+        "Thermostat;1" => d.__Field == "temperature",
         _ => false
     };
 
@@ -102,10 +118,10 @@ public class DeviceModelDetails
     /// </summary>
     /// <param name="metricid"></param>
     /// <returns></returns>
-    private bool IsMetricWritable(Datapoint d) => d.__Field switch
+    private bool IsMetricWritable(Datapoint d) => d.__Model switch
     {
-        "targetTemperature" or
-        "telemetryPeriod" => true,
+        "Thermostat;1" => d.__Field == "targetTemperature",
+        "TemperatureController;2" => d.__Field == "telemetryPeriod",
         _ => false
     };
 
@@ -114,9 +130,9 @@ public class DeviceModelDetails
     /// </summary>
     /// <param name="metricid"></param>
     /// <returns></returns>
-    private string? GetWritableUnits(Datapoint d) => d.__Field switch
+    private string? GetWritableUnits(Datapoint d) => d.__Model switch
     {
-        "targetTemperature" => "°C",
+        "Thermostat;1" => (d.__Field == "targetTemperature") ? "°C" : null,
         _ => null
     };
 
@@ -125,19 +141,17 @@ public class DeviceModelDetails
     /// </summary>
     /// <param name="componentid"></param>
     /// <returns></returns>
-    private IEnumerable<DisplayMetric> GetCommands(Datapoint d) => d.__Component switch
+    private IEnumerable<DisplayMetric> GetCommands(Datapoint d) => d.__Model switch
     {
-        null or
-        "" => new List<DisplayMetric>()
-                        {
-                            new() { Name = "Reboot", Id = "reboot", Value = "Delay", Units = "s" }
-                        }
+        "TemperatureController;2" => new List<DisplayMetric>()
+        {
+            new() { Name = "Reboot", Id = "reboot", Value = "Delay", Units = "s" }
+        }
         ,
-        "thermostat1" or
-        "thermostat2" => new List<DisplayMetric>()
-                        {
-                            new() { Name = "Get Max-Min report", Id = "getMinMax", Value = "Since", Units = "D/T" }                                    
-                        },
+        "Thermostat;1" => new List<DisplayMetric>()
+        {
+            new() { Name = "Get Max-Min report", Id = "getMinMax", Value = "Since", Units = "D/T" }                                    
+        },
         _ => Enumerable.Empty<DisplayMetric>()
     };
 
