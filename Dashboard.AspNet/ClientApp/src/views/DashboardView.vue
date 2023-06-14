@@ -73,7 +73,8 @@ const currentpage = computed((): string => {
   }
 });
 
-onBeforeRouteUpdate(async (to, {}) => {
+onBeforeRouteUpdate(async (to, { }) => {
+  // Note that if deviceid or componentid are missing, they will be "" here
   const deviceid = to.params["deviceid"] as string;
   const componentid = to.params["componentid"] as string;
   update(deviceid,componentid);
