@@ -14,6 +14,7 @@ import DisplaySlab from '../components/DisplaySlab.vue';
 import BreadCrumbs from '../components/BreadCrumbs.vue';
 import ProblemDetailsViewer from '../components/ProblemDetailsViewer.vue';
 import ThePageTitle from '../components/ThePageTitle.vue';
+import BootstrapModalDialog from '../components/BootstrapModalDialog.vue';
 
 const props = defineProps<{
   /**
@@ -110,20 +111,32 @@ const timescale = ref(api.TimeframeEnum.Minutes);
 // Communication back to server
 //
 
-var devicesClient = new api.DevicesClient();
-var chartsClient = new api.ChartsClient();
+const devicesClient = new api.DevicesClient();
+const chartsClient = new api.ChartsClient();
+
+const postCommandDialogShowing = ref(false);
+const postCommandDialogMessage = ref<string | undefined>(undefined);
 
 function postCommand(slabid: string, metric: api.IDisplayMetric, payload: string)
 {
   console.log(`postCommand: device ${props.deviceid} component ${props.componentid} slab ${slabid} metric ${metric.name} payload ${payload}`);
 
+  const componentToSend = hasValue(props.componentid) ? props.componentid! : slabid;
+
   devicesClient
-    .executeCommand(props.deviceid!, hasValue(props.componentid) ? props.componentid! : "device", metric.id!, payload)
+    .executeCommand(props.deviceid!, componentToSend , metric.id!, payload)
+    .then(() => {
+      postCommandDialogMessage.value = `Successfully sent "${metric.name}" command to "${props.deviceid}/${componentToSend}".`;
+      postCommandDialogShowing.value = true;
+    })
     .catch(reason => {
       const problem = getProblemDetails(reason);
-      console.log(`PROBLEM: ${JSON.stringify(problem)}`);
+      const stringify = JSON.stringify(problem);
+      console.log(`PROBLEM: ${JSON.stringify(stringify)}`);
+      postCommandDialogMessage.value = stringify;
+      postCommandDialogShowing.value = true;
     });
-}
+} 
 
 function postUpdate(slabid: string, metric: api.IDisplayMetric, payload: string)
 {
@@ -191,7 +204,7 @@ function update(deviceid?: string, componentid?: string) {
 // Manage interval timers so as to not leak them
 //
 
-const usetimer:boolean = false;
+const usetimer = false;
 // Note that this shouldn't be faster than the minimum time slice on the smallest chart
 const interval = ref<NodeJS.Timer | undefined>(undefined);
 onMounted(() => {
@@ -289,6 +302,12 @@ function slabhref (slab: api.IDisplayMetricGroup): string | undefined
       />
     </div>
 
+    <BootstrapModalDialog 
+      title="Post Command"       
+      v-model:show="postCommandDialogShowing"
+    >
+      {{ postCommandDialogMessage }}
+    </BootstrapModalDialog>
   </main>
 </template>
 
