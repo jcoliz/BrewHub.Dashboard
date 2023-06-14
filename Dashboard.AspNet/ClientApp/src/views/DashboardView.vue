@@ -6,7 +6,7 @@
 
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { onBeforeRouteUpdate } from 'vue-router'
-import { DevicesClient, IDisplayMetricGroup, IDisplayMetric, ChartsClient, IChartConfig, TimeframeEnum, ProblemDetails, ApiException } from '../apiclients/apiclient.ts';
+import { DevicesClient, IDisplayMetricGroup, IDisplayMetric, DisplayMetricGroupKind, ChartsClient, IChartConfig, TimeframeEnum, ProblemDetails, ApiException } from '../apiclients/apiclient.ts';
 
 import ChartViewer from '../components/ChartViewer.vue';
 import ChartButtonToolbar from '../components/ChartButtonToolbar.vue';
@@ -29,9 +29,9 @@ const props = defineProps<{
   componentid?: string
 }>();
 
-/*
- * Routing
- */
+//
+// Routing
+//
 
 interface IBreadcrumbLink {
   title: string,
@@ -40,10 +40,20 @@ interface IBreadcrumbLink {
 
 const breadcrumbs = computed(():IBreadcrumbLink[] => {
   if (props.componentid) {
-    return [{ title: 'Home', href: '/devices' }, { title: props.deviceid!, href: `/devices/${props.deviceid}` }];
+    return [{
+      title: 'Home',
+      href: '/devices'
+    },
+    {
+      title: props.deviceid!,
+      href: `/devices/${props.deviceid}`
+    }];
   }
   else if (props.deviceid) {
-    return [{ title: 'Home', href: '/devices' }];
+    return [{
+      title: 'Home',
+      href: '/devices'
+    }];
   }
   else {
     return [];
@@ -51,10 +61,10 @@ const breadcrumbs = computed(():IBreadcrumbLink[] => {
 })
 
 const currentpage = computed((): string => {
-  if (props.componentid) {
+  if (props.componentid != undefined) {
     return props.componentid;
   }
-  else if (props.deviceid) {
+  else if (props.deviceid != undefined) {
     return props.deviceid;
   }
   else {
@@ -62,28 +72,29 @@ const currentpage = computed((): string => {
   }
 });
 
-onBeforeRouteUpdate(async (to, _) => {
+onBeforeRouteUpdate(async (to, {}) => {
   const deviceid = to.params["deviceid"] as string;
   const componentid = to.params["componentid"] as string;
   update(deviceid,componentid);
 });
 
-/*
- * Primary data to display
- */
+//
+// Primary data to display
+//
 
 const slabs = ref<IDisplayMetricGroup[]>([]);
-const chartconfig = ref<IChartConfig | null>(null);
-const showproblem = ref<ProblemDetails | null>(null);
-/*
- * Timescale of display
- */
+const chartconfig = ref<IChartConfig | undefined>(undefined);
+const showproblem = ref<ProblemDetails | undefined>(undefined);
+
+//
+// Timescale of display
+//
 
 const timescale = ref(TimeframeEnum.Minutes);
 
-/*
- * Handling posting data back to server
- */
+//
+// Communication back to server
+//
 
 function postCommand(slabid: string, metric: IDisplayMetric, payload: string)
 {
@@ -95,9 +106,9 @@ function postUpdate(slabid: string, metric: IDisplayMetric, payload: string)
   console.log(`postUpdate: device ${props.deviceid} component ${props.componentid} slab ${slabid} metric ${metric.name} payload ${payload}`);
 }
 
-/*
- * Fetching from server
- */
+//
+// Fetching from server
+//
 
 var devicesClient = new DevicesClient();
 var chartsClient = new ChartsClient();
@@ -122,25 +133,36 @@ async function getChart(deviceid?: string, componentid?: string) {
 }
 
 function update(deviceid?: string, componentid?: string) {
-  showproblem.value = null;
+  showproblem.value = undefined;
     getChart(deviceid, componentid)
       .catch(reason => {
+        // Note that we don't bother really with getchart failures, on the idea that if
+        // chart fails to load, probably also the device data will fail to load, so that's
+        // where we'll deal with it
         console.log(`ERROR loading chart: ${reason}`);    
        })
     getData(deviceid, componentid)
       .catch(reason => {
-        console.log(`ERROR loading data: ${typeof reason} ${reason}`);
         if (reason instanceof ApiException)
         {
-          var apiex = reason as ApiException;
-          showproblem.value = new ProblemDetails({ status: apiex.status, title: apiex.message });
-          console.log(`API EXCEPTION loading data: ${apiex.status} ${apiex.message}`);
+          showproblem.value = new ProblemDetails({ status: reason.status, title: reason.message });
+          console.log(`API EXCEPTION loading data: ${reason.status} ${reason.message}`);
         }
-        if (reason instanceof ProblemDetails)
+        else if (reason instanceof ProblemDetails)
         {
-          var problem = reason as ProblemDetails;
-          console.log(`PROBLEM loading data: ${problem.status} ${problem.title} detail:${problem.detail} instance:${problem.instance}`);
-          showproblem.value = problem;
+          console.log(`PROBLEM loading data: ${reason.status} ${reason.title} detail:${reason.detail} instance:${reason.instance}`);
+          showproblem.value = reason;
+        }
+        else if (typeof reason === "string")
+        {
+          console.log(`ERROR loading data: ${reason}`);
+          showproblem.value = new ProblemDetails({ title: reason });
+        }
+        else
+        {
+          var detail = JSON.stringify(reason);
+          console.log(`ERROR loading data: ${detail}`);
+          showproblem.value = new ProblemDetails({ title: "Unrecognized Error", detail });
         }
        })
 }
@@ -176,11 +198,11 @@ onUnmounted(() => {
 function slabhref (slab: IDisplayMetricGroup): string | undefined
 {
   switch (slab.kind) {
-    case 1: // device
+    case DisplayMetricGroupKind.Device:
       return `/devices/${slab.id}`;
-    case 2: // component
+    case DisplayMetricGroupKind.Component:
       return `/devices/${props.deviceid}/${slab.id ?? "device"}`;
-    default: // empty=0, grouping=3, or erroneous value
+    default: // Empty, or erroneous value
       return undefined;
   }
 }
@@ -204,7 +226,10 @@ function slabhref (slab: IDisplayMetricGroup): string | undefined
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
       <div>
         <h1 class="h2">Devices</h1>
-        <BreadCrumbs :links="breadcrumbs" :page="currentpage"/>
+        <BreadCrumbs 
+          :links="breadcrumbs" 
+          :page="currentpage"
+        />
         <ProblemDetailsViewer 
           v-if="showproblem"
           :problem="showproblem"  
@@ -218,11 +243,15 @@ function slabhref (slab: IDisplayMetricGroup): string | undefined
     </div>
 
     <div 
-      v-if="chartconfig?.data"
+      v-if="chartconfig?.data?.datasets?.length"
       class="chart-container w-100 my-5"
       style="position: relative;"
     >
-      <ChartViewer :bar="true" :cdata="chartconfig?.data!" :coptions="chartconfig?.options" />
+      <ChartViewer 
+        :bar="true" 
+        :cdata="chartconfig?.data!" 
+        :coptions="chartconfig?.options" 
+      />
     </div>
 
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xxl-4 mb-3 text-center">
@@ -234,7 +263,6 @@ function slabhref (slab: IDisplayMetricGroup): string | undefined
         @command="(metric,payload) => postCommand(slab.id!,metric,payload)"
         @property="(metric,payload) => postUpdate(slab.id!,metric,payload)"
       />
-
     </div>
 
   </main>
