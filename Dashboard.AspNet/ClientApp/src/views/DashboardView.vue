@@ -13,6 +13,7 @@ import ChartButtonToolbar from '../components/ChartButtonToolbar.vue';
 import DisplaySlab from '../components/DisplaySlab.vue';
 import BreadCrumbs from '../components/BreadCrumbs.vue';
 import ProblemDetailsViewer from '../components/ProblemDetailsViewer.vue';
+import ThePageTitle from '../components/ThePageTitle.vue';
 
 const props = defineProps<{
   /**
@@ -229,7 +230,7 @@ function slabhref (slab: api.IDisplayMetricGroup): string | undefined
 
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
       <div>
-        <h1 class="h2">Devices</h1>
+        <ThePageTitle title="Devices"/>
         <BreadCrumbs 
           :links="breadcrumbs" 
           :page="currentpage"
