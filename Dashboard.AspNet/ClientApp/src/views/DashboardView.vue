@@ -149,6 +149,29 @@ function postCommand(slabid: string, metric: api.IDisplayMetric, payload: string
 function postUpdate(slabid: string, metric: api.IDisplayMetric, payload: string)
 {
   console.log(`postUpdate: device ${props.deviceid} component ${props.componentid} slab ${slabid} metric ${metric.name} payload ${payload}`);
+
+  const componentToSend = hasValue(props.componentid) ? props.componentid! : slabid;
+
+  devicesClient
+    .setProperty(props.deviceid!, componentToSend, metric.id!, payload)
+    .then(() => {
+      postCommandDialogConfig.value = {
+        title: "Update Property",
+        message: `Successfully sent "${metric.name}" property update to "${props.deviceid}/${componentToSend}".`
+      };
+      postCommandDialogShowing.value = true;
+    })
+    .catch(reason => {
+      const problem = getProblemDetails(reason);
+      const stringify = JSON.stringify(problem);
+      console.log(`PROBLEM: ${JSON.stringify(stringify)}`);
+
+      postCommandDialogConfig.value = {
+        title: "ERROR: Update Property Failed",
+        message: stringify
+      };
+      postCommandDialogShowing.value = true;
+    });
 }
 
 //
@@ -236,9 +259,9 @@ onUnmounted(() => {
   }
 });
 
-/*
- * Helpers, to reduce code in HTML
- */
+//
+// Helpers, to reduce code in HTML
+//
 
 function slabhref (slab: api.IDisplayMetricGroup): string | undefined
 {
