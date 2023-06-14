@@ -54,7 +54,7 @@ const timeframes = computed(() => {
                 <ul class="dropdown-menu" aria-labelledby="btnGroupDrop-timeframe">
                     <li 
                         v-for="(text,index) in timeframes"
-                        class="dropdown-item"
+                        class="dropdown-item link-clickable"
                         @click="$emit('update:timeframe',index); $emit('refresh');"
                     >
                         {{ text }}
