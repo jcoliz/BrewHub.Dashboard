@@ -327,7 +327,4 @@ function slabhref (slab: api.IDisplayMetricGroup): string | undefined
 </template>
 
 <style scoped>
-.dropdown-menu li:hover {
-    cursor: pointer;
-}
 </style>

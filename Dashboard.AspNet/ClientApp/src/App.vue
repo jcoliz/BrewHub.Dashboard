@@ -22,7 +22,8 @@ import { RouterView } from 'vue-router';
 <style>
 
 /*
- * TODO: Move these where they need to go.
+ * TODO: Just moving these as scoped styles where they need to be does not
+ * really seem to work. Will need to troubleshoot this some more!
  */
 
 /* Dashboard: .css */
