@@ -2,20 +2,23 @@
 import { ref, onMounted, watch } from 'vue';
 import { Modal } from "bootstrap";
 
+export interface IBootstrapModalDialogInterface {
+    title?: string
+    message?: string
+    showCloseIcon?: boolean
+    showCancelButton?: boolean
+}
+
 const props = defineProps<{
   /**
    * Overall description of what's happening here
    */
-  title: string,
+  data: IBootstrapModalDialogInterface,
 
   /**
    * Whether the dialog should currently be shown to the user
    */
   show: Boolean
-  /**
-   * Whether the cancel button should currently be shown to the user
-   */
-  cancelButton?: Boolean
 }>();
 
 const emit = defineEmits<{
@@ -59,22 +62,25 @@ watch(
       <div class="modal-content">
         <div class="modal-header">
           <slot name="header">
-            <h5 class="modal-title">{{ $props.title }}</h5>
-            <!-- button
+            <h5 class="modal-title">{{ $props.data.title }}</h5>
+            <button
+              v-if="data.showCloseIcon"
               type="button"
               class="btn-close"
               data-bs-dismiss="modal"
               aria-label="Close"
-            ></button -->
+            ></button>
           </slot>
         </div>
         <div class="modal-body">
-          <slot></slot>
+          <slot>
+            {{ $props.data.message }}
+          </slot>
         </div>
         <div class="modal-footer">
           <slot name="footer">
             <button
-              v-if="cancelButton"
+              v-if="data.showCancelButton"
               type="button"
               class="btn btn-outline-secondary"
               data-bs-dismiss="modal"

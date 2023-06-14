@@ -15,6 +15,7 @@ import BreadCrumbs from '../components/BreadCrumbs.vue';
 import ProblemDetailsViewer from '../components/ProblemDetailsViewer.vue';
 import ThePageTitle from '../components/ThePageTitle.vue';
 import BootstrapModalDialog from '../components/BootstrapModalDialog.vue';
+import { IBootstrapModalDialogInterface } from '../components/BootstrapModalDialog.vue'
 
 const props = defineProps<{
   /**
@@ -115,7 +116,7 @@ const devicesClient = new api.DevicesClient();
 const chartsClient = new api.ChartsClient();
 
 const postCommandDialogShowing = ref(false);
-const postCommandDialogMessage = ref<string | undefined>(undefined);
+const postCommandDialogConfig = ref<IBootstrapModalDialogInterface>({});
 
 function postCommand(slabid: string, metric: api.IDisplayMetric, payload: string)
 {
@@ -126,14 +127,21 @@ function postCommand(slabid: string, metric: api.IDisplayMetric, payload: string
   devicesClient
     .executeCommand(props.deviceid!, componentToSend , metric.id!, payload)
     .then(() => {
-      postCommandDialogMessage.value = `Successfully sent "${metric.name}" command to "${props.deviceid}/${componentToSend}".`;
+      postCommandDialogConfig.value = {
+        title: "Post Command",
+        message: `Successfully sent "${metric.name}" command to "${props.deviceid}/${componentToSend}".`
+      };
       postCommandDialogShowing.value = true;
     })
     .catch(reason => {
       const problem = getProblemDetails(reason);
       const stringify = JSON.stringify(problem);
       console.log(`PROBLEM: ${JSON.stringify(stringify)}`);
-      postCommandDialogMessage.value = stringify;
+
+      postCommandDialogConfig.value = {
+        title: "ERROR: Post Command Failed",
+        message: stringify
+      };
       postCommandDialogShowing.value = true;
     });
 } 
@@ -303,11 +311,9 @@ function slabhref (slab: api.IDisplayMetricGroup): string | undefined
     </div>
 
     <BootstrapModalDialog 
-      title="Post Command"       
+      :data="postCommandDialogConfig"       
       v-model:show="postCommandDialogShowing"
-    >
-      {{ postCommandDialogMessage }}
-    </BootstrapModalDialog>
+    />
   </main>
 </template>
 
