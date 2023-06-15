@@ -18,7 +18,7 @@ public class DevicesController : ControllerBase
 {
     private readonly IDataSource _datasource;
     private readonly ILogger<DevicesController> _logger;
-    private readonly DeviceModelDetails _dtmi;
+    private readonly DeviceModelRepository _dtmi;
     private readonly DisplayMetricGroupBuilder _metricgroupbuilder;
 
     public DevicesController(ILogger<DevicesController> logger, IDataSource datasource)
@@ -64,7 +64,7 @@ public class DevicesController : ControllerBase
 
         var slabs = telemetry
                 .GroupBy(x => x.__Device)
-                .Select(_metricgroupbuilder.FromDeviceComponentTelemetry)
+                .Select(_metricgroupbuilder.FromDevice)
                 .ToArray();
 
         return Ok(slabs);
@@ -93,7 +93,7 @@ public class DevicesController : ControllerBase
 
         // Query InfluxDB, compose into UI slabs
         var data = await _datasource.GetLatestDevicePropertiesAsync(device);
-        var dtmi = new DeviceModelDetails();
+        var dtmi = new DeviceModelRepository();
         var slabs = data.GroupBy(x => x.__Component ?? "device").Select(_metricgroupbuilder.FromComponent).ToArray();
 
         return Ok(slabs);
@@ -133,9 +133,9 @@ public class DevicesController : ControllerBase
 
         // Query InfluxDB, compose into UI slabs
         var data = await _datasource.GetLatestDevicePropertiesAsync(device);
-        var dtmi = new DeviceModelDetails();
+        var dtmi = new DeviceModelRepository();
         var metrics = data.Where(x => component == (x.__Component ?? "device"));
-        var slabs = _metricgroupbuilder.FromSingleComponent(metrics);
+        var slabs = _metricgroupbuilder.ManyFromComponent(metrics);
 
         return Ok(slabs);
     }

@@ -34,7 +34,7 @@ public class ChartsController : ControllerBase
         // Pull raw telemetry from database
         // TODO: Need to get all telemetry in this call
         var data = await _datasource.GetLatestDeviceTelemetryAllAsync();
-        var dtmi = new DeviceModelDetails();
+        var dtmi = new DeviceModelRepository();
         var models = data.Where(x=>x.__Component is null).Select(x => x.__Model).Distinct();
         var result = ChartMaker.CreateMultiDeviceBarChart(data, dtmi.VisualizeTelemetry(models, DeviceModelMetricVisualizationLevel.Solution));
 
@@ -112,7 +112,7 @@ public class ChartsController : ControllerBase
 
         // Get historical telemetry data for all components on this device
         data = await _datasource.GetSingleDeviceTelemetryAsync(device, lookback, bininterval);
-        var dtmi = new DeviceModelDetails();
+        var dtmi = new DeviceModelRepository();
         var models = data.Where(x=>x.__Component is null).Select(x => x.__Model).Distinct();
         var result = BrewHub.Dashboard.Core.Charting.ChartMaker.CreateMultiLineChart(data,  dtmi.VisualizeTelemetry(models, DeviceModelMetricVisualizationLevel.Device), labelformat);
 

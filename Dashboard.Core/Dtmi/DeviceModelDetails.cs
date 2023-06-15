@@ -1,10 +1,6 @@
 using BrewHub.Dashboard.Core.Display;
 using BrewHub.Dashboard.Core.Models;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
-
-[assembly: InternalsVisibleToAttribute("Dashboard.Core.Tests.Unit")]
 
 namespace BrewHub.Dashboard.Core.Dtmi;
 
@@ -15,18 +11,15 @@ namespace BrewHub.Dashboard.Core.Dtmi;
 /// <remarks>
 /// Currently this is hard-coded. In the future, it should be more dynamic
 /// </remarks>
-public class DeviceModelDetails
+public class DeviceModelRepository
 {
-    private readonly Dictionary<string, DeviceModel> _models = new();
+    public Dictionary<string, DeviceModel> Models { get; } = new();
 
-    // For testing!!
-    internal Dictionary<string, DeviceModel> GetModels() => _models;
-
-    public DeviceModelDetails()
+    public DeviceModelRepository()
     {
         // Next step would be to load these from storage
 
-        _models["Thermostat;1"] = new("Thermostat")
+        Models["Thermostat;1"] = new("Thermostat")
         {
             Metrics = new()
             {
@@ -37,7 +30,7 @@ public class DeviceModelDetails
             }
         };
 
-        _models["TemperatureController;2"] = new("Temperature Controller")
+        Models["TemperatureController;2"] = new("Temperature Controller")
         {
             Metrics = new()
             {
@@ -50,7 +43,7 @@ public class DeviceModelDetails
             }
         };
 
-        _models["DeviceInformation;1"] = new("Device Information")
+        Models["DeviceInformation;1"] = new("Device Information")
         {
             Metrics = new()
             {
@@ -75,7 +68,7 @@ public class DeviceModelDetails
         var toplevelsviz = 
             models
                 .SelectMany(x => 
-                    _models[x]
+                    Models[x]
                     .Metrics
                     .Where(y=>y.Value.VisualizationLevel >= level)
                 );
@@ -91,7 +84,7 @@ public class DeviceModelDetails
             toplevelsviz
                 .Where(x => x.Value.Kind == DeviceModelMetricKind.Component)
                 .SelectMany(x => 
-                    _models[x.Value.Schema!]
+                    Models[x.Value.Schema!]
                     .Metrics
                     .Where(m=>m.Value.VisualizationLevel >= level)
                     .Select(z=>$"{x.Key}/{z.Key}")
@@ -107,7 +100,7 @@ public class DeviceModelDetails
     /// <returns>Human readable name</returns>
     public string MapMetricName(Datapoint d)
     {
-        return (_models.TryGetValue(d.__Model, out var model) && model.Metrics.TryGetValue(d.__Field, out var metric))
+        return (Models.TryGetValue(d.__Model, out var model) && model.Metrics.TryGetValue(d.__Field, out var metric))
             ? metric.Name
             : d.__Field;
     }
@@ -120,7 +113,7 @@ public class DeviceModelDetails
         //
         // Fixing that will take some more upstream work.
 
-        return _models
+        return Models
             .SelectMany(x => x.Value.Metrics.Select(y => (model: x.Key, id: y.Key, metric: y.Value)))
             .Where(x => x.id == d.__Component && x.metric.Kind == DeviceModelMetricKind.Component)
             .Select(x => x.metric.Name)
@@ -145,7 +138,7 @@ public class DeviceModelDetails
     /// <returns></returns>
     public string FormatMetricValue(Datapoint d)
     {
-        if (_models.TryGetValue(d.__Model,out var model) && model.Metrics.TryGetValue(d.__Field, out var metric) )
+        if (Models.TryGetValue(d.__Model,out var model) && model.Metrics.TryGetValue(d.__Field, out var metric) )
         {
             var format = metric.Formatter switch
             {
@@ -176,7 +169,7 @@ public class DeviceModelDetails
     public bool IsMetricTelemetry(Datapoint d)
     {
         return  (    
-                    _models.TryGetValue(d.__Model, out var model) 
+                    Models.TryGetValue(d.__Model, out var model) 
                     && 
                     model.Metrics.TryGetValue(d.__Field, out var metric)
                 )
@@ -192,7 +185,7 @@ public class DeviceModelDetails
     public bool IsMetricWritable(Datapoint d)
     {
         return  (
-                    _models.TryGetValue(d.__Model,out var model) 
+                    Models.TryGetValue(d.__Model,out var model) 
                     && 
                     model.Metrics.TryGetValue(d.__Field, out var metric)
                 )
@@ -208,7 +201,7 @@ public class DeviceModelDetails
     public string? GetWritableUnits(Datapoint d)
     {
         return  (
-                    _models.TryGetValue(d.__Model,out var model) 
+                    Models.TryGetValue(d.__Model,out var model) 
                     && 
                     model.Metrics.TryGetValue(d.__Field, out var metric)
                     && 
@@ -225,7 +218,7 @@ public class DeviceModelDetails
     /// <returns></returns>
     public IEnumerable<DisplayMetric> GetCommands(Datapoint d)
     {
-        if (_models.TryGetValue(d.__Model,out var model))
+        if (Models.TryGetValue(d.__Model,out var model))
         {
             return model
                     .Metrics

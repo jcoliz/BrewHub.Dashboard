@@ -9,14 +9,19 @@ namespace BrewHub.Dashboard.Core.Display;
 /// </summary>
 public class DisplayMetricGroupBuilder
 {
-    public readonly DeviceModelDetails _models;
+    public readonly DeviceModelRepository _models;
 
-    public DisplayMetricGroupBuilder(DeviceModelDetails models)
+    public DisplayMetricGroupBuilder(DeviceModelRepository models)
     {
         _models = models;
     }
 
-    public DisplayMetricGroup FromDeviceComponentTelemetry(IGrouping<string,Datapoint> group)
+    /// <summary>
+    /// Build a single slab (display metric group) per device, containing all metrics sent in
+    /// </summary>
+    /// <param name="group"></param>
+    /// <returns></returns>
+    public DisplayMetricGroup FromDevice(IGrouping<string,Datapoint> group)
     {
         string ExtractComponentAndMetricName(Datapoint d)
         {
@@ -39,6 +44,12 @@ public class DisplayMetricGroupBuilder
         };
     }
 
+    /// <summary>
+    /// Create a single display metric out of a single datapoint.
+    /// As formatted by DTMI
+    /// </summary>
+    /// <param name="d"></param>
+    /// <returns></returns>
     private DisplayMetric FromDatapoint(Datapoint d)
     {
         return new DisplayMetric()
@@ -50,29 +61,40 @@ public class DisplayMetricGroupBuilder
         };
     }
 
-    public DisplayMetricGroup FromComponent(IGrouping<string,Datapoint> c)
+    /// <summary>
+    /// Build one slab (display metric group) out of a single component
+    /// </summary>
+    /// <param name="group"></param>
+    /// <returns></returns>
+    public DisplayMetricGroup FromComponent(IGrouping<string,Datapoint> group)
     {
-        var schema = new DisplayMetric() { Name = "Schema", Id = "schema", Value = c.First().__Model };
+        var schema = new DisplayMetric() { Name = "Schema", Id = "schema", Value = group.First().__Model };
 
         return new DisplayMetricGroup() 
         { 
-            Title = _models.MapComponentName(c.First()) ?? "Device Details",
+            Title = _models.MapComponentName(group.First()) ?? "Device Details",
             Kind = DisplayMetricGroupKind.Component,
-            Id = c.Key,
-            Telemetry = c.Where(x=>_models.IsMetricTelemetry(x)).Select(FromDatapoint).ToArray(), 
-            ReadOnlyProperties = c.Where(x=>!_models.IsMetricWritable(x) && !_models.IsMetricTelemetry(x)).Select(FromDatapoint).Concat(new[] { schema }).ToArray(), 
-            WritableProperties = c.Where(x=>_models.IsMetricWritable(x)).Select(FromDatapoint).ToArray(), 
-            Commands = _models.GetCommands(c.First()).ToArray()
+            Id = group.Key,
+            Telemetry = group.Where(d=>_models.IsMetricTelemetry(d)).Select(FromDatapoint).ToArray(), 
+            ReadOnlyProperties = group.Where(d=>!_models.IsMetricWritable(d) && !_models.IsMetricTelemetry(d)).Select(FromDatapoint).Concat(new[] { schema }).ToArray(), 
+            WritableProperties = group.Where(d=>_models.IsMetricWritable(d)).Select(FromDatapoint).ToArray(), 
+            Commands = _models.GetCommands(group.First()).ToArray()
         };
     }
 
-    public DisplayMetricGroup[] FromSingleComponent(IEnumerable<Datapoint> c)
+    /// <summary>
+    /// Build many slabs (display metric group) out of a single component.
+    /// One slab per DeviceModelMetricKind
+    /// </summary>
+    /// <param name="points"></param>
+    /// <returns></returns>
+    public DisplayMetricGroup[] ManyFromComponent(IEnumerable<Datapoint> points)
     {
         var result = new List<DisplayMetricGroup>();
 
-        var schema = new DisplayMetric() { Name = "Schema", Id = "schema", Value = c.First().__Model };
+        var schema = new DisplayMetric() { Name = "Schema", Id = "schema", Value = points.First().__Model };
 
-        var telemetry = c.Where(x => _models.IsMetricTelemetry(x));
+        var telemetry = points.Where(d => _models.IsMetricTelemetry(d));
         if (telemetry.Any())
         {
             result.Add(new DisplayMetricGroup()
@@ -83,7 +105,7 @@ public class DisplayMetricGroupBuilder
                 Telemetry = telemetry.Select(FromDatapoint).ToArray()
             });
         }
-        var ro = c.Where(x=>!_models.IsMetricWritable(x) && !_models.IsMetricTelemetry(x));
+        var ro = points.Where(d=>!_models.IsMetricWritable(d) && !_models.IsMetricTelemetry(d));
         if (ro.Any())
         {
             result.Add(new DisplayMetricGroup()
@@ -94,7 +116,7 @@ public class DisplayMetricGroupBuilder
                 ReadOnlyProperties = ro.Select(FromDatapoint).Concat(new[] { schema }).ToArray()
             });
         }
-        var writable = c.Where(x=>_models.IsMetricWritable(x));
+        var writable = points.Where(d=>_models.IsMetricWritable(d));
         if (writable.Any())
         {
             result.Add(new DisplayMetricGroup()
@@ -105,7 +127,7 @@ public class DisplayMetricGroupBuilder
                 WritableProperties = writable.Select(FromDatapoint).ToArray()
             });
         }
-        var commands = _models.GetCommands(c.First());
+        var commands = _models.GetCommands(points.First());
         if (commands.Any())
         {
             result.Add(new DisplayMetricGroup()

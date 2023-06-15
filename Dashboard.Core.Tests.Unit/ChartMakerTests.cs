@@ -1,6 +1,11 @@
+using BrewHub.Dashboard.Core.Charting;
 using BrewHub.Dashboard.Core.MockData;
 namespace Dashboard.Core.Tests.Unit;
 
+/// <summary>
+/// This should test everything in BrewHub.Dashboard.Core.Charting
+/// Currently only DeviceModelRepository has any actual features
+/// </summary>
 public class ChartMakerTests
 {
     private readonly MockDataSource _datasource = new();
@@ -25,7 +30,7 @@ public class ChartMakerTests
         var label = $"{component}/{field}";
 
         // When: Creating a chart from the returned data set focused on the selected label
-        var chart = BrewHub.Dashboard.Core.Charting.ChartMaker.CreateMultiDeviceBarChart(data, new[] { label });
+        var chart = ChartMaker.CreateMultiDeviceBarChart(data, new[] { label });
 
         // Then: The chart contains all the devices
         var devices = data.Select(x => x.__Device).Distinct().OrderBy(x => x);
