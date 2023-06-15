@@ -1,13 +1,15 @@
 <script setup lang="ts">
+/**
+ * Navigation breadcrumbs, so you can find your way home
+ */
 
+/**
+ * Information we need about any one link in the upper breadcrumb history
+ */
 export interface IBreadCrumbsLink {
   title: string,
   href: string
 };
-
-/**
- * Navigation breadcrumbs, so you can find your way home
- */
 
 defineProps<{
     /**

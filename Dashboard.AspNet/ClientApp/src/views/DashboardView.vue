@@ -320,7 +320,8 @@ function slabhref (slab: api.IDisplayMetricGroup): string | undefined
       />
     </div>
 
-    <BootstrapModalDialog 
+    <BootstrapModalDialog
+      v-if="postCommandDialogShowing"
       :data="postCommandDialogConfig"       
       v-model:show="postCommandDialogShowing"
     />

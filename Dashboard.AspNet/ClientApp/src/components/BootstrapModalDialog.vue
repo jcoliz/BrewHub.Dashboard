@@ -1,7 +1,25 @@
 <script setup lang="ts">
+/**
+ * Bootstrap Modal Dialog: Overall this is a really flexible component that
+ * can be used in numerous ways.
+ * 
+ * For the simple case, fill up an IBootstrapModalDialogInterface with some
+ * based information, and send it in as a prop.
+ * 
+ * For more adanced use, you can fill the header, body, and/or footwe with
+ * slots of your own choosing.
+ * 
+ * Or mix and match!
+ */
+
 import { ref, onMounted, watch } from 'vue';
 import { Modal } from "bootstrap";
 
+/**
+ * The basic info which the modal dialog can display
+ * 
+ * Or you can override this entirely and just use slots
+ */
 export interface IBootstrapModalDialogInterface {
     title?: string
     message?: string
@@ -33,7 +51,7 @@ const modal = ref<Modal | undefined>(undefined);
 
 onMounted(() => {
   if (rootelement.value) {
-    rootelement.value.addEventListener("hide.bs.modal", () => {
+    rootelement.value.addEventListener("hidden.bs.modal", () => {
       emit('update:show',false);
     });
     const instance = Modal.getInstance(rootelement.value) ?? undefined;
