@@ -29,7 +29,17 @@ public class DeviceModelDetails
                 { "temperature", new() { Name = "Temperature", Kind = DeviceModelMetricKind.Telemetry, Formatter = DeviceModelMetricFormatter.Float, Units = "°C" } },
                 { "maxTempSinceLastReboot", new() { Name = "Max Temperature Since Reboot", Kind = DeviceModelMetricKind.ReadOnlyProperty, Formatter = DeviceModelMetricFormatter.Float, Units = "°C" } },
                 { "targetTemperature", new() { Name = "Target Temperature", Kind = DeviceModelMetricKind.WritableProperty, Formatter = DeviceModelMetricFormatter.Float, Units = "°C" } },
-                { "getMinMax", new() { Name = "Get Max-Min report", Kind = DeviceModelMetricKind.Command, Units = "D/T", ValueLabel = "Delay" } }
+                { "getMinMax", new() { Name = "Get Max-Min report", Kind = DeviceModelMetricKind.Command, Units = "D/T", ValueLabel = "Since" } }
+            }
+        };
+
+        _models["TemperatureController;2"] = new("Temperature Controller")
+        {
+            Metrics = new()
+            {
+                { "workingSet", new() { Name = "Working Set", Kind = DeviceModelMetricKind.Telemetry, Formatter = DeviceModelMetricFormatter.KibiBits } },
+                { "telemetryPeriod", new() { Name = "Telemetry Period", Kind = DeviceModelMetricKind.WritableProperty } },
+                { "reboot", new() { Name = "Reboot", Kind = DeviceModelMetricKind.Command, Units = "s", ValueLabel = "Delay" } }
             }
         };
     }
@@ -167,19 +177,13 @@ public class DeviceModelDetails
     /// <returns></returns>
     internal bool IsMetricTelemetry(Datapoint d)
     {
-        if (_models.TryGetValue(d.__Model,out var model))
-        {
-            return model.Metrics.TryGetValue(d.__Field, out var metric)
+        return  (    
+                    _models.TryGetValue(d.__Model, out var model) 
+                    && 
+                    model.Metrics.TryGetValue(d.__Field, out var metric)
+                )
                     ? metric.Kind == DeviceModelMetricKind.Telemetry
                     : false;
-        }
-
-        return d.__Model switch
-        {
-            "TemperatureController;2" => d.__Field == "workingSet",
-            "Thermostat;1" => d.__Field == "temperature",
-            _ => false
-        };
     }
 
     /// <summary>
@@ -189,19 +193,13 @@ public class DeviceModelDetails
     /// <returns></returns>
     internal bool IsMetricWritable(Datapoint d)
     {
-        if (_models.TryGetValue(d.__Model,out var model))
-        {
-            return model.Metrics.TryGetValue(d.__Field, out var metric)
+        return  (
+                    _models.TryGetValue(d.__Model,out var model) 
+                    && 
+                    model.Metrics.TryGetValue(d.__Field, out var metric)
+                )
                     ? metric.Kind == DeviceModelMetricKind.WritableProperty
                     : false;
-        }
-
-        return d.__Model switch
-        {
-            "Thermostat;1" => d.__Field == "targetTemperature",
-            "TemperatureController;2" => d.__Field == "telemetryPeriod",
-            _ => false
-        };
     }
 
     /// <summary>
@@ -246,6 +244,8 @@ public class DeviceModelDetails
                                     Value = x.Value.ValueLabel!, // TODO: Probably should allow null for this
                                     Units = x.Value.Units
                                 });
+                                // TODO: Consider if we may be able to merge Display Metric 
+                                // and DeviceModelMetric
         }
 
         return d.__Model switch
