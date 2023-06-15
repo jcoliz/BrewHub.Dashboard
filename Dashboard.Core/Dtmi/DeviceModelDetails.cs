@@ -2,6 +2,9 @@ using BrewHub.Dashboard.Core.Display;
 using BrewHub.Dashboard.Core.Models;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleToAttribute("Dashboard.Core.Tests.Unit")]
 
 namespace BrewHub.Dashboard.Core.Dtmi;
 
@@ -30,7 +33,7 @@ public class DeviceModelDetails
     /// </summary>
     /// <param name="metricid">Schema-defined identifier for metric (could be separated by `/`)</param>
     /// <returns>Human readable name</returns>
-    private string MapMetricName(Datapoint d) => d.__Field switch
+    internal string MapMetricName(Datapoint d) => d.__Field switch
     {
         "serialNumber" => "Serial Number",
         "deviceInformation" => "Device Information",
@@ -49,7 +52,7 @@ public class DeviceModelDetails
         _ => d.__Field
     };
 
-    private string? MapComponentName(Datapoint d) => d.__Component switch
+    internal string? MapComponentName(Datapoint d) => d.__Component switch
     {
         "deviceInformation" => "Device Information",
         "thermostat1" => "Thermostat One",
@@ -59,7 +62,7 @@ public class DeviceModelDetails
 
     Func<object, string> degreesCelcius = x => $"{x:F1}°C";
     Func<object, string> floatNoUnits = x => $"{x:F1}";
-    Func<object, string> kibiBits = x => $"{(double)x / 7812.5:F1}MB";
+    Func<object, string> kibiBits = x => $"{(double)x / 7812.5:F1} MB";
     Func<object, string> noFormatting = x => x.ToString() ?? string.Empty;
     Func<object, string> kBytes = x => (double)x switch
     {
@@ -73,7 +76,7 @@ public class DeviceModelDetails
     /// </summary>
     /// <param name="metric"></param>
     /// <returns></returns>
-    private string FormatMetricValue(Datapoint d)
+    internal string FormatMetricValue(Datapoint d)
     {
         var format = d.__Model switch
         {
@@ -106,7 +109,7 @@ public class DeviceModelDetails
     /// </summary>
     /// <param name="metricid"></param>
     /// <returns></returns>
-    private bool IsMetricTelemetry(Datapoint d) => d.__Model switch
+    internal bool IsMetricTelemetry(Datapoint d) => d.__Model switch
     {
         "TemperatureController;2" => d.__Field == "workingSet",
         "Thermostat;1" => d.__Field == "temperature",
@@ -118,7 +121,7 @@ public class DeviceModelDetails
     /// </summary>
     /// <param name="metricid"></param>
     /// <returns></returns>
-    private bool IsMetricWritable(Datapoint d) => d.__Model switch
+    internal bool IsMetricWritable(Datapoint d) => d.__Model switch
     {
         "Thermostat;1" => d.__Field == "targetTemperature",
         "TemperatureController;2" => d.__Field == "telemetryPeriod",
@@ -130,7 +133,7 @@ public class DeviceModelDetails
     /// </summary>
     /// <param name="metricid"></param>
     /// <returns></returns>
-    private string? GetWritableUnits(Datapoint d) => d.__Model switch
+    internal string? GetWritableUnits(Datapoint d) => d.__Model switch
     {
         "Thermostat;1" => (d.__Field == "targetTemperature") ? "°C" : null,
         _ => null
@@ -141,7 +144,7 @@ public class DeviceModelDetails
     /// </summary>
     /// <param name="componentid"></param>
     /// <returns></returns>
-    private IEnumerable<DisplayMetric> GetCommands(Datapoint d) => d.__Model switch
+    internal IEnumerable<DisplayMetric> GetCommands(Datapoint d) => d.__Model switch
     {
         "TemperatureController;2" => new List<DisplayMetric>()
         {
