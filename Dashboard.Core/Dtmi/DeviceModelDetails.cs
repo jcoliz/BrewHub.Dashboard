@@ -18,6 +18,21 @@ public class DeviceModelDetails
 {
     #region Schema-Specific Formatting
 
+    private readonly Dictionary<string, DeviceModel> _models = new();
+
+    public DeviceModelDetails()
+    {
+        _models["Thermostat;1"] = new("Thermostat")
+        {
+            Metrics = new()
+            {
+                { "temperature", new() { Name = "Temperature", Kind = DeviceModelMetricKind.Telemetry, Formatter = DeviceModelMetricFormatter.Float, Units = "°C" } },
+                { "maxTempSinceLastReboot", new() { Name = "Max Temperature Since Reboot", Kind = DeviceModelMetricKind.ReadOnlyProperty, Formatter = DeviceModelMetricFormatter.Float, Units = "°C" } },
+                { "targetTemperature", new() { Name = "Target Temperature", Kind = DeviceModelMetricKind.WritableProperty, Formatter = DeviceModelMetricFormatter.Float, Units = "°C" } }
+            }
+        };
+    }
+
     /// <summary>
     /// Telemetry values to be shown when looking at the solution overall
     /// </summary>
@@ -33,25 +48,37 @@ public class DeviceModelDetails
     /// </summary>
     /// <param name="metricid">Schema-defined identifier for metric (could be separated by `/`)</param>
     /// <returns>Human readable name</returns>
-    internal string MapMetricName(Datapoint d) => d.__Field switch
+    internal string MapMetricName(Datapoint d)
     {
-        "serialNumber" => "Serial Number",
-        "deviceInformation" => "Device Information",
-        "manufacturer" => "Manufacturer",
-        "model" => "Device Model",
-        "swVersion" => "Software Version",
-        "osName" => "Operating System",
-        "processorArchitecture" => "Processor Architecture",
-        "totalStorage" => "Total Storage",
-        "totalMemory" => "Total Memory",
-        "temperature" => "Temperature",
-        "maxTempSinceLastReboot" => "Max Temperature Since Reboot",
-        "targetTemperature" => "Target Temperature",
-        "workingSet" => $"Working Set",
-        "telemetryPeriod" => "Telemetry Period",
-        _ => d.__Field
-    };
+        if (_models.TryGetValue(d.__Model,out var model))
+        {
+            return model.Metrics.TryGetValue(d.__Field, out var metric)
+                    ? metric.Name
+                    : d.__Field;
+        }
+        else
+        {
+            return d.__Field switch
+            {
+                "serialNumber" => "Serial Number",
+                "deviceInformation" => "Device Information",
+                "manufacturer" => "Manufacturer",
+                "model" => "Device Model",
+                "swVersion" => "Software Version",
+                "osName" => "Operating System",
+                "processorArchitecture" => "Processor Architecture",
+                "totalStorage" => "Total Storage",
+                "totalMemory" => "Total Memory",
+                "temperature" => "Temperature",
+                "maxTempSinceLastReboot" => "Max Temperature Since Reboot",
+                "targetTemperature" => "Target Temperature",
+                "workingSet" => $"Working Set",
+                "telemetryPeriod" => "Telemetry Period",
+                _ => d.__Field
+            };
 
+        }
+    } 
 
     // TODO: At this moment, we only know the model of the COMPONENT, here in this 
     // case "Thermostat;1". However, the readable name of component instance
