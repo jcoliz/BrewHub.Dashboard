@@ -11,4 +11,5 @@ public record DeviceModelMetric
     public DeviceModelMetricKind Kind { get; init; }
     public DeviceModelMetricFormatter Formatter { get; init; }
     public string? Units { get; init; }
+    public string? ValueLabel { get; init; }
 }

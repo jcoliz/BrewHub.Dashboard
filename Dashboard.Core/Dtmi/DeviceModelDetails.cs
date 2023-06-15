@@ -28,7 +28,8 @@ public class DeviceModelDetails
             {
                 { "temperature", new() { Name = "Temperature", Kind = DeviceModelMetricKind.Telemetry, Formatter = DeviceModelMetricFormatter.Float, Units = "°C" } },
                 { "maxTempSinceLastReboot", new() { Name = "Max Temperature Since Reboot", Kind = DeviceModelMetricKind.ReadOnlyProperty, Formatter = DeviceModelMetricFormatter.Float, Units = "°C" } },
-                { "targetTemperature", new() { Name = "Target Temperature", Kind = DeviceModelMetricKind.WritableProperty, Formatter = DeviceModelMetricFormatter.Float, Units = "°C" } }
+                { "targetTemperature", new() { Name = "Target Temperature", Kind = DeviceModelMetricKind.WritableProperty, Formatter = DeviceModelMetricFormatter.Float, Units = "°C" } },
+                { "getMinMax", new() { Name = "Get Max-Min report", Kind = DeviceModelMetricKind.Command, Units = "D/T", ValueLabel = "Delay" } }
             }
         };
     }
@@ -56,28 +57,25 @@ public class DeviceModelDetails
                     ? metric.Name
                     : d.__Field;
         }
-        else
-        {
-            return d.__Field switch
-            {
-                "serialNumber" => "Serial Number",
-                "deviceInformation" => "Device Information",
-                "manufacturer" => "Manufacturer",
-                "model" => "Device Model",
-                "swVersion" => "Software Version",
-                "osName" => "Operating System",
-                "processorArchitecture" => "Processor Architecture",
-                "totalStorage" => "Total Storage",
-                "totalMemory" => "Total Memory",
-                "temperature" => "Temperature",
-                "maxTempSinceLastReboot" => "Max Temperature Since Reboot",
-                "targetTemperature" => "Target Temperature",
-                "workingSet" => $"Working Set",
-                "telemetryPeriod" => "Telemetry Period",
-                _ => d.__Field
-            };
 
-        }
+        return d.__Field switch
+        {
+            "serialNumber" => "Serial Number",
+            "deviceInformation" => "Device Information",
+            "manufacturer" => "Manufacturer",
+            "model" => "Device Model",
+            "swVersion" => "Software Version",
+            "osName" => "Operating System",
+            "processorArchitecture" => "Processor Architecture",
+            "totalStorage" => "Total Storage",
+            "totalMemory" => "Total Memory",
+            "temperature" => "Temperature",
+            "maxTempSinceLastReboot" => "Max Temperature Since Reboot",
+            "targetTemperature" => "Target Temperature",
+            "workingSet" => $"Working Set",
+            "telemetryPeriod" => "Telemetry Period",
+            _ => d.__Field
+        };
     } 
 
     // TODO: At this moment, we only know the model of the COMPONENT, here in this 
@@ -112,85 +110,158 @@ public class DeviceModelDetails
     /// <returns></returns>
     internal string FormatMetricValue(Datapoint d)
     {
-        var format = d.__Model switch
-        {
-            "DeviceInformation;1" => d.__Field switch 
-            {
-                "totalStorage" or
-                "totalMemory" => kBytes,
-                _ => noFormatting
-            },
-            "Thermostat;1" => d.__Field switch
-            {
-                "targetTemperature" => floatNoUnits,
-                "maxTempSinceLastReboot" or
-                "temperature" => degreesCelcius,
-                _ => noFormatting
-            },
-             "TemperatureController;2" => d.__Field switch
-            {
-                "workingSet" => kibiBits,
-                _ => noFormatting
-            },
-            _ => noFormatting
-        };
 
-        return format(d.__Value);
-    } 
+        if (_models.TryGetValue(d.__Model,out var model) && model.Metrics.TryGetValue(d.__Field, out var metric) )
+        {
+            var format = metric.Formatter switch
+            {
+                DeviceModelMetricFormatter.Float => floatNoUnits,
+                DeviceModelMetricFormatter.KibiBits => kibiBits,
+                DeviceModelMetricFormatter.kBytes => kBytes,
+                _ => noFormatting
+            };
+
+            var units = metric.Kind switch
+            {
+                DeviceModelMetricKind.Telemetry or
+                DeviceModelMetricKind.ReadOnlyProperty => metric.Units ?? string.Empty,
+                _ => string.Empty
+            };
+
+            return $"{format(d.__Value)}{units}";
+        }
+        else
+        {
+            var format = d.__Model switch
+            {
+                "DeviceInformation;1" => d.__Field switch 
+                {
+                    "totalStorage" or
+                    "totalMemory" => kBytes,
+                    _ => noFormatting
+                },
+                "Thermostat;1" => d.__Field switch
+                {
+                    "targetTemperature" => floatNoUnits,
+                    "maxTempSinceLastReboot" or
+                    "temperature" => degreesCelcius,
+                    _ => noFormatting
+                },
+                "TemperatureController;2" => d.__Field switch
+                {
+                    "workingSet" => kibiBits,
+                    _ => noFormatting
+                },
+                _ => noFormatting
+            };
+
+            return format(d.__Value);
+        }
+
+    }
 
     /// <summary>
     /// Whether a specific metric is telemetry metric
     /// </summary>
     /// <param name="metricid"></param>
     /// <returns></returns>
-    internal bool IsMetricTelemetry(Datapoint d) => d.__Model switch
+    internal bool IsMetricTelemetry(Datapoint d)
     {
-        "TemperatureController;2" => d.__Field == "workingSet",
-        "Thermostat;1" => d.__Field == "temperature",
-        _ => false
-    };
+        if (_models.TryGetValue(d.__Model,out var model))
+        {
+            return model.Metrics.TryGetValue(d.__Field, out var metric)
+                    ? metric.Kind == DeviceModelMetricKind.Telemetry
+                    : false;
+        }
+
+        return d.__Model switch
+        {
+            "TemperatureController;2" => d.__Field == "workingSet",
+            "Thermostat;1" => d.__Field == "temperature",
+            _ => false
+        };
+    }
 
     /// <summary>
     /// Whether a specific metric is a writable property
     /// </summary>
     /// <param name="metricid"></param>
     /// <returns></returns>
-    internal bool IsMetricWritable(Datapoint d) => d.__Model switch
+    internal bool IsMetricWritable(Datapoint d)
     {
-        "Thermostat;1" => d.__Field == "targetTemperature",
-        "TemperatureController;2" => d.__Field == "telemetryPeriod",
-        _ => false
-    };
+        if (_models.TryGetValue(d.__Model,out var model))
+        {
+            return model.Metrics.TryGetValue(d.__Field, out var metric)
+                    ? metric.Kind == DeviceModelMetricKind.WritableProperty
+                    : false;
+        }
+
+        return d.__Model switch
+        {
+            "Thermostat;1" => d.__Field == "targetTemperature",
+            "TemperatureController;2" => d.__Field == "telemetryPeriod",
+            _ => false
+        };
+    }
 
     /// <summary>
     /// Returns the units to be displayed with a metric, or null if metric is not writable, or no units need to be displayed
     /// </summary>
     /// <param name="metricid"></param>
     /// <returns></returns>
-    internal string? GetWritableUnits(Datapoint d) => d.__Model switch
+    internal string? GetWritableUnits(Datapoint d)
     {
-        "Thermostat;1" => (d.__Field == "targetTemperature") ? "°C" : null,
-        _ => null
-    };
+        if (_models.TryGetValue(d.__Model,out var model))
+        {
+            return  model.Metrics.TryGetValue(d.__Field, out var metric) 
+                    && 
+                    metric.Kind == DeviceModelMetricKind.WritableProperty
+                        ? metric.Units
+                        : null;
+        }
+
+        return d.__Model switch
+        {
+            "Thermostat;1" => (d.__Field == "targetTemperature") ? "°C" : null,
+            _ => null
+        };
+    }
 
     /// <summary>
     /// Return all the commands for a given component id
     /// </summary>
     /// <param name="componentid"></param>
     /// <returns></returns>
-    internal IEnumerable<DisplayMetric> GetCommands(Datapoint d) => d.__Model switch
+    internal IEnumerable<DisplayMetric> GetCommands(Datapoint d)
     {
-        "TemperatureController;2" => new List<DisplayMetric>()
+        if (_models.TryGetValue(d.__Model,out var model))
         {
-            new() { Name = "Reboot", Id = "reboot", Value = "Delay", Units = "s" }
+            return model.Metrics
+                            .Where(x => x.Value.Kind == DeviceModelMetricKind.Command)
+                            .Select(x => 
+                                new DisplayMetric()
+                                {
+                                    Name = x.Value.Name,
+                                    Id = x.Key,
+                                    Value = x.Value.ValueLabel!, // TODO: Probably should allow null for this
+                                    Units = x.Value.Units
+                                });
         }
-        ,
-        "Thermostat;1" => new List<DisplayMetric>()
+
+        return d.__Model switch
         {
-            new() { Name = "Get Max-Min report", Id = "getMinMax", Value = "Since", Units = "D/T" }                                    
-        },
-        _ => Enumerable.Empty<DisplayMetric>()
-    };
+            "TemperatureController;2" => new List<DisplayMetric>()
+            {
+                new() { Name = "Reboot", Id = "reboot", Value = "Delay", Units = "s" }
+            }
+            ,
+            "Thermostat;1" => new List<DisplayMetric>()
+            {
+                new() { Name = "Get Max-Min report", Id = "getMinMax", Value = "Since", Units = "D/T" }
+            },
+            _ => Enumerable.Empty<DisplayMetric>()
+        };
+    }
 
     #endregion
 
