@@ -22,6 +22,8 @@ public class DeviceModelDetails
 
     public DeviceModelDetails()
     {
+        // Next step would be to load these from storage
+
         _models["Thermostat;1"] = new("Thermostat")
         {
             Metrics = new()
@@ -39,7 +41,25 @@ public class DeviceModelDetails
             {
                 { "workingSet", new() { Name = "Working Set", Kind = DeviceModelMetricKind.Telemetry, Formatter = DeviceModelMetricFormatter.KibiBits } },
                 { "telemetryPeriod", new() { Name = "Telemetry Period", Kind = DeviceModelMetricKind.WritableProperty } },
-                { "reboot", new() { Name = "Reboot", Kind = DeviceModelMetricKind.Command, Units = "s", ValueLabel = "Delay" } }
+                { "reboot", new() { Name = "Reboot", Kind = DeviceModelMetricKind.Command, Units = "s", ValueLabel = "Delay" } },
+                { "thermostat1", new() { Name = "Thermostat One", Kind = DeviceModelMetricKind.Component }},
+                { "thermostat2", new() { Name = "Thermostat Two", Kind = DeviceModelMetricKind.Component }},
+                { "deviceInformation", new() { Name = "Device Information", Kind = DeviceModelMetricKind.Component }},
+            }
+        };
+
+        _models["DeviceInformation;1"] = new("Device Information")
+        {
+            Metrics = new()
+            {
+                { "serialNumber", new() { Name = "Serial Number", Kind = DeviceModelMetricKind.ReadOnlyProperty } },
+                { "manufacturer", new() { Name = "Manufacturer", Kind = DeviceModelMetricKind.ReadOnlyProperty } },
+                { "model", new() { Name = "Device Model", Kind = DeviceModelMetricKind.ReadOnlyProperty } },
+                { "swVersion", new() { Name = "Software Version", Kind = DeviceModelMetricKind.ReadOnlyProperty } },
+                { "osName", new() { Name = "Operating System", Kind = DeviceModelMetricKind.ReadOnlyProperty } },
+                { "processorArchitecture", new() { Name = "Processor Architecture", Kind = DeviceModelMetricKind.ReadOnlyProperty } },
+                { "totalStorage", new() { Name = "Total Storage", Kind = DeviceModelMetricKind.ReadOnlyProperty, Formatter = DeviceModelMetricFormatter.kBytes } },
+                { "totalMemory", new() { Name = "Total Memory", Kind = DeviceModelMetricKind.ReadOnlyProperty, Formatter = DeviceModelMetricFormatter.kBytes } },
             }
         };
     }
@@ -61,32 +81,10 @@ public class DeviceModelDetails
     /// <returns>Human readable name</returns>
     internal string MapMetricName(Datapoint d)
     {
-        if (_models.TryGetValue(d.__Model,out var model))
-        {
-            return model.Metrics.TryGetValue(d.__Field, out var metric)
-                    ? metric.Name
-                    : d.__Field;
-        }
-
-        return d.__Field switch
-        {
-            "serialNumber" => "Serial Number",
-            "deviceInformation" => "Device Information",
-            "manufacturer" => "Manufacturer",
-            "model" => "Device Model",
-            "swVersion" => "Software Version",
-            "osName" => "Operating System",
-            "processorArchitecture" => "Processor Architecture",
-            "totalStorage" => "Total Storage",
-            "totalMemory" => "Total Memory",
-            "temperature" => "Temperature",
-            "maxTempSinceLastReboot" => "Max Temperature Since Reboot",
-            "targetTemperature" => "Target Temperature",
-            "workingSet" => $"Working Set",
-            "telemetryPeriod" => "Telemetry Period",
-            _ => d.__Field
-        };
-    } 
+        return (_models.TryGetValue(d.__Model, out var model) && model.Metrics.TryGetValue(d.__Field, out var metric))
+            ? metric.Name
+            : d.__Field;
+    }
 
     // TODO: At this moment, we only know the model of the COMPONENT, here in this 
     // case "Thermostat;1". However, the readable name of component instance
@@ -120,7 +118,6 @@ public class DeviceModelDetails
     /// <returns></returns>
     internal string FormatMetricValue(Datapoint d)
     {
-
         if (_models.TryGetValue(d.__Model,out var model) && model.Metrics.TryGetValue(d.__Field, out var metric) )
         {
             var format = metric.Formatter switch
@@ -141,33 +138,7 @@ public class DeviceModelDetails
             return $"{format(d.__Value)}{units}";
         }
         else
-        {
-            var format = d.__Model switch
-            {
-                "DeviceInformation;1" => d.__Field switch 
-                {
-                    "totalStorage" or
-                    "totalMemory" => kBytes,
-                    _ => noFormatting
-                },
-                "Thermostat;1" => d.__Field switch
-                {
-                    "targetTemperature" => floatNoUnits,
-                    "maxTempSinceLastReboot" or
-                    "temperature" => degreesCelcius,
-                    _ => noFormatting
-                },
-                "TemperatureController;2" => d.__Field switch
-                {
-                    "workingSet" => kibiBits,
-                    _ => noFormatting
-                },
-                _ => noFormatting
-            };
-
-            return format(d.__Value);
-        }
-
+            return d.__Value?.ToString() ?? "(null)";
     }
 
     /// <summary>
@@ -209,20 +180,15 @@ public class DeviceModelDetails
     /// <returns></returns>
     internal string? GetWritableUnits(Datapoint d)
     {
-        if (_models.TryGetValue(d.__Model,out var model))
-        {
-            return  model.Metrics.TryGetValue(d.__Field, out var metric) 
+        return  (
+                    _models.TryGetValue(d.__Model,out var model) 
+                    && 
+                    model.Metrics.TryGetValue(d.__Field, out var metric)
                     && 
                     metric.Kind == DeviceModelMetricKind.WritableProperty
-                        ? metric.Units
-                        : null;
-        }
-
-        return d.__Model switch
-        {
-            "Thermostat;1" => (d.__Field == "targetTemperature") ? "°C" : null,
-            _ => null
-        };
+                )
+                    ? metric.Units
+                    : null;
     }
 
     /// <summary>
@@ -234,33 +200,24 @@ public class DeviceModelDetails
     {
         if (_models.TryGetValue(d.__Model,out var model))
         {
-            return model.Metrics
-                            .Where(x => x.Value.Kind == DeviceModelMetricKind.Command)
-                            .Select(x => 
-                                new DisplayMetric()
-                                {
-                                    Name = x.Value.Name,
-                                    Id = x.Key,
-                                    Value = x.Value.ValueLabel!, // TODO: Probably should allow null for this
-                                    Units = x.Value.Units
-                                });
-                                // TODO: Consider if we may be able to merge Display Metric 
-                                // and DeviceModelMetric
+            return model
+                    .Metrics
+                    .Where(x => x.Value.Kind == DeviceModelMetricKind.Command)
+                    .Select(x => 
+                        new DisplayMetric()
+                        {
+                            Name = x.Value.Name,
+                            Id = x.Key,
+                            Value = x.Value.ValueLabel!, // TODO: Probably should allow null for this
+                            Units = x.Value.Units
+                        });
+                        // TODO: Consider if we may be able to merge Display Metric 
+                        // and DeviceModelMetric
         }
-
-        return d.__Model switch
+        else
         {
-            "TemperatureController;2" => new List<DisplayMetric>()
-            {
-                new() { Name = "Reboot", Id = "reboot", Value = "Delay", Units = "s" }
-            }
-            ,
-            "Thermostat;1" => new List<DisplayMetric>()
-            {
-                new() { Name = "Get Max-Min report", Id = "getMinMax", Value = "Since", Units = "D/T" }
-            },
-            _ => Enumerable.Empty<DisplayMetric>()
-        };
+            return Enumerable.Empty<DisplayMetric>();
+        }
     }
 
     #endregion
