@@ -52,4 +52,32 @@ public class DtmiTests
         Assert.That(result, Is.EqualTo(expected));
     }
 
+    //GetWritableUnits
+
+    [TestCase("Thermostat;1", "targetTemperature", "°C")]
+    [TestCase("Thermostat;1", "maxTempSinceLastReboot", null)]
+    [TestCase("Thermostat;1", "getMinMax", null)]
+    [TestCase("TemperatureController;2", "telemetryPeriod", null)]
+    [TestCase("DeviceInformation;1", "totalStorage", null)]
+    [Test]
+    public void TestGetWritableUnits(string model, string field, string? expected)
+    {
+        var datapoint = new Datapoint() { __Model = model, __Field = field };
+        var result = details.GetWritableUnits(datapoint);
+
+        Assert.That(result, Is.EqualTo(expected));
+    }
+
+    [TestCase("Thermostat;1", 1, "getMinMax")]
+    [TestCase("TemperatureController;2", 1, "reboot")]
+    [TestCase("DeviceInformation;1", 0, "")]
+    public void TestGetCommands(string model, int numexpected, string example)
+    {
+        var datapoint = new Datapoint() { __Model = model };
+        var result = details.GetCommands(datapoint).Select(x=>x.Id);
+
+        Assert.That(result.Count(), Is.EqualTo(numexpected));
+        if (numexpected > 0)
+            Assert.That(result, Contains.Item(example));
+    }
 }
