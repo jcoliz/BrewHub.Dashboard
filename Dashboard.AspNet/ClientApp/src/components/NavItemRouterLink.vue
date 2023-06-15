@@ -59,9 +59,4 @@ defineEmits<{
 </template>
 
 <style scoped>
-.sidebar .nav-link {
-  font-weight: 500;
-  color: #333;
-}
-
 </style>

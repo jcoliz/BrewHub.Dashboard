@@ -151,23 +151,23 @@ function unshow()
   box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
 }
 
-.sidebar >>> .nav-link {
+.sidebar :deep(.nav-link) {
   font-weight: 500;
   color: #333;
 }
 
-.sidebar >>> .nav-link .feather {
+.sidebar :deep(.nav-link .feather) {
   margin-right: 4px;
   color: #727272;
 }
 
-.sidebar >>> .nav-link.router-link-active,
-.sidebar >>> .nav-link.active {
+.sidebar :deep(.nav-link.router-link-active),
+.sidebar :deep(.nav-link.active) {
   color: #2470dc;
 }
 
-.sidebar >>> .nav-link:hover .feather,
-.sidebar >>> .nav-link.active .feather {
+.sidebar :deep(.nav-link:hover .feather),
+.sidebar :deep(.nav-link.active .feather) {
   color: inherit;
 }
 
