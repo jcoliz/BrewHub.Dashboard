@@ -1,6 +1,7 @@
 using BrewHub.Dashboard.Core.Dtmi;
 using BrewHub.Dashboard.Core.Models;
 using BrewHub.Dashboard.Core.Providers;
+using BrewHub.Dashboard.Core.Charting;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BrewHub.Dashboard.Api;
@@ -34,7 +35,8 @@ public class ChartsController : ControllerBase
         // TODO: Need to get all telemetry in this call
         var data = await _datasource.GetLatestDeviceTelemetryAllAsync();
         var dtmi = new DeviceModelDetails();
-        var result = BrewHub.Dashboard.Core.Charting.ChartMaker.CreateMultiDeviceBarChart(data, dtmi.VisualizeTelemetryTop);
+        var models = data.Where(x=>x.__Component is null).Select(x => x.__Model).Distinct();
+        var result = ChartMaker.CreateMultiDeviceBarChart(data, dtmi.VisualizeTelemetry(models, DeviceModelMetricVisualizationLevel.Solution));
 
         return Ok(result);
     }
@@ -111,7 +113,8 @@ public class ChartsController : ControllerBase
         // Get historical telemetry data for all components on this device
         data = await _datasource.GetSingleDeviceTelemetryAsync(device, lookback, bininterval);
         var dtmi = new DeviceModelDetails();
-        var result = BrewHub.Dashboard.Core.Charting.ChartMaker.CreateMultiLineChart(data, dtmi.VisualizeTelemetryDevice, labelformat);
+        var models = data.Where(x=>x.__Component is null).Select(x => x.__Model).Distinct();
+        var result = BrewHub.Dashboard.Core.Charting.ChartMaker.CreateMultiLineChart(data,  dtmi.VisualizeTelemetry(models, DeviceModelMetricVisualizationLevel.Device), labelformat);
 
         return Ok(result);
     }

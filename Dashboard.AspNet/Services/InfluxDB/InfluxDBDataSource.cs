@@ -107,13 +107,15 @@ namespace DashboardIoT.InfluxDB
             }
         }
 
+        // Actually, I'm going to return ALL the metrics, and let the caller sort
+        // out what's telemetry and waht's not. Because right now, the DB doesn't
+        // have a great way of telling.
         public async Task<IEnumerable<Datapoint>> GetLatestDeviceTelemetryAllAsync()
         {
             // TODO: This is where it would be great to have a tag for type=telemetry
 
             var flux = $"from(bucket:\"{_options.Bucket}\")" +
                 " |> range(start: -10m)" +
-                " |> filter(fn: (r) => r[\"_field\"] == \"workingSet\" or r[\"_field\"] == \"temperature\")" +
                 " |> last()" +
                 " |> keep(columns: [ \"device\", \"component\", \"_field\", \"_value\", \"_measurement\" ])";
 

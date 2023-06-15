@@ -58,8 +58,9 @@ public class DevicesController : ControllerBase
         // TODO: Need to get all telemetry in this call
         var data = await _datasource.GetLatestDeviceTelemetryAllAsync();
         var dtmi = new DeviceModelDetails();
+        var telemetry = data.Where(x => dtmi.IsMetricTelemetry(x));
 
-        var slabs = data
+        var slabs = telemetry
                 .GroupBy(x => x.__Device)
                 .Select(dtmi!.FromDeviceComponentTelemetry)
                 .ToArray();

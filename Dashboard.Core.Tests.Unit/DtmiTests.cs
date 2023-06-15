@@ -97,4 +97,46 @@ public class DtmiTests
 
         Assert.That(result, Is.EqualTo(expected));
     }
+
+    [Test]
+    public void TestSolutionVisualization()
+    {
+        var result = details.VisualizeTelemetry(new[] { "TemperatureController;2"} , DeviceModelMetricVisualizationLevel.Solution);
+        var expected = new[] { "thermostat1/temperature", "thermostat2/temperature" };
+
+        Assert.That(result, Is.EquivalentTo(expected));
+    }
+
+    [Test]
+    public void TestSolutionVisualizationT2NotVisible()
+    {
+        // Add another thermostat, but set its visibility to device
+        details.GetModels()["TemperatureController;2"].Metrics["thermostat3"] = new() { Kind = DeviceModelMetricKind.Component, VisualizationLevel = DeviceModelMetricVisualizationLevel.Device };
+        var result = details.VisualizeTelemetry(new[] { "TemperatureController;2"} , DeviceModelMetricVisualizationLevel.Solution);
+        var expected = new[] { "thermostat1/temperature", "thermostat2/temperature" };
+
+        Assert.That(result, Is.EquivalentTo(expected));
+    }
+
+    [Test]
+    public void TestDeviceVisualization()
+    {
+        var result = details.VisualizeTelemetry(new[] { "TemperatureController;2"} , DeviceModelMetricVisualizationLevel.Device);
+        var expected = new[] { "thermostat1/temperature", "thermostat2/temperature" };
+
+        Assert.That(result, Is.EquivalentTo(expected));
+    }
+
+    [Test]
+    public void TestDeviceVisualizationWithAddedComponent()
+    {
+        // Add another thermostat, but set its visibility to device
+        details.GetModels()["TemperatureController;2"].Metrics["thermostat3"] = new() { Kind = DeviceModelMetricKind.Component, Schema = "Thermostat;1", VisualizationLevel = DeviceModelMetricVisualizationLevel.Device };
+
+        var result = details.VisualizeTelemetry(new[] { "TemperatureController;2"} , DeviceModelMetricVisualizationLevel.Device);
+        var expected = new[] { "thermostat1/temperature", "thermostat2/temperature", "thermostat3/temperature" };
+
+        Assert.That(result, Is.EquivalentTo(expected));
+    }
+
 }

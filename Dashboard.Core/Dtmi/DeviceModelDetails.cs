@@ -20,6 +20,9 @@ public class DeviceModelDetails
 
     private readonly Dictionary<string, DeviceModel> _models = new();
 
+    // For testing!!
+    internal Dictionary<string, DeviceModel> GetModels() => _models;
+
     public DeviceModelDetails()
     {
         // Next step would be to load these from storage
@@ -28,7 +31,7 @@ public class DeviceModelDetails
         {
             Metrics = new()
             {
-                { "temperature", new() { Name = "Temperature", Kind = DeviceModelMetricKind.Telemetry, Formatter = DeviceModelMetricFormatter.Float, Units = "°C" } },
+                { "temperature", new() { Name = "Temperature", Kind = DeviceModelMetricKind.Telemetry, Formatter = DeviceModelMetricFormatter.Float, Units = "°C", VisualizationLevel = DeviceModelMetricVisualizationLevel.Solution } },
                 { "maxTempSinceLastReboot", new() { Name = "Max Temperature Since Reboot", Kind = DeviceModelMetricKind.ReadOnlyProperty, Formatter = DeviceModelMetricFormatter.Float, Units = "°C" } },
                 { "targetTemperature", new() { Name = "Target Temperature", Kind = DeviceModelMetricKind.WritableProperty, Formatter = DeviceModelMetricFormatter.Float, Units = "°C" } },
                 { "getMinMax", new() { Name = "Get Max-Min report", Kind = DeviceModelMetricKind.Command, Units = "D/T", ValueLabel = "Since" } }
@@ -39,11 +42,11 @@ public class DeviceModelDetails
         {
             Metrics = new()
             {
-                { "workingSet", new() { Name = "Working Set", Kind = DeviceModelMetricKind.Telemetry, Formatter = DeviceModelMetricFormatter.KibiBits } },
+                { "workingSet", new() { Name = "Working Set", Kind = DeviceModelMetricKind.Telemetry, Formatter = DeviceModelMetricFormatter.KibiBits, VisualizationLevel = DeviceModelMetricVisualizationLevel.Component } },
                 { "telemetryPeriod", new() { Name = "Telemetry Period", Kind = DeviceModelMetricKind.WritableProperty } },
                 { "reboot", new() { Name = "Reboot", Kind = DeviceModelMetricKind.Command, Units = "s", ValueLabel = "Delay" } },
-                { "thermostat1", new() { Name = "Thermostat One", Kind = DeviceModelMetricKind.Component }},
-                { "thermostat2", new() { Name = "Thermostat Two", Kind = DeviceModelMetricKind.Component }},
+                { "thermostat1", new() { Name = "Thermostat One", Kind = DeviceModelMetricKind.Component, Schema = "Thermostat;1", VisualizationLevel = DeviceModelMetricVisualizationLevel.Solution }},
+                { "thermostat2", new() { Name = "Thermostat Two", Kind = DeviceModelMetricKind.Component, Schema = "Thermostat;1", VisualizationLevel = DeviceModelMetricVisualizationLevel.Solution }},
                 { "deviceInformation", new() { Name = "Device Information", Kind = DeviceModelMetricKind.Component }},
             }
         };
@@ -67,12 +70,36 @@ public class DeviceModelDetails
     /// <summary>
     /// Telemetry values to be shown when looking at the solution overall
     /// </summary>
-    public IEnumerable<string> VisualizeTelemetryTop => new[] { "thermostat1/temperature", "thermostat2/temperature" };
+    public IEnumerable<string> VisualizeTelemetry(IEnumerable<string> models, DeviceModelMetricVisualizationLevel level)
+    {
+        // All the things at the top level which have solution-level visibility. Could be metrics, could be components
+        var toplevelsviz = 
+            models
+                .SelectMany(x => 
+                    _models[x]
+                    .Metrics
+                    .Where(y=>y.Value.VisualizationLevel >= level)
+                );
 
-    /// <summary>
-    /// Telemetry values to be shown when looking at a single device
-    /// </summary>
-    public IEnumerable<string> VisualizeTelemetryDevice => new[] { "thermostat1/temperature", "thermostat2/temperature" };
+        // Considering the top level those, find just the metrics on the DEVICE
+        var devicemetrics = 
+            toplevelsviz
+                .Where(x => x.Value.Kind != DeviceModelMetricKind.Component)
+                .Select(x => x.Key);
+
+        // Find the metrics which have top-level visibility AND are on a component which ALSO has top-level visibility
+        var componentmetrics = 
+            toplevelsviz
+                .Where(x => x.Value.Kind == DeviceModelMetricKind.Component)
+                .SelectMany(x => 
+                    _models[x.Value.Schema!]
+                    .Metrics
+                    .Where(m=>m.Value.VisualizationLevel >= level)
+                    .Select(z=>$"{x.Key}/{z.Key}")
+                );
+
+        return devicemetrics.Concat(componentmetrics);
+    }
 
     /// <summary>
     /// Given a metric id, return the human-readable name
@@ -147,7 +174,7 @@ public class DeviceModelDetails
     /// </summary>
     /// <param name="metricid"></param>
     /// <returns></returns>
-    internal bool IsMetricTelemetry(Datapoint d)
+    public bool IsMetricTelemetry(Datapoint d)
     {
         return  (    
                     _models.TryGetValue(d.__Model, out var model) 
@@ -223,7 +250,7 @@ public class DeviceModelDetails
 
     #endregion
 
-    public DisplayMetricGroup FromDeviceComponentTelemetry(IGrouping<string,Datapoint> d)
+    public DisplayMetricGroup FromDeviceComponentTelemetry(IGrouping<string,Datapoint> group)
     {
         string ExtractComponentAndMetricName(Datapoint d)
         {
@@ -233,15 +260,16 @@ public class DeviceModelDetails
 
         return new DisplayMetricGroup()
         {
-            Title = d.Key,
+            Title = group.Key,
             Kind = DisplayMetricGroupKind.Device,
-            Id = d.Key,
-            Telemetry = d.Select(y => new DisplayMetric()
-            {
-                Name = ExtractComponentAndMetricName(y),
-                Value = FormatMetricValue(y)
-            })
-            .ToArray()
+            Id = group.Key,
+            Telemetry = group
+                .Select(d => new DisplayMetric()
+                {
+                    Name = ExtractComponentAndMetricName(d),
+                    Value = FormatMetricValue(d)
+                })
+                .ToArray()
         };
     }
 
