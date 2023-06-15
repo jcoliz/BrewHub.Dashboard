@@ -50,6 +50,5 @@ defineEmits<{
     </li>
 </template>
 
-
 <style scoped>
 </style>
