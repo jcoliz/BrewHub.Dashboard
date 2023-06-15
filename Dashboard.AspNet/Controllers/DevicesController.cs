@@ -3,7 +3,6 @@ using BrewHub.Dashboard.Core.Providers;
 using BrewHub.Dashboard.Core.Display;
 using Microsoft.AspNetCore.Mvc;
 using System.Runtime.CompilerServices;
-using Microsoft.AspNetCore.Cors;
 
 namespace BrewHub.Dashboard.Api;
 
@@ -19,11 +18,15 @@ public class DevicesController : ControllerBase
 {
     private readonly IDataSource _datasource;
     private readonly ILogger<DevicesController> _logger;
+    private readonly DeviceModelDetails _dtmi;
+    private readonly DisplayMetricGroupBuilder _metricgroupbuilder;
 
     public DevicesController(ILogger<DevicesController> logger, IDataSource datasource)
     {
         _logger = logger;
         _datasource = datasource;
+        _dtmi = new();
+        _metricgroupbuilder = new(_dtmi);
     }
 
     /// <summary>
@@ -57,12 +60,11 @@ public class DevicesController : ControllerBase
         // Pull raw telemetry from database
         // TODO: Need to get all telemetry in this call
         var data = await _datasource.GetLatestDeviceTelemetryAllAsync();
-        var dtmi = new DeviceModelDetails();
-        var telemetry = data.Where(x => dtmi.IsMetricTelemetry(x));
+        var telemetry = data.Where(x => _dtmi.IsMetricTelemetry(x));
 
         var slabs = telemetry
                 .GroupBy(x => x.__Device)
-                .Select(dtmi!.FromDeviceComponentTelemetry)
+                .Select(_metricgroupbuilder.FromDeviceComponentTelemetry)
                 .ToArray();
 
         return Ok(slabs);
@@ -92,7 +94,7 @@ public class DevicesController : ControllerBase
         // Query InfluxDB, compose into UI slabs
         var data = await _datasource.GetLatestDevicePropertiesAsync(device);
         var dtmi = new DeviceModelDetails();
-        var slabs = data.GroupBy(x => x.__Component ?? "device").Select(dtmi!.FromComponent).ToArray();
+        var slabs = data.GroupBy(x => x.__Component ?? "device").Select(_metricgroupbuilder.FromComponent).ToArray();
 
         return Ok(slabs);
     }
@@ -133,7 +135,7 @@ public class DevicesController : ControllerBase
         var data = await _datasource.GetLatestDevicePropertiesAsync(device);
         var dtmi = new DeviceModelDetails();
         var metrics = data.Where(x => component == (x.__Component ?? "device"));
-        var slabs = dtmi!.FromSingleComponent(metrics);
+        var slabs = _metricgroupbuilder.FromSingleComponent(metrics);
 
         return Ok(slabs);
     }

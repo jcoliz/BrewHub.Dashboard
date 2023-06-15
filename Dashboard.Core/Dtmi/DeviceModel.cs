@@ -1,5 +1,8 @@
 namespace BrewHub.Dashboard.Core.Dtmi;
 
+/// <summary>
+/// Model-driven schema describing a single device model
+/// </summary>
 public class DeviceModel
 {
     public string Name { get; set; }

@@ -9,15 +9,14 @@ using System.Runtime.CompilerServices;
 namespace BrewHub.Dashboard.Core.Dtmi;
 
 /// <summary>
-/// Provides the information needed to display data from a single top-level device model properly
+/// Contains a collection of device models, and provides methods to format
+/// and organize datapoints according to the known models
 /// </summary>
 /// <remarks>
 /// Currently this is hard-coded. In the future, it should be more dynamic
 /// </remarks>
 public class DeviceModelDetails
 {
-    #region Schema-Specific Formatting
-
     private readonly Dictionary<string, DeviceModel> _models = new();
 
     // For testing!!
@@ -68,7 +67,7 @@ public class DeviceModelDetails
     }
 
     /// <summary>
-    /// Telemetry values to be shown when looking at the solution overall
+    /// Telemetry values to be shown when looking at the given level of the solution
     /// </summary>
     public IEnumerable<string> VisualizeTelemetry(IEnumerable<string> models, DeviceModelMetricVisualizationLevel level)
     {
@@ -106,14 +105,14 @@ public class DeviceModelDetails
     /// </summary>
     /// <param name="metricid">Schema-defined identifier for metric (could be separated by `/`)</param>
     /// <returns>Human readable name</returns>
-    internal string MapMetricName(Datapoint d)
+    public string MapMetricName(Datapoint d)
     {
         return (_models.TryGetValue(d.__Model, out var model) && model.Metrics.TryGetValue(d.__Field, out var metric))
             ? metric.Name
             : d.__Field;
     }
 
-    internal string? MapComponentName(Datapoint d)
+    public string? MapComponentName(Datapoint d)
     {
         // PROBLEM: We actually need the PARENT model to do this operation, not the
         // component model. So, for now, we're going to search for it. This will
@@ -144,7 +143,7 @@ public class DeviceModelDetails
     /// </summary>
     /// <param name="metric"></param>
     /// <returns></returns>
-    internal string FormatMetricValue(Datapoint d)
+    public string FormatMetricValue(Datapoint d)
     {
         if (_models.TryGetValue(d.__Model,out var model) && model.Metrics.TryGetValue(d.__Field, out var metric) )
         {
@@ -190,7 +189,7 @@ public class DeviceModelDetails
     /// </summary>
     /// <param name="metricid"></param>
     /// <returns></returns>
-    internal bool IsMetricWritable(Datapoint d)
+    public bool IsMetricWritable(Datapoint d)
     {
         return  (
                     _models.TryGetValue(d.__Model,out var model) 
@@ -206,7 +205,7 @@ public class DeviceModelDetails
     /// </summary>
     /// <param name="metricid"></param>
     /// <returns></returns>
-    internal string? GetWritableUnits(Datapoint d)
+    public string? GetWritableUnits(Datapoint d)
     {
         return  (
                     _models.TryGetValue(d.__Model,out var model) 
@@ -224,7 +223,7 @@ public class DeviceModelDetails
     /// </summary>
     /// <param name="componentid"></param>
     /// <returns></returns>
-    internal IEnumerable<DisplayMetric> GetCommands(Datapoint d)
+    public IEnumerable<DisplayMetric> GetCommands(Datapoint d)
     {
         if (_models.TryGetValue(d.__Model,out var model))
         {
@@ -246,111 +245,5 @@ public class DeviceModelDetails
         {
             return Enumerable.Empty<DisplayMetric>();
         }
-    }
-
-    #endregion
-
-    public DisplayMetricGroup FromDeviceComponentTelemetry(IGrouping<string,Datapoint> group)
-    {
-        string ExtractComponentAndMetricName(Datapoint d)
-        {
-            var f = MapMetricName(d);
-            return (d.__Component is null) ? f : $"{MapComponentName(d)}/{f}";
-        }
-
-        return new DisplayMetricGroup()
-        {
-            Title = group.Key,
-            Kind = DisplayMetricGroupKind.Device,
-            Id = group.Key,
-            Telemetry = group
-                .Select(d => new DisplayMetric()
-                {
-                    Name = ExtractComponentAndMetricName(d),
-                    Value = FormatMetricValue(d)
-                })
-                .ToArray()
-        };
-    }
-
-    private DisplayMetric FromDatapoint(Datapoint d)
-    {
-        return new DisplayMetric()
-        {
-            Name = MapMetricName(d),
-            Id = d.__Field,
-            Value = FormatMetricValue(d),
-            Units = GetWritableUnits(d)
-        };
-    }
-
-    public DisplayMetricGroup FromComponent(IGrouping<string,Datapoint> c)
-    {
-        var schema = new DisplayMetric() { Name = "Schema", Id = "schema", Value = c.First().__Model };
-
-        return new DisplayMetricGroup() 
-        { 
-            Title = MapComponentName(c.First()) ?? "Device Details",
-            Kind = DisplayMetricGroupKind.Component,
-            Id = c.Key,
-            Telemetry = c.Where(x=>IsMetricTelemetry(x)).Select(FromDatapoint).ToArray(), 
-            ReadOnlyProperties = c.Where(x=>!IsMetricWritable(x) && !IsMetricTelemetry(x)).Select(FromDatapoint).Concat(new[] { schema }).ToArray(), 
-            WritableProperties = c.Where(x=>IsMetricWritable(x)).Select(FromDatapoint).ToArray(), 
-            Commands = GetCommands(c.First()).ToArray()
-        };
-    }
-
-    public DisplayMetricGroup[] FromSingleComponent(IEnumerable<Datapoint> c)
-    {
-        var result = new List<DisplayMetricGroup>();
-
-        var schema = new DisplayMetric() { Name = "Schema", Id = "schema", Value = c.First().__Model };
-
-        var telemetry = c.Where(x => IsMetricTelemetry(x));
-        if (telemetry.Any())
-        {
-            result.Add(new DisplayMetricGroup()
-            {
-                Title = "Telemetry",
-                Id = "telemetry",
-                Kind = DisplayMetricGroupKind.Grouping,
-                Telemetry = telemetry.Select(FromDatapoint).ToArray()
-            });
-        }
-        var ro = c.Where(x=>!IsMetricWritable(x) && !IsMetricTelemetry(x));
-        if (ro.Any())
-        {
-            result.Add(new DisplayMetricGroup()
-            {
-                Title = "Properties",
-                Id = "roprops",
-                Kind = DisplayMetricGroupKind.Grouping,
-                ReadOnlyProperties = ro.Select(FromDatapoint).Concat(new[] { schema }).ToArray()
-            });
-        }
-        var writable = c.Where(x=>IsMetricWritable(x));
-        if (writable.Any())
-        {
-            result.Add(new DisplayMetricGroup()
-            {
-                Title = "Writable Properties",
-                Id = "wprops",
-                Kind = DisplayMetricGroupKind.Grouping,
-                WritableProperties = writable.Select(FromDatapoint).ToArray()
-            });
-        }
-        var commands = GetCommands(c.First());
-        if (commands.Any())
-        {
-            result.Add(new DisplayMetricGroup()
-            {
-                Title = "Commands",
-                Id = "commands",
-                Kind = DisplayMetricGroupKind.Grouping,
-                Commands = commands.ToArray()
-            });
-        }
-
-        return result.ToArray();
     }
 }
