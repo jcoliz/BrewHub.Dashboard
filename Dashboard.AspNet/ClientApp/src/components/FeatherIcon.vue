@@ -25,10 +25,9 @@ const iconSvg = computed(() => {
     <span v-html="iconSvg"></span>
 </template>
 
-<style>
-/* Doesn't apply if I scope it?? */
+<style scoped>
 
-svg.feather {
+span >>> .feather {
   width: 16px;
   height: 16px;
   vertical-align: text-bottom;
