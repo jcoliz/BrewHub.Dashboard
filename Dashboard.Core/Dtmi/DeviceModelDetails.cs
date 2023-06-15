@@ -86,19 +86,20 @@ public class DeviceModelDetails
             : d.__Field;
     }
 
-    // TODO: At this moment, we only know the model of the COMPONENT, here in this 
-    // case "Thermostat;1". However, the readable name of component instance
-    // is a property of the DEVICE, here "TemperatureController;2". So we will
-    // need to look up the model of the device before we can truly perform
-    // this operation in a model-driven way.
-
-    internal string? MapComponentName(Datapoint d) => d.__Component switch
+    internal string? MapComponentName(Datapoint d)
     {
-        "deviceInformation" => "Device Information",
-        "thermostat1" => "Thermostat One",
-        "thermostat2" => "Thermostat Two",
-        _ => d.__Component
-    };
+        // PROBLEM: We actually need the PARENT model to do this operation, not the
+        // component model. So, for now, we're going to search for it. This will
+        // not produce ideal results if there are two parents with the same child component ID's.
+        //
+        // Fixing that will take some more upstream work.
+
+        return _models
+            .SelectMany(x => x.Value.Metrics.Select(y => (model: x.Key, id: y.Key, metric: y.Value)))
+            .Where(x => x.id == d.__Component && x.metric.Kind == DeviceModelMetricKind.Component)
+            .Select(x => x.metric.Name)
+            .FirstOrDefault();
+    }
 
     Func<object, string> degreesCelcius = x => $"{x:F1}°C";
     Func<object, string> floatNoUnits = x => $"{x:F1}";
