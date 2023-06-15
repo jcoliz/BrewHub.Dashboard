@@ -52,6 +52,13 @@ public class DeviceModelDetails
         _ => d.__Field
     };
 
+
+    // TODO: At this moment, we only know the model of the COMPONENT, here in this 
+    // case "Thermostat;1". However, the readable name of component instance
+    // is a property of the DEVICE, here "TemperatureController;2". So we will
+    // need to look up the model of the device before we can truly perform
+    // this operation in a model-driven way.
+
     internal string? MapComponentName(Datapoint d) => d.__Component switch
     {
         "deviceInformation" => "Device Information",

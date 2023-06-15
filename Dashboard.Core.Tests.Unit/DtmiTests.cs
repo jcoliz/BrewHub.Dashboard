@@ -80,4 +80,21 @@ public class DtmiTests
         if (numexpected > 0)
             Assert.That(result, Contains.Item(example));
     }
+
+    [TestCase("TemperatureController;2", "deviceInformation", "Device Information")]
+    [TestCase("TemperatureController;2", "thermostat1", "Thermostat One")]
+    public void TestMapComponentName(string _, string component, string expected)
+    {
+        // This tests points out something problematic in the current implementation.
+        // At this moment, we only know the model of the COMPONENT, here in this 
+        // case "Thermostat;1". However, the readable name of component instance
+        // is a property of the DEVICE, here "TemperatureController;2". So we will
+        // need to look up the model of the device before we can truly perform
+        // this operation in a model-driven way.
+
+        var datapoint = new Datapoint() { __Component = component };
+        var result = details.MapComponentName(datapoint);
+
+        Assert.That(result, Is.EqualTo(expected));
+    }
 }
