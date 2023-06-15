@@ -196,7 +196,7 @@ async function getChart(deviceid?: string, componentid?: string) {
     chartconfig.value = await chartsClient.telemetry();
 }
 
-function getProblemDetails(reason: any): api.ProblemDetails
+function getProblemDetails(reason: unknown): api.ProblemDetails
 {
   if (reason instanceof api.ProblemDetails)
   {
@@ -205,6 +205,10 @@ function getProblemDetails(reason: any): api.ProblemDetails
   if (reason instanceof api.ApiException)
   {
     return new api.ProblemDetails({ status: reason.status, title: reason.message });
+  }
+  if (reason instanceof Error)
+  {
+    return new api.ProblemDetails({ title: reason.name, detail: reason.message });
   }
   if (typeof reason === "string")
   {
