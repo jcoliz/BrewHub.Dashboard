@@ -1,5 +1,10 @@
 <script setup lang="ts">
 
+export interface IBreadCrumbsLink {
+  title: string,
+  href: string
+};
+
 /**
  * Navigation breadcrumbs, so you can find your way home
  */
@@ -8,7 +13,7 @@ defineProps<{
     /**
      * List of links back to previous pages
      */
-    links: { title: string, href: string }[],
+    links: IBreadCrumbsLink[],
 
     /**
      * Display name of the page we're on

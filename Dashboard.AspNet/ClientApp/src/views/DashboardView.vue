@@ -12,6 +12,7 @@ import ChartViewer from '../components/ChartViewer.vue';
 import ChartButtonToolbar from '../components/ChartButtonToolbar.vue';
 import DisplaySlab from '../components/DisplaySlab.vue';
 import BreadCrumbs from '../components/BreadCrumbs.vue';
+import { IBreadCrumbsLink } from '../components/BreadCrumbs.vue';
 import ProblemDetailsViewer from '../components/ProblemDetailsViewer.vue';
 import ThePageTitle from '../components/ThePageTitle.vue';
 import BootstrapModalDialog from '../components/BootstrapModalDialog.vue';
@@ -46,12 +47,8 @@ function hasValue(value: string | undefined): boolean {
 // Routing
 //
 
-interface IBreadcrumbLink {
-  title: string,
-  href: string
-};
 
-const breadcrumbs = computed(():IBreadcrumbLink[] => {
+const breadcrumbs = computed((): IBreadCrumbsLink[] => {
   if (hasValue(props.componentid)) {
     return [{
       title: 'Home',
