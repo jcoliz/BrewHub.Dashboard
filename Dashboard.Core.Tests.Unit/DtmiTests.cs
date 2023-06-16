@@ -115,6 +115,15 @@ public class DtmiTests
     }
 
     [Test]
+    public void TestSolutionVisualizationWithUnknownModel()
+    {
+        var result = details.VisualizeTelemetry(new[] { "TemperatureController;2", "UnknownModel;3" } , DeviceModelMetricVisualizationLevel.Solution);
+        var expected = new[] { "thermostat1/temperature", "thermostat2/temperature" };
+
+        Assert.That(result, Is.EquivalentTo(expected));
+    }
+
+    [Test]
     public void TestSolutionVisualizationT2NotVisible()
     {
         // Add another thermostat, but set its visibility to device

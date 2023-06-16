@@ -67,6 +67,7 @@ public class DeviceModelRepository
         // All the things at the top level which have solution-level visibility. Could be metrics, could be components
         var toplevelsviz = 
             models
+                .Where(x=>Models.ContainsKey(x))
                 .SelectMany(x => 
                     Models[x]
                     .Metrics
@@ -83,6 +84,7 @@ public class DeviceModelRepository
         var componentmetrics = 
             toplevelsviz
                 .Where(x => x.Value.Kind == DeviceModelMetricKind.Component)
+                .Where(x => Models.ContainsKey(x.Value.Schema!))
                 .SelectMany(x => 
                     Models[x.Value.Schema!]
                     .Metrics
