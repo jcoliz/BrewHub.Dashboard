@@ -2,7 +2,7 @@ namespace BrewHub.Dashboard.Core.Dtmi;
 
 public enum DeviceModelMetricKind { Invalid = 0, Component, Telemetry, ReadOnlyProperty, WritableProperty, Command }
 
-public enum DeviceModelMetricFormatter { None = 0, Float, KibiBits, kBytes, PercentInteger, Status }
+public enum DeviceModelMetricFormatter { None = 0, Float, KibiBits, kBytes, PercentInteger, PercentDouble, Status }
 
 // Note that "solution" visibility implies device and component visibility as well
 public enum DeviceModelMetricVisualizationLevel { Never = 0, Component, Device, Solution }

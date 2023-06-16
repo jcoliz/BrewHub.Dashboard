@@ -63,7 +63,7 @@ public class DeviceModelRepository
             Metrics = new()
             {
                 { "WorkingSet", new() { Name = "Working Set", Kind = DeviceModelMetricKind.Telemetry, Formatter = DeviceModelMetricFormatter.KibiBits, VisualizationLevel = DeviceModelMetricVisualizationLevel.Component } },
-                { "CpuLoad", new() { Name = "CPU Load", Kind = DeviceModelMetricKind.Telemetry, Formatter = DeviceModelMetricFormatter.PercentInteger , VisualizationLevel = DeviceModelMetricVisualizationLevel.Component } },
+                { "CpuLoad", new() { Name = "CPU Load", Kind = DeviceModelMetricKind.Telemetry, Formatter = DeviceModelMetricFormatter.PercentDouble , VisualizationLevel = DeviceModelMetricVisualizationLevel.Component } },
                 { "Status", new() { Name = "Status", Kind = DeviceModelMetricKind.Telemetry, Formatter = DeviceModelMetricFormatter.Status } },
                 { "TelemetryInterval", new() { Name = "Telemetry Interval", Kind = DeviceModelMetricKind.WritableProperty } },
                 { "reboot", new() { Name = "Reboot", Kind = DeviceModelMetricKind.Command, Units = "s", ValueLabel = "Delay" } },
@@ -147,6 +147,7 @@ public class DeviceModelRepository
     Func<object, string> kibiBits = x => $"{(double)x / 7812.5:F1} MB";
     Func<object, string> noFormatting = x => x.ToString() ?? string.Empty;
     Func<object, string> percentInt = x => $"{x}%";
+    Func<object, string> percentDouble = x => $"{x:F1}%";
     Func<object, string> status = x => (double)x == 0 ? "OK" : $"ERROR {x:F0}";
     Func<object, string> kBytes = x => (double)x switch
     {
@@ -175,6 +176,7 @@ public class DeviceModelRepository
                 DeviceModelMetricFormatter.KibiBits => kibiBits,
                 DeviceModelMetricFormatter.kBytes => kBytes,
                 DeviceModelMetricFormatter.PercentInteger => percentInt,
+                DeviceModelMetricFormatter.PercentDouble => percentDouble,
                 DeviceModelMetricFormatter.Status => status,
                 DeviceModelMetricFormatter.None => noFormatting,
                 _ => notFound
