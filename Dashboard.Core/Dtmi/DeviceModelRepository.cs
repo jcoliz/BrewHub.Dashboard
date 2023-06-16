@@ -155,6 +155,11 @@ public class DeviceModelRepository
         _ => $"{(double)x:F1} kB"
     };
 
+    // Just a little visual indication that we don't actually know how to 
+    // format this. This just happens if we add a new value to the formatters
+    // enum, but don't add a case for it in the switch expression below.
+    Func<object, string> notFound = x => $"{x} ???";
+
     /// <summary>
     /// Format a metric to human-readable form
     /// </summary>
@@ -171,7 +176,8 @@ public class DeviceModelRepository
                 DeviceModelMetricFormatter.kBytes => kBytes,
                 DeviceModelMetricFormatter.PercentInteger => percentInt,
                 DeviceModelMetricFormatter.Status => status,
-                _ => noFormatting
+                DeviceModelMetricFormatter.None => noFormatting,
+                _ => notFound
             };
 
             var units = metric.Kind switch
