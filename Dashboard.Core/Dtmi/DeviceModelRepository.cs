@@ -58,12 +58,12 @@ public class DeviceModelRepository
             }
         };
 
-        Models["still_6_unit;1"] = new("6-Unit Distillery Prototype v1")
+        Models["dtmi:brewhub:prototypes:still_6_unit;1"] = new("6-Unit Distillery Prototype v1")
         {
             Metrics = new()
             {
                 { "WorkingSet", new() { Name = "Working Set", Kind = DeviceModelMetricKind.Telemetry, Formatter = DeviceModelMetricFormatter.KibiBits, VisualizationLevel = DeviceModelMetricVisualizationLevel.Component } },
-                { "CpuLoad", new() { Name = "CPU Load", Kind = DeviceModelMetricKind.Telemetry, Formatter = DeviceModelMetricFormatter.PercentDouble , VisualizationLevel = DeviceModelMetricVisualizationLevel.Component } },
+                { "CpuLoad", new() { Name = "CPU Load", Kind = DeviceModelMetricKind.Telemetry, Formatter = DeviceModelMetricFormatter.PercentDouble, VisualizationLevel = DeviceModelMetricVisualizationLevel.Device } },
                 { "Status", new() { Name = "Status", Kind = DeviceModelMetricKind.Telemetry, Formatter = DeviceModelMetricFormatter.Status } },
                 { "TelemetryInterval", new() { Name = "Telemetry Interval", Kind = DeviceModelMetricKind.WritableProperty } },
                 { "reboot", new() { Name = "Reboot", Kind = DeviceModelMetricKind.Command, Units = "s", ValueLabel = "Delay" } },
@@ -75,6 +75,8 @@ public class DeviceModelRepository
                 { "processorArchitecture", new() { Name = "Processor Architecture", Kind = DeviceModelMetricKind.ReadOnlyProperty } },
                 { "totalStorage", new() { Name = "Total Storage", Kind = DeviceModelMetricKind.ReadOnlyProperty, Formatter = DeviceModelMetricFormatter.kBytes } },
                 { "totalMemory", new() { Name = "Total Memory", Kind = DeviceModelMetricKind.ReadOnlyProperty, Formatter = DeviceModelMetricFormatter.kBytes } },
+                { "rt", new() { Name = "Reflux Thermostat", Kind = DeviceModelMetricKind.Component, Schema = "dtmi:brewhub:controls:Thermostat;1", VisualizationLevel = DeviceModelMetricVisualizationLevel.Device }},
+                { "ct", new() { Name = "Condenser Thermostat", Kind = DeviceModelMetricKind.Component, Schema = "dtmi:brewhub:controls:Thermostat;1", VisualizationLevel = DeviceModelMetricVisualizationLevel.Device }},
             }
         };
     }
