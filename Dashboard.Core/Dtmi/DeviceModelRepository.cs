@@ -77,9 +77,10 @@ public class DeviceModelRepository
                 { "totalMemory", new() { Name = "Total Memory", Kind = DeviceModelMetricKind.ReadOnlyProperty, Formatter = DeviceModelMetricFormatter.kBytes } },
                 { "rt", new() { Name = "Reflux Thermostat", Kind = DeviceModelMetricKind.Component, Schema = "dtmi:brewhub:controls:Thermostat;1", VisualizationLevel = DeviceModelMetricVisualizationLevel.Device }},
                 { "ct", new() { Name = "Condenser Thermostat", Kind = DeviceModelMetricKind.Component, Schema = "dtmi:brewhub:controls:Thermostat;1", VisualizationLevel = DeviceModelMetricVisualizationLevel.Device }},
+                { "amb", new() { Name = "Ambient Environment", Kind = DeviceModelMetricKind.Component, Schema = "dtmi:brewhub:sensors:TH;1", VisualizationLevel = DeviceModelMetricVisualizationLevel.Device }},
             }
         };
-        //
+
         Models["dtmi:brewhub:controls:Thermostat;1"] = new("Thermostat")
         {
             Metrics = new()
@@ -90,6 +91,17 @@ public class DeviceModelRepository
                 { "tcorr", new() { Name = "Temperature Correction", Kind = DeviceModelMetricKind.WritableProperty, Formatter = DeviceModelMetricFormatter.Float, Units = "°C" } },
                 { "targetComp", new() { Name = "Target Component", Kind = DeviceModelMetricKind.WritableProperty } },
                 { "cComp", new() { Name = "Control Component", Kind = DeviceModelMetricKind.WritableProperty } },
+            }
+        };
+        //
+        Models["dtmi:brewhub:sensors:TH;1"] = new("Temp+Humidity")
+        {
+            Metrics = new()
+            {
+                { "t", new() { Name = "Temperature", Kind = DeviceModelMetricKind.Telemetry, Formatter = DeviceModelMetricFormatter.Float, Units = "°C", VisualizationLevel = DeviceModelMetricVisualizationLevel.Solution } },
+                { "h", new() { Name = "Relative Humidity", Kind = DeviceModelMetricKind.Telemetry, Formatter = DeviceModelMetricFormatter.Float, Units = "%RH", VisualizationLevel = DeviceModelMetricVisualizationLevel.Device } },
+                { "tcorr", new() { Name = "Temperature Correction", Kind = DeviceModelMetricKind.WritableProperty, Formatter = DeviceModelMetricFormatter.Float, Units = "°C" } },
+                { "hcorr", new() { Name = "Humidity Correction", Kind = DeviceModelMetricKind.WritableProperty, Formatter = DeviceModelMetricFormatter.Float, Units = "%RH" } },
             }
         };
     }
