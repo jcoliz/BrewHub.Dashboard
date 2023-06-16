@@ -20,6 +20,7 @@ public class DtmiTests
     [TestCase("Thermostat;1", "maxTempSinceLastReboot", "Max Temperature Since Reboot")]
     [TestCase("TemperatureController;2", "workingSet", "Working Set")]
     [TestCase("DeviceInformation;1", "swVersion", "Software Version")]
+    [TestCase("UnknownModel;3", "randomStuff", "randomStuff")]
     [Test]
     public void TestNameRemap(string model, string field, string expected)
     {
@@ -33,6 +34,7 @@ public class DtmiTests
     [TestCase("Thermostat;1", "maxTempSinceLastReboot", 123.4567d, "123.5°C")]
     [TestCase("TemperatureController;2", "workingSet", 567895d, "72.7 MB")]
     [TestCase("DeviceInformation;1", "totalStorage", 7890123d, "7.9 GB")]
+    [TestCase("UnknownModel;3", "randomStuff", 123.45, "123.45")]
     [Test]
     public void TestFormatting(string model, string field, object value, string expected)
     {
@@ -47,6 +49,7 @@ public class DtmiTests
     [TestCase("TemperatureController;2", "workingSet", true)]
     [TestCase("TemperatureController;2", "telemetryPeriod", false)]
     [TestCase("DeviceInformation;1", "totalStorage", false)]
+    [TestCase("UnknownModel;3", "randomStuff", false)]
     [Test]
     public void TestIsTelemetry(string model, string field, bool expected)
     {
@@ -56,13 +59,12 @@ public class DtmiTests
         Assert.That(result, Is.EqualTo(expected));
     }
 
-    //GetWritableUnits
-
     [TestCase("Thermostat;1", "targetTemperature", "°C")]
     [TestCase("Thermostat;1", "maxTempSinceLastReboot", null)]
     [TestCase("Thermostat;1", "getMinMax", null)]
     [TestCase("TemperatureController;2", "telemetryPeriod", null)]
     [TestCase("DeviceInformation;1", "totalStorage", null)]
+    [TestCase("UnknownModel;1", "totalStorage", null)]
     [Test]
     public void TestGetWritableUnits(string model, string field, string? expected)
     {
@@ -75,6 +77,7 @@ public class DtmiTests
     [TestCase("Thermostat;1", 1, "getMinMax")]
     [TestCase("TemperatureController;2", 1, "reboot")]
     [TestCase("DeviceInformation;1", 0, "")]
+    [TestCase("UnknownModel;1", 0, "")]
     public void TestGetCommands(string model, int numexpected, string example)
     {
         var datapoint = new Datapoint() { __Model = model };
