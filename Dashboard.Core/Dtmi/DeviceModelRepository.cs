@@ -63,8 +63,8 @@ public class DeviceModelRepository
             Metrics = new()
             {
                 { "WorkingSet", new() { Name = "Working Set", Kind = DeviceModelMetricKind.Telemetry, Formatter = DeviceModelMetricFormatter.KibiBits, VisualizationLevel = DeviceModelMetricVisualizationLevel.Component } },
-                { "CpuLoad", new() { Name = "CPU Load", Kind = DeviceModelMetricKind.Telemetry, VisualizationLevel = DeviceModelMetricVisualizationLevel.Component } },
-                { "Status", new() { Name = "Status", Kind = DeviceModelMetricKind.Telemetry } },
+                { "CpuLoad", new() { Name = "CPU Load", Kind = DeviceModelMetricKind.Telemetry, Formatter = DeviceModelMetricFormatter.PercentInteger , VisualizationLevel = DeviceModelMetricVisualizationLevel.Component } },
+                { "Status", new() { Name = "Status", Kind = DeviceModelMetricKind.Telemetry, Formatter = DeviceModelMetricFormatter.Status } },
                 { "TelemetryInterval", new() { Name = "Telemetry Interval", Kind = DeviceModelMetricKind.WritableProperty } },
                 { "reboot", new() { Name = "Reboot", Kind = DeviceModelMetricKind.Command, Units = "s", ValueLabel = "Delay" } },
                 { "serialNumber", new() { Name = "Serial Number", Kind = DeviceModelMetricKind.ReadOnlyProperty } },
@@ -146,6 +146,8 @@ public class DeviceModelRepository
     Func<object, string> floatNoUnits = x => $"{x:F1}";
     Func<object, string> kibiBits = x => $"{(double)x / 7812.5:F1} MB";
     Func<object, string> noFormatting = x => x.ToString() ?? string.Empty;
+    Func<object, string> percentInt = x => $"{x}%";
+    Func<object, string> status = x => (double)x == 0 ? "OK" : $"ERROR {x:F0}";
     Func<object, string> kBytes = x => (double)x switch
     {
         > 1000000 => $"{(double)x / 1000000:F1} GB",
@@ -167,6 +169,8 @@ public class DeviceModelRepository
                 DeviceModelMetricFormatter.Float => floatNoUnits,
                 DeviceModelMetricFormatter.KibiBits => kibiBits,
                 DeviceModelMetricFormatter.kBytes => kBytes,
+                DeviceModelMetricFormatter.PercentInteger => percentInt,
+                DeviceModelMetricFormatter.Status => status,
                 _ => noFormatting
             };
 
