@@ -79,6 +79,19 @@ public class DeviceModelRepository
                 { "ct", new() { Name = "Condenser Thermostat", Kind = DeviceModelMetricKind.Component, Schema = "dtmi:brewhub:controls:Thermostat;1", VisualizationLevel = DeviceModelMetricVisualizationLevel.Device }},
             }
         };
+        //
+        Models["dtmi:brewhub:controls:Thermostat;1"] = new("Thermostat")
+        {
+            Metrics = new()
+            {
+                { "t", new() { Name = "Temperature", Kind = DeviceModelMetricKind.Telemetry, Formatter = DeviceModelMetricFormatter.Float, Units = "°C", VisualizationLevel = DeviceModelMetricVisualizationLevel.Solution } },
+                { "Status", new() { Name = "Status", Kind = DeviceModelMetricKind.Telemetry, Formatter = DeviceModelMetricFormatter.Status } },
+                { "targetTemp", new() { Name = "Target Temperature", Kind = DeviceModelMetricKind.WritableProperty, Formatter = DeviceModelMetricFormatter.Float, Units = "°C" } },
+                { "tcorr", new() { Name = "Temperature Correction", Kind = DeviceModelMetricKind.WritableProperty, Formatter = DeviceModelMetricFormatter.Float, Units = "°C" } },
+                { "targetComp", new() { Name = "Target Component", Kind = DeviceModelMetricKind.WritableProperty } },
+                { "cComp", new() { Name = "Control Component", Kind = DeviceModelMetricKind.WritableProperty } },
+            }
+        };
     }
 
     /// <summary>
