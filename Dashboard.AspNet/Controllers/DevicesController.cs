@@ -58,10 +58,14 @@ public class DevicesController : ControllerBase
         _logger.LogInformation("Slabs");
 
         // Pull raw telemetry from database
-        // TODO: Need to get all telemetry in this call
+        // TODO: REname this. It actually returns ALL metrics, and it's
+        // up to us to narrow them.
         var data = await _datasource.GetLatestDeviceTelemetryAllAsync();
-        var telemetry = data.Where(x => _dtmi.IsMetricTelemetry(x));
 
+        // Narrow to all metrics which are expected to show up at the solution level
+        var telemetry = data.Where(x => _dtmi.IsMetricShownAtLevel(x, DeviceModelMetricVisualizationLevel.Solution));
+
+        // Make slabs out of those
         var slabs = telemetry
                 .GroupBy(x => x.__Device)
                 .Select(_metricgroupbuilder.FromDevice)

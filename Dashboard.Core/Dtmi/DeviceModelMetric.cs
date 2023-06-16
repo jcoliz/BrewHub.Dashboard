@@ -13,7 +13,9 @@ public record DeviceModelMetric
     public string Name { get; init; } = string.Empty;
     public DeviceModelMetricKind Kind { get; init; }
     public DeviceModelMetricFormatter Formatter { get; init; }
-    public DeviceModelMetricVisualizationLevel VisualizationLevel { get; init; }
+    public DeviceModelMetricVisualizationLevel DashboardChartLevel { get; init; } = DeviceModelMetricVisualizationLevel.Never;
+    public DeviceModelMetricVisualizationLevel DashboardMetricLevel { get; init; } = DeviceModelMetricVisualizationLevel.Component;
+    public int DashboardOrder { get; init; } = 100;
     public string? Schema { get; init; }
     public string? Units { get; init; }
     public string? ValueLabel { get; init; }

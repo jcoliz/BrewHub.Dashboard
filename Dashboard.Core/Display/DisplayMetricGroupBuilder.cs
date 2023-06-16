@@ -17,7 +17,7 @@ public class DisplayMetricGroupBuilder
     }
 
     /// <summary>
-    /// Build a single slab (display metric group) per device, containing all metrics sent in
+    /// Build SOLUTION metrics cards. Return one slab (display metric group) per device, containing all metrics sent in
     /// </summary>
     /// <param name="group"></param>
     /// <returns></returns>
