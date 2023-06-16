@@ -78,6 +78,8 @@ public class DeviceModelRepository
                 { "rt", new() { Name = "Reflux Thermostat", Kind = DeviceModelMetricKind.Component, Schema = "dtmi:brewhub:controls:Thermostat;1", VisualizationLevel = DeviceModelMetricVisualizationLevel.Device }},
                 { "ct", new() { Name = "Condenser Thermostat", Kind = DeviceModelMetricKind.Component, Schema = "dtmi:brewhub:controls:Thermostat;1", VisualizationLevel = DeviceModelMetricVisualizationLevel.Device }},
                 { "amb", new() { Name = "Ambient Environment", Kind = DeviceModelMetricKind.Component, Schema = "dtmi:brewhub:sensors:TH;1", VisualizationLevel = DeviceModelMetricVisualizationLevel.Device }},
+                { "rv", new() { Name = "Reflux Valve", Kind = DeviceModelMetricKind.Component, Schema = "dtmi:brewhub:controls:BinaryValve;1" } },
+                { "cv", new() { Name = "Condenser Valve", Kind = DeviceModelMetricKind.Component, Schema = "dtmi:brewhub:controls:BinaryValve;1" } },
             }
         };
 
@@ -93,7 +95,7 @@ public class DeviceModelRepository
                 { "cComp", new() { Name = "Control Component", Kind = DeviceModelMetricKind.WritableProperty } },
             }
         };
-        //
+        
         Models["dtmi:brewhub:sensors:TH;1"] = new("Temp+Humidity")
         {
             Metrics = new()
@@ -102,6 +104,15 @@ public class DeviceModelRepository
                 { "h", new() { Name = "Relative Humidity", Kind = DeviceModelMetricKind.Telemetry, Formatter = DeviceModelMetricFormatter.Float, Units = "%RH", VisualizationLevel = DeviceModelMetricVisualizationLevel.Device } },
                 { "tcorr", new() { Name = "Temperature Correction", Kind = DeviceModelMetricKind.WritableProperty, Formatter = DeviceModelMetricFormatter.Float, Units = "°C" } },
                 { "hcorr", new() { Name = "Humidity Correction", Kind = DeviceModelMetricKind.WritableProperty, Formatter = DeviceModelMetricFormatter.Float, Units = "%RH" } },
+            }
+        };
+
+        Models["dtmi:brewhub:controls:BinaryValve;1"] = new("Binary Valve")
+        {
+            Metrics = new()
+            {
+                { "manual", new() { Name = "Manual Control", Kind = DeviceModelMetricKind.WritableProperty } },
+                { "open", new() { Name = "Is Open", Kind = DeviceModelMetricKind.WritableProperty } },
             }
         };
     }
