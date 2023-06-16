@@ -57,6 +57,26 @@ public class DeviceModelRepository
                 { "totalMemory", new() { Name = "Total Memory", Kind = DeviceModelMetricKind.ReadOnlyProperty, Formatter = DeviceModelMetricFormatter.kBytes } },
             }
         };
+
+        Models["still_6_unit;1"] = new("6-Unit Distillery Prototype v1")
+        {
+            Metrics = new()
+            {
+                { "WorkingSet", new() { Name = "Working Set", Kind = DeviceModelMetricKind.Telemetry, Formatter = DeviceModelMetricFormatter.KibiBits, VisualizationLevel = DeviceModelMetricVisualizationLevel.Component } },
+                { "CpuLoad", new() { Name = "CPU Load", Kind = DeviceModelMetricKind.Telemetry, VisualizationLevel = DeviceModelMetricVisualizationLevel.Component } },
+                { "Status", new() { Name = "Status", Kind = DeviceModelMetricKind.Telemetry } },
+                { "TelemetryInterval", new() { Name = "Telemetry Interval", Kind = DeviceModelMetricKind.WritableProperty } },
+                { "reboot", new() { Name = "Reboot", Kind = DeviceModelMetricKind.Command, Units = "s", ValueLabel = "Delay" } },
+                { "serialNumber", new() { Name = "Serial Number", Kind = DeviceModelMetricKind.ReadOnlyProperty } },
+                { "manufacturer", new() { Name = "Manufacturer", Kind = DeviceModelMetricKind.ReadOnlyProperty } },
+                { "model", new() { Name = "Device Model", Kind = DeviceModelMetricKind.ReadOnlyProperty } },
+                { "swVersion", new() { Name = "Software Version", Kind = DeviceModelMetricKind.ReadOnlyProperty } },
+                { "osName", new() { Name = "Operating System", Kind = DeviceModelMetricKind.ReadOnlyProperty } },
+                { "processorArchitecture", new() { Name = "Processor Architecture", Kind = DeviceModelMetricKind.ReadOnlyProperty } },
+                { "totalStorage", new() { Name = "Total Storage", Kind = DeviceModelMetricKind.ReadOnlyProperty, Formatter = DeviceModelMetricFormatter.kBytes } },
+                { "totalMemory", new() { Name = "Total Memory", Kind = DeviceModelMetricKind.ReadOnlyProperty, Formatter = DeviceModelMetricFormatter.kBytes } },
+            }
+        };
     }
 
     /// <summary>
