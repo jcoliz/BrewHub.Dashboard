@@ -6,7 +6,7 @@ namespace Dashboard.Core.Tests.Unit;
 /// This should test everything in BrewHub.Dashboard.Core.Charting
 /// Currently only DeviceModelRepository has any actual features
 /// </summary>
-public class ChartMakerTests
+public class ChartingTests
 {
     private readonly MockDataSource _datasource = new();
 
