@@ -5,8 +5,8 @@
  */
 
 import MetricsItem from './MetricsItem.vue';
-import DisplaySlabItemWritable from './DisplaySlabItemWritable.vue';
-import DisplaySlabItemCommand from './DisplaySlabItemCommand.vue';
+import MetricsItemWritable from './MetricsItemWritable.vue';
+import MetricsItemCommand from './MetricsItemCommand.vue';
 import { IDisplayMetricGroup, IDisplayMetric } from '../apiclients/apiclient.ts';
 import { RouterLink } from 'vue-router';
 
@@ -53,11 +53,11 @@ defineEmits<{
                     <MetricsItem
                         v-for="metric in slab?.readOnlyProperties" :metric="metric"
                     />
-                    <DisplaySlabItemWritable
+                    <MetricsItemWritable
                         v-for="metric in slab?.writableProperties" :metric="metric"
                         @update="(text) => $emit('property',metric,text)"
                     />
-                    <DisplaySlabItemCommand
+                    <MetricsItemCommand
                         v-for="metric in slab?.commands" :metric="metric"
                         @go="(text) => $emit('command',metric,text)"
                     />
