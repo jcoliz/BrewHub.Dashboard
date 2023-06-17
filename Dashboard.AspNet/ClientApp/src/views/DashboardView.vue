@@ -10,7 +10,7 @@ import * as api from '../apiclients/apiclient.ts';
 
 import ChartViewer from '../components/ChartViewer.vue';
 import ChartButtonToolbar from '../components/ChartButtonToolbar.vue';
-import DisplaySlab from '../components/DisplaySlab.vue';
+import MetricsCard from '../components/MetricsCard.vue';
 import BreadCrumbs from '../components/BreadCrumbs.vue';
 import { IBreadCrumbsLink } from '../components/BreadCrumbs.vue';
 import ProblemDetailsViewer from '../components/ProblemDetailsViewer.vue';
@@ -310,7 +310,7 @@ function slabhref (slab: api.IDisplayMetricGroup): string | undefined
       />
 
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xxl-4 mb-3 text-center">
-      <DisplaySlab 
+      <MetricsCard 
         v-for="slab in slabs"
         :key="`${slab.kind}-${slab.id}`"
         :slab="slab"

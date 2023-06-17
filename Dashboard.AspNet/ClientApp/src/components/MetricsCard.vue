@@ -4,7 +4,7 @@
  * Displays a group of metrics in a nice-looking card
  */
 
-import DisplaySlabItem from './DisplaySlabItem.vue';
+import MetricsItem from './MetricsItem.vue';
 import DisplaySlabItemWritable from './DisplaySlabItemWritable.vue';
 import DisplaySlabItemCommand from './DisplaySlabItemCommand.vue';
 import { IDisplayMetricGroup, IDisplayMetric } from '../apiclients/apiclient.ts';
@@ -38,7 +38,7 @@ defineEmits<{
 
 <template>
     <div
-        data-test-id="DisplaySlab" 
+        data-test-id="MetricsCard" 
         class="col"
     >
         <div class="card mb-4 rounded-3 shadow-sm border-primary">
@@ -47,10 +47,10 @@ defineEmits<{
             </div>
             <div class="card-body text-start">
                 <ul class="list-group mb-3">
-                    <DisplaySlabItem
+                    <MetricsItem
                         v-for="metric in slab?.telemetry" :metric="metric"
                     />
-                    <DisplaySlabItem
+                    <MetricsItem
                         v-for="metric in slab?.readOnlyProperties" :metric="metric"
                     />
                     <DisplaySlabItemWritable
