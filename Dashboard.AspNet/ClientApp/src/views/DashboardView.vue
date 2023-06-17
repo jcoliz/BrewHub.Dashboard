@@ -309,7 +309,7 @@ function slabhref (slab: api.IDisplayMetricGroup): string | undefined
       :coptions="chartconfig?.options" 
       />
 
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xxl-4 mb-3 text-center">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xxl-4 mb-3 text-center mt-4">
       <MetricsCard 
         v-for="slab in slabs"
         :key="`${slab.kind}-${slab.id}`"
