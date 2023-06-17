@@ -27,7 +27,7 @@ const iconSvg = computed(() => {
 
 <style scoped>
 
-span >>> .feather {
+span :deep(.feather) {
   width: 16px;
   height: 16px;
   vertical-align: text-bottom;
