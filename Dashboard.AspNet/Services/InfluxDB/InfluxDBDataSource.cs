@@ -141,6 +141,8 @@ namespace DashboardIoT.InfluxDB
             return await DoFluxQueryAsync(flux);
         }
 
+        // Note that this gets ALL properties in the lookback window, not just telemetry
+        // Then it's up to the caller to sort out what to do with that.
         public async Task<IEnumerable<Datapoint>> GetSingleDeviceTelemetryAsync(string deviceid, TimeSpan lookback, TimeSpan interval)
         {
             try
@@ -151,10 +153,13 @@ namespace DashboardIoT.InfluxDB
                 string intervalstr = regex.Match(XmlConvert.ToString(interval)).Groups["value"].Value.ToLowerInvariant();
 
                 // TODO: This is where it would be great to have a tag for type=telemetry
-                var flux = $"from(bucket:\"{_options.Bucket}\")" +
+                // Right now, this is a MASSIVE overfetch.
+                var flux = 
+                     "import \"types\" " + 
+                    $"from(bucket:\"{_options.Bucket}\")" +
                     $" |> range(start: -{lookbackstr})" +
                     $" |> filter(fn: (r) => r[\"device\"] == \"{deviceid}\")" +
-                     " |> filter(fn: (r) => r[\"_field\"] == \"temperature\")" +
+                    "  |> filter(fn: (r) => types.isType(v: r._value, type: \"int\") or types.isType(v: r._value, type: \"float\"))" +
                      " |> keep(columns: [ \"device\", \"component\", \"_field\", \"_value\", \"_time\", \"_measurement\" ])" +
                     $" |> aggregateWindow(every: {intervalstr}, fn: mean, createEmpty: false)" +
                      " |> yield(name: \"mean\")";

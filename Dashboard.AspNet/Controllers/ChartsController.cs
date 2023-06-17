@@ -124,7 +124,8 @@ public class ChartsController : ControllerBase
         data = await _datasource.GetSingleDeviceTelemetryAsync(device, lookback, bininterval);
         var dtmi = new DeviceModelRepository();
         var models = data.Where(x=>x.__Component is null).Select(x => x.__Model).Distinct();
-        var result = BrewHub.Dashboard.Core.Charting.ChartMaker.CreateMultiLineChart(data,  dtmi.VisualizeTelemetry(models, DeviceModelMetricVisualizationLevel.Device), labelformat);
+        var metrics = dtmi.VisualizeTelemetry(models, DeviceModelMetricVisualizationLevel.Device);
+        var result = ChartMaker.CreateMultiLineChart(data, metrics, labelformat);
 
         return Ok(result);
     }
