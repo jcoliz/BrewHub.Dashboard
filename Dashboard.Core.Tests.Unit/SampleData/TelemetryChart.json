@@ -1,0 +1,498 @@
+[
+    {
+        "__Device": "Beach-5",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "CpuLoad",
+        "__Value": 29.39871597290039
+    },
+    {
+        "__Device": "docker-1",
+        "__Component": null,
+        "__Model": "TemperatureController;2",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "Seq",
+        "__Value": 63594
+    },
+    {
+        "__Device": "docker-2",
+        "__Component": null,
+        "__Model": "TemperatureController;2",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "Seq",
+        "__Value": 63594
+    },
+    {
+        "__Device": "docker-3",
+        "__Component": null,
+        "__Model": "TemperatureController;2",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "Seq",
+        "__Value": 63594
+    },
+    {
+        "__Device": "docker-1",
+        "__Component": "thermostat1",
+        "__Model": "Thermostat;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "Seq",
+        "__Value": 63595
+    },
+    {
+        "__Device": "docker-2",
+        "__Component": "thermostat1",
+        "__Model": "Thermostat;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "Seq",
+        "__Value": 63595
+    },
+    {
+        "__Device": "docker-3",
+        "__Component": "thermostat1",
+        "__Model": "Thermostat;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "Seq",
+        "__Value": 63595
+    },
+    {
+        "__Device": "docker-1",
+        "__Component": "thermostat2",
+        "__Model": "Thermostat;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "Seq",
+        "__Value": 63596
+    },
+    {
+        "__Device": "docker-2",
+        "__Component": "thermostat2",
+        "__Model": "Thermostat;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "Seq",
+        "__Value": 63596
+    },
+    {
+        "__Device": "docker-3",
+        "__Component": "thermostat2",
+        "__Model": "Thermostat;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "Seq",
+        "__Value": 63596
+    },
+    {
+        "__Device": "Beach-5",
+        "__Component": "cv",
+        "__Model": "dtmi:brewhub:controls:BinaryValve;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "Seq",
+        "__Value": 18395
+    },
+    {
+        "__Device": "Beach-5",
+        "__Component": "rv",
+        "__Model": "dtmi:brewhub:controls:BinaryValve;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "Seq",
+        "__Value": 18396
+    },
+    {
+        "__Device": "Beach-5",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "Seq",
+        "__Value": 18752
+    },
+    {
+        "__Device": "Beach-5",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "Seq",
+        "__Value": 18751
+    },
+    {
+        "__Device": "Beach-5",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "Seq",
+        "__Value": 18749
+    },
+    {
+        "__Device": "Beach-5",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "Seq",
+        "__Value": 18750
+    },
+    {
+        "__Device": "Beach-5",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "SerialNumber",
+        "__Value": "1234567890-ABCDEF"
+    },
+    {
+        "__Device": "Beach-5",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "StartTimeUTC",
+        "__Value": "2023-06-16T21:47:01.8587654\u002B00:00"
+    },
+    {
+        "__Device": "Beach-5",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "Beach-5",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "Beach-5",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "Beach-5",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "TelemetryInterval",
+        "__Value": "PT2S"
+    },
+    {
+        "__Device": "Beach-5",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "WorkingSet",
+        "__Value": 483584
+    },
+    {
+        "__Device": "Beach-5",
+        "__Component": "cv",
+        "__Model": "dtmi:brewhub:controls:BinaryValve;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "__t",
+        "__Value": "c"
+    },
+    {
+        "__Device": "Beach-5",
+        "__Component": "rv",
+        "__Model": "dtmi:brewhub:controls:BinaryValve;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "__t",
+        "__Value": "c"
+    },
+    {
+        "__Device": "Beach-5",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "__t",
+        "__Value": "c"
+    },
+    {
+        "__Device": "Beach-5",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "__t",
+        "__Value": "c"
+    },
+    {
+        "__Device": "Beach-5",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "__t",
+        "__Value": "c"
+    },
+    {
+        "__Device": "Beach-5",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "__t",
+        "__Value": "c"
+    },
+    {
+        "__Device": "Beach-5",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "cComp",
+        "__Value": "cv"
+    },
+    {
+        "__Device": "Beach-5",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "cComp",
+        "__Value": "rv"
+    },
+    {
+        "__Device": "Beach-5",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "h",
+        "__Value": 0.10339583333333334
+    },
+    {
+        "__Device": "Beach-5",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "hcorr",
+        "__Value": 0
+    },
+    {
+        "__Device": "Beach-5",
+        "__Component": "cv",
+        "__Model": "dtmi:brewhub:controls:BinaryValve;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "manual",
+        "__Value": false
+    },
+    {
+        "__Device": "Beach-5",
+        "__Component": "rv",
+        "__Model": "dtmi:brewhub:controls:BinaryValve;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "manual",
+        "__Value": false
+    },
+    {
+        "__Device": "Beach-5",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "manufacturer",
+        "__Value": "BrewHub"
+    },
+    {
+        "__Device": "Beach-5",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "model",
+        "__Value": "6-Unit Distillery Prototype v1"
+    },
+    {
+        "__Device": "Beach-5",
+        "__Component": "cv",
+        "__Model": "dtmi:brewhub:controls:BinaryValve;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "open",
+        "__Value": false
+    },
+    {
+        "__Device": "Beach-5",
+        "__Component": "rv",
+        "__Model": "dtmi:brewhub:controls:BinaryValve;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "open",
+        "__Value": false
+    },
+    {
+        "__Device": "Beach-5",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "osName",
+        "__Value": "Microsoft Windows 10.0.19045"
+    },
+    {
+        "__Device": "Beach-5",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "processorArchitecture",
+        "__Value": "X64"
+    },
+    {
+        "__Device": "Beach-5",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "swVersion",
+        "__Value": "0.0.1-52-g3e5e654-JamesColiz-06161446"
+    },
+    {
+        "__Device": "Beach-5",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "t",
+        "__Value": 5.978869674096931
+    },
+    {
+        "__Device": "Beach-5",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "t",
+        "__Value": 70
+    },
+    {
+        "__Device": "Beach-5",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "t",
+        "__Value": 0.08271666666666667
+    },
+    {
+        "__Device": "Beach-5",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "targetComp",
+        "__Value": "amb"
+    },
+    {
+        "__Device": "Beach-5",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "targetTemp",
+        "__Value": 25
+    },
+    {
+        "__Device": "Beach-5",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "targetTemp",
+        "__Value": 90
+    },
+    {
+        "__Device": "Beach-5",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "tcorr",
+        "__Value": 0
+    },
+    {
+        "__Device": "Beach-5",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "tcorr",
+        "__Value": 0
+    },
+    {
+        "__Device": "Beach-5",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "tcorr",
+        "__Value": 0
+    },
+    {
+        "__Device": "docker-1",
+        "__Component": "thermostat1",
+        "__Model": "Thermostat;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "temperature",
+        "__Value": 134.4370479853239
+    },
+    {
+        "__Device": "docker-2",
+        "__Component": "thermostat1",
+        "__Model": "Thermostat;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "temperature",
+        "__Value": 134.4370479853239
+    },
+    {
+        "__Device": "docker-3",
+        "__Component": "thermostat1",
+        "__Model": "Thermostat;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "temperature",
+        "__Value": 134.4370479853239
+    },
+    {
+        "__Device": "docker-1",
+        "__Component": "thermostat2",
+        "__Model": "Thermostat;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "temperature",
+        "__Value": 132
+    },
+    {
+        "__Device": "docker-2",
+        "__Component": "thermostat2",
+        "__Model": "Thermostat;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "temperature",
+        "__Value": 132
+    },
+    {
+        "__Device": "docker-3",
+        "__Component": "thermostat2",
+        "__Model": "Thermostat;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "temperature",
+        "__Value": 132
+    },
+    {
+        "__Device": "Beach-5",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "totalMemory",
+        "__Value": 66489524
+    },
+    {
+        "__Device": "Beach-5",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "totalStorage",
+        "__Value": 701705408
+    },
+    {
+        "__Device": "docker-1",
+        "__Component": null,
+        "__Model": "TemperatureController;2",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "workingSet",
+        "__Value": 619968
+    },
+    {
+        "__Device": "docker-2",
+        "__Component": null,
+        "__Model": "TemperatureController;2",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "workingSet",
+        "__Value": 571328
+    },
+    {
+        "__Device": "docker-3",
+        "__Component": null,
+        "__Model": "TemperatureController;2",
+        "__Time": "0001-01-01T00:00:00+00:00",
+        "__Field": "workingSet",
+        "__Value": 608352
+    }
+]

@@ -59,7 +59,7 @@ namespace Common.ChartJS
                 var setcolors = colors.Select(x => x.WithAlpha(alpha)).ToList();
                 dataset.BackgroundColor = setcolors.Select(x => x.ToString());
                 dataset.BorderColor = setcolors.Select(x => x.ToString());
-                alpha /= 2;
+                alpha *= 0.75;
             }
 
             return result;

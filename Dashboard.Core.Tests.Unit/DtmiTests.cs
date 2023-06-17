@@ -81,7 +81,7 @@ public class DtmiTests
     public void TestGetCommands(string model, int numexpected, string example)
     {
         var datapoint = new Datapoint() { __Model = model };
-        var result = details.GetCommands(datapoint).Select(x=>x.Id);
+        var result = details.GetCommands(datapoint,DeviceModelMetricVisualizationLevel.Never).Select(x=>x.Id);
 
         Assert.That(result.Count(), Is.EqualTo(numexpected));
         if (numexpected > 0)

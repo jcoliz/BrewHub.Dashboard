@@ -90,7 +90,12 @@ public static class ChartMaker
             string field = split.Last();
 
             // Each data point is a device
-            var data = points.Where(x => x.__Component == component && x.__Field == field).OrderBy(x => x.__Device).Select(x => Convert.ToInt32(x.__Value)).AsEnumerable<int>();
+
+            // Problem here comes when there are some series that are only on some devices.
+            // We need to give one data point per device, no matter how many we actually have.
+
+            var data = labels.Select(d => points.Where(x => x.__Component == component && x.__Field == field && x.__Device == d).Select(x => Convert.ToInt32(x.__Value) ).FirstOrDefault() );
+
             series.Add( (key, data) );
         }
         return ChartConfig.CreateMultiBarChart(labels, series, palette);

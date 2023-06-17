@@ -36,6 +36,16 @@ public class ChartsController : ControllerBase
         var data = await _datasource.GetLatestDeviceTelemetryAllAsync();
         var dtmi = new DeviceModelRepository();
         var models = data.Where(x=>x.__Component is null).Select(x => x.__Model).Distinct();
+
+        #if false
+        var filename = "TelemetryChart.json";
+        System.IO.File.Delete(filename);
+        using (var s = System.IO.File.OpenWrite(filename))
+        {
+            await System.Text.Json.JsonSerializer.SerializeAsync(s, data.ToArray());
+        }
+        #endif
+
         var result = ChartMaker.CreateMultiDeviceBarChart(data, dtmi.VisualizeTelemetry(models, DeviceModelMetricVisualizationLevel.Solution));
 
         return Ok(result);

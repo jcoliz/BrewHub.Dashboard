@@ -1,5 +1,9 @@
+using System.Reflection;
 using BrewHub.Dashboard.Core.Charting;
 using BrewHub.Dashboard.Core.MockData;
+using BrewHub.Dashboard.Core.Models;
+using System.Text.Json;
+
 namespace Dashboard.Core.Tests.Unit;
 
 /// <summary>
@@ -13,6 +17,50 @@ public class ChartingTests
     [SetUp]
     public void Setup()
     {
+    }
+
+    private async Task<Datapoint[]> LoadTelemetryChart()
+    {
+        var filename = "SampleData.TelemetryChart.json";
+        var assembly = Assembly.GetExecutingAssembly();
+        var names  = assembly!.GetManifestResourceNames();
+        var resource = assembly!.GetManifestResourceNames().Where(x => x.EndsWith(filename)).SingleOrDefault();
+        if (resource is null)
+            throw new System.IO.FileNotFoundException("Manifest resource not found", filename);
+        using var stream = assembly.GetManifestResourceStream(resource);
+        if (stream is null)
+            throw new System.IO.FileNotFoundException("Cannot open manifest resource", filename);
+        var result = await JsonSerializer.DeserializeAsync<Datapoint[]>(stream);
+        if (result is null)
+            throw new FormatException("Cannot deserialize json data");
+
+        // Need to convert this input. Because Datapoint.__Value is an object, it leaves the object as a JSonValue,
+        // which is doing to cause us problems later.
+        var converted =
+            result
+                .Select(x =>
+                    new Datapoint()
+                    {
+                        __Component = x.__Component,
+                        __Device = x.__Device,
+                        __Model = x.__Model,
+                        __Time = x.__Time,
+                        __Field = x.__Field,
+                        __Value = FromElement((JsonElement)x.__Value)
+                    }
+                )
+                .ToArray();
+        return converted;
+    }
+
+    private object FromElement(JsonElement el)
+    {
+        return el.ValueKind switch
+        {
+            JsonValueKind.Number => el.GetDouble(),
+            JsonValueKind.False => false,
+            _ => el.GetString() ?? string.Empty
+        };
     }
 
     [Test]
@@ -42,5 +90,33 @@ public class ChartingTests
         // And: The values on the chart match the device values for that label
         var values = data.Where(x => x.__Component == component && x.__Field == field).Select(x => Convert.ToInt32(x.__Value));
         Assert.That(chart.Data.Datasets.First().Data,Is.EquivalentTo(values));
+    }
+
+    [Test]
+    public async Task CreateSolutionChart()
+    {
+        // The problem here is that the data in this case has MULTIPLE device models. Which we would like
+        // to support. Some of the devices have the rt/t+ct/t data, others have the thermostat1/etc data.
+        // What should happen is that NULL values are given for cases where one device doesn't HAVE
+        // a certain kind of data
+
+        var data = await LoadTelemetryChart();
+        var result = ChartMaker.CreateMultiDeviceBarChart(data, new[] { "rt/t", "ct/t", "thermostat1/temperature", "thermostat2/temperature" });
+
+        // For each label (device) there should be a value for each series (metric). Obviously in this
+        // case, some metrics won't have values for some devices. In this case, there should be a 'null'
+
+        // There are 4 devices in the data set we supplied
+        var devices = 4;
+
+        // Make sure correct number of labels
+        var numlabels = result.Data.Labels.Count();
+        Assert.That(numlabels, Is.EqualTo(devices));
+
+        // Now make sure each dataset has correct number of data points
+        foreach(var dataset in result.Data.Datasets)
+        {
+            Assert.That(dataset.Data.Count(), Is.EqualTo(devices), $"Incorrect number of labels for series {dataset.Label}");
+        }
     }
 }
