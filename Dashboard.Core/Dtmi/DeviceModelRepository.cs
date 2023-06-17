@@ -65,19 +65,19 @@ public class DeviceModelRepository
                 { "WorkingSet", new() { Name = "Working Set", Kind = DeviceModelMetricKind.Telemetry, Formatter = DeviceModelMetricFormatter.KibiBits, DashboardChartLevel = DeviceModelMetricVisualizationLevel.Component } },
                 { "CpuLoad", new() { Name = "CPU Load", Kind = DeviceModelMetricKind.Telemetry, Formatter = DeviceModelMetricFormatter.PercentDouble, DashboardChartLevel = DeviceModelMetricVisualizationLevel.Device } },
                 { "Status", new() { Name = "Status", Kind = DeviceModelMetricKind.Telemetry, Formatter = DeviceModelMetricFormatter.Status, DashboardMetricLevel = DeviceModelMetricVisualizationLevel.Solution } },
-                { "TelemetryInterval", new() { Name = "Telemetry Interval", Kind = DeviceModelMetricKind.WritableProperty } },
-                { "reboot", new() { Name = "Reboot", Kind = DeviceModelMetricKind.Command, Units = "s", ValueLabel = "Delay" } },
+                { "TelemetryInterval", new() { Name = "Telemetry Interval", Kind = DeviceModelMetricKind.WritableProperty, DashboardMetricLevel = DeviceModelMetricVisualizationLevel.Component } },
+                { "reboot", new() { Name = "Reboot", Kind = DeviceModelMetricKind.Command, Units = "s", ValueLabel = "Delay", DashboardMetricLevel = DeviceModelMetricVisualizationLevel.Component } },
                 { "serialNumber", new() { Name = "Serial Number", Kind = DeviceModelMetricKind.ReadOnlyProperty } },
                 { "manufacturer", new() { Name = "Manufacturer", Kind = DeviceModelMetricKind.ReadOnlyProperty } },
                 { "model", new() { Name = "Device Model", Kind = DeviceModelMetricKind.ReadOnlyProperty } },
                 { "swVersion", new() { Name = "Software Version", Kind = DeviceModelMetricKind.ReadOnlyProperty } },
-                { "osName", new() { Name = "Operating System", Kind = DeviceModelMetricKind.ReadOnlyProperty } },
-                { "processorArchitecture", new() { Name = "Processor Architecture", Kind = DeviceModelMetricKind.ReadOnlyProperty } },
-                { "totalStorage", new() { Name = "Total Storage", Kind = DeviceModelMetricKind.ReadOnlyProperty, Formatter = DeviceModelMetricFormatter.kBytes } },
-                { "totalMemory", new() { Name = "Total Memory", Kind = DeviceModelMetricKind.ReadOnlyProperty, Formatter = DeviceModelMetricFormatter.kBytes } },
+                { "osName", new() { Name = "Operating System", Kind = DeviceModelMetricKind.ReadOnlyProperty, DashboardMetricLevel = DeviceModelMetricVisualizationLevel.Component } },
+                { "processorArchitecture", new() { Name = "Processor Architecture", Kind = DeviceModelMetricKind.ReadOnlyProperty, DashboardMetricLevel = DeviceModelMetricVisualizationLevel.Component } },
+                { "totalStorage", new() { Name = "Total Storage", Kind = DeviceModelMetricKind.ReadOnlyProperty, Formatter = DeviceModelMetricFormatter.kBytes, DashboardMetricLevel = DeviceModelMetricVisualizationLevel.Component } },
+                { "totalMemory", new() { Name = "Total Memory", Kind = DeviceModelMetricKind.ReadOnlyProperty, Formatter = DeviceModelMetricFormatter.kBytes, DashboardMetricLevel = DeviceModelMetricVisualizationLevel.Component } },
                 { "rt", new() { Name = "Reflux Thermostat", Kind = DeviceModelMetricKind.Component, Schema = "dtmi:brewhub:controls:Thermostat;1", DashboardChartLevel = DeviceModelMetricVisualizationLevel.Solution }},
                 { "ct", new() { Name = "Condenser Thermostat", Kind = DeviceModelMetricKind.Component, Schema = "dtmi:brewhub:controls:Thermostat;1", DashboardChartLevel = DeviceModelMetricVisualizationLevel.Solution }},
-                { "amb", new() { Name = "Ambient Environment", Kind = DeviceModelMetricKind.Component, Schema = "dtmi:brewhub:sensors:TH;1", DashboardChartLevel = DeviceModelMetricVisualizationLevel.Device }},
+                { "amb", new() { Name = "Ambient Conditions", Kind = DeviceModelMetricKind.Component, Schema = "dtmi:brewhub:sensors:TH;1", DashboardChartLevel = DeviceModelMetricVisualizationLevel.Device }},
                 { "rv", new() { Name = "Reflux Valve", Kind = DeviceModelMetricKind.Component, Schema = "dtmi:brewhub:controls:BinaryValve;1" } },
                 { "cv", new() { Name = "Condenser Valve", Kind = DeviceModelMetricKind.Component, Schema = "dtmi:brewhub:controls:BinaryValve;1" } },
             }
@@ -90,7 +90,7 @@ public class DeviceModelRepository
                 { "t", new() { Name = "Temperature", Kind = DeviceModelMetricKind.Telemetry, Formatter = DeviceModelMetricFormatter.Float, Units = "°C", DashboardChartLevel = DeviceModelMetricVisualizationLevel.Solution, DashboardMetricLevel = DeviceModelMetricVisualizationLevel.Solution } },
                 { "Status", new() { Name = "Status", Kind = DeviceModelMetricKind.Telemetry, Formatter = DeviceModelMetricFormatter.Status } },
                 { "targetTemp", new() { Name = "Target Temperature", Kind = DeviceModelMetricKind.WritableProperty, Formatter = DeviceModelMetricFormatter.Float, Units = "°C" } },
-                { "tcorr", new() { Name = "Temperature Correction", Kind = DeviceModelMetricKind.WritableProperty, Formatter = DeviceModelMetricFormatter.Float, Units = "°C" } },
+                { "tcorr", new() { Name = "Temperature Correction", Kind = DeviceModelMetricKind.WritableProperty, Formatter = DeviceModelMetricFormatter.Float, Units = "°C", DashboardMetricLevel = DeviceModelMetricVisualizationLevel.Component } },
                 { "targetComp", new() { Name = "Target Component", Kind = DeviceModelMetricKind.WritableProperty } },
                 { "cComp", new() { Name = "Control Component", Kind = DeviceModelMetricKind.WritableProperty } },
             }
@@ -101,9 +101,9 @@ public class DeviceModelRepository
             Metrics = new()
             {
                 { "t", new() { Name = "Temperature", Kind = DeviceModelMetricKind.Telemetry, Formatter = DeviceModelMetricFormatter.Float, Units = "°C", DashboardChartLevel = DeviceModelMetricVisualizationLevel.Solution, DashboardMetricLevel = DeviceModelMetricVisualizationLevel.Solution } },
-                { "h", new() { Name = "Relative Humidity", Kind = DeviceModelMetricKind.Telemetry, Formatter = DeviceModelMetricFormatter.Float, Units = "%RH", DashboardChartLevel = DeviceModelMetricVisualizationLevel.Device } },
-                { "tcorr", new() { Name = "Temperature Correction", Kind = DeviceModelMetricKind.WritableProperty, Formatter = DeviceModelMetricFormatter.Float, Units = "°C" } },
-                { "hcorr", new() { Name = "Humidity Correction", Kind = DeviceModelMetricKind.WritableProperty, Formatter = DeviceModelMetricFormatter.Float, Units = "%RH" } },
+                { "h", new() { Name = "Relative Humidity", Kind = DeviceModelMetricKind.Telemetry, Formatter = DeviceModelMetricFormatter.Float, Units = "%RH", DashboardChartLevel = DeviceModelMetricVisualizationLevel.Component } },
+                { "tcorr", new() { Name = "Temperature Correction", Kind = DeviceModelMetricKind.WritableProperty, Formatter = DeviceModelMetricFormatter.Float, Units = "°C", DashboardMetricLevel = DeviceModelMetricVisualizationLevel.Component } },
+                { "hcorr", new() { Name = "Humidity Correction", Kind = DeviceModelMetricKind.WritableProperty, Formatter = DeviceModelMetricFormatter.Float, Units = "%RH", DashboardMetricLevel = DeviceModelMetricVisualizationLevel.Component } },
             }
         };
 
@@ -300,17 +300,18 @@ public class DeviceModelRepository
     }
 
     /// <summary>
-    /// Return all the commands for a given component id
+    /// Return all the commands for a given component id, at a given metric level
     /// </summary>
     /// <param name="componentid"></param>
     /// <returns></returns>
-    public IEnumerable<DisplayMetric> GetCommands(Datapoint d)
+    public IEnumerable<DisplayMetric> GetCommands(Datapoint d, DeviceModelMetricVisualizationLevel level)
     {
         if (Models.TryGetValue(d.__Model,out var model))
         {
             return model
                     .Metrics
                     .Where(x => x.Value.Kind == DeviceModelMetricKind.Command)
+                    .Where(x => x.Value.DashboardMetricLevel >= level)
                     .Select(x => 
                         new DisplayMetric()
                         {

@@ -62,23 +62,21 @@ public class DisplayMetricGroupBuilder
     }
 
     /// <summary>
-    /// Build one slab (display metric group) out of a single component
+    /// Build DEVICE-level metric cards (aka slabs, aka display metric groups) out of a single component
     /// </summary>
     /// <param name="group"></param>
     /// <returns></returns>
     public DisplayMetricGroup FromComponent(IGrouping<string,Datapoint> group)
     {
-        var schema = new DisplayMetric() { Name = "Schema", Id = "schema", Value = group.First().__Model };
-
         return new DisplayMetricGroup() 
         { 
             Title = _models.MapComponentName(group.First()) ?? "Device Details",
             Kind = DisplayMetricGroupKind.Component,
             Id = group.Key,
             Telemetry = group.Where(d=>_models.IsMetricTelemetry(d)).Select(FromDatapoint).ToArray(), 
-            ReadOnlyProperties = group.Where(d=>!_models.IsMetricWritable(d) && !_models.IsMetricTelemetry(d)).Select(FromDatapoint).Concat(new[] { schema }).ToArray(), 
+            ReadOnlyProperties = group.Where(d=>!_models.IsMetricWritable(d) && !_models.IsMetricTelemetry(d)).Select(FromDatapoint).ToArray(), 
             WritableProperties = group.Where(d=>_models.IsMetricWritable(d)).Select(FromDatapoint).ToArray(), 
-            Commands = _models.GetCommands(group.First()).ToArray()
+            Commands = _models.GetCommands(group.First(), DeviceModelMetricVisualizationLevel.Device).ToArray()
         };
     }
 
@@ -106,7 +104,8 @@ public class DisplayMetricGroupBuilder
             });
         }
         var ro = points.Where(d=>!_models.IsMetricWritable(d) && !_models.IsMetricTelemetry(d));
-        if (ro.Any())
+        // Always will have 'schema' property
+        //if (ro.Any())
         {
             result.Add(new DisplayMetricGroup()
             {
@@ -127,7 +126,7 @@ public class DisplayMetricGroupBuilder
                 WritableProperties = writable.Select(FromDatapoint).ToArray()
             });
         }
-        var commands = _models.GetCommands(points.First());
+        var commands = _models.GetCommands(points.First(), DeviceModelMetricVisualizationLevel.Component);
         if (commands.Any())
         {
             result.Add(new DisplayMetricGroup()

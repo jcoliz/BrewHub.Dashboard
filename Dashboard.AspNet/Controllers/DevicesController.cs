@@ -63,10 +63,10 @@ public class DevicesController : ControllerBase
         var data = await _datasource.GetLatestDeviceTelemetryAllAsync();
 
         // Narrow to all metrics which are expected to show up at the solution level
-        var telemetry = data.Where(x => _dtmi.IsMetricShownAtLevel(x, DeviceModelMetricVisualizationLevel.Solution));
-
         // Make slabs out of those
-        var slabs = telemetry
+        var slabs = 
+            data
+                .Where(x => _dtmi.IsMetricShownAtLevel(x, DeviceModelMetricVisualizationLevel.Solution))
                 .GroupBy(x => x.__Device)
                 .Select(_metricgroupbuilder.FromDevice)
                 .ToArray();
@@ -98,7 +98,12 @@ public class DevicesController : ControllerBase
         // Query InfluxDB, compose into UI slabs
         var data = await _datasource.GetLatestDevicePropertiesAsync(device);
         var dtmi = new DeviceModelRepository();
-        var slabs = data.GroupBy(x => x.__Component ?? "device").Select(_metricgroupbuilder.FromComponent).ToArray();
+        var slabs = 
+            data
+                .Where(x => _dtmi.IsMetricShownAtLevel(x, DeviceModelMetricVisualizationLevel.Device))
+                .GroupBy(x => x.__Component ?? "device")
+                .Select(_metricgroupbuilder.FromComponent)
+                .ToArray();
 
         return Ok(slabs);
     }
