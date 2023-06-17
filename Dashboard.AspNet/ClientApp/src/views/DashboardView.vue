@@ -71,11 +71,11 @@ const breadcrumbs = computed((): IBreadCrumbsLink[] => {
 })
 
 const currentpage = computed((): string => {
-  if (props.componentid != undefined) {
-    return props.componentid;
+  if (hasValue(props.componentid)) {
+    return props.componentid!;
   }
-  else if (props.deviceid != undefined) {
-    return props.deviceid;
+  else if (hasValue(props.deviceid)) {
+    return props.deviceid!;
   }
   else {
     return 'Home';
