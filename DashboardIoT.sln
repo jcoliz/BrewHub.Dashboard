@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dashboard.Core", "Dashboard
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dashboard.Core.Tests.Unit", "Dashboard.Core.Tests.Unit\Dashboard.Core.Tests.Unit.csproj", "{3137020E-CF36-496D-980B-565D5D2F4208}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dashboard.Services.DeviceMessaging", "Dashboard.Services.DeviceMessaging\Dashboard.Services.DeviceMessaging.csproj", "{193F48E4-BA6C-45FC-B2AF-CB42E89B2ABF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,5 +42,9 @@ Global
 		{3137020E-CF36-496D-980B-565D5D2F4208}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3137020E-CF36-496D-980B-565D5D2F4208}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3137020E-CF36-496D-980B-565D5D2F4208}.Release|Any CPU.Build.0 = Release|Any CPU
+		{193F48E4-BA6C-45FC-B2AF-CB42E89B2ABF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{193F48E4-BA6C-45FC-B2AF-CB42E89B2ABF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{193F48E4-BA6C-45FC-B2AF-CB42E89B2ABF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{193F48E4-BA6C-45FC-B2AF-CB42E89B2ABF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
