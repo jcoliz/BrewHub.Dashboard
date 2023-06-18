@@ -21,12 +21,15 @@ public class DevicesController : ControllerBase
     private readonly DeviceModelRepository _dtmi;
     private readonly DisplayMetricGroupBuilder _metricgroupbuilder;
 
-    public DevicesController(ILogger<DevicesController> logger, IDataSource datasource)
+    private readonly IEnumerable<IDeviceMessaging> _messagingservices;
+
+    public DevicesController(ILogger<DevicesController> logger, IDataSource datasource, IEnumerable<IDeviceMessaging> messagingservices)
     {
         _logger = logger;
         _datasource = datasource;
         _dtmi = new();
         _metricgroupbuilder = new(_dtmi);
+        _messagingservices = messagingservices;
     }
 
     /// <summary>
@@ -208,6 +211,24 @@ public class DevicesController : ControllerBase
             return BadRequest();
         }
 #endif
+        if (_messagingservices.Any())
+        {
+            try
+            {
+                var service = _messagingservices.First();
+
+                await service.SendDesiredPropertyAsync(device, component == "device" ? null : component, property, payload);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "SetProperty: Failed to send property");
+            }
+        }
+        else
+        {
+            _logger.LogWarning("SetProperty: No messaging services configured, ignoring this request.");
+        }
+
         return NoContent();
     }
 

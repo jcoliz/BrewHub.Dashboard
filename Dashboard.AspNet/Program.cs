@@ -2,6 +2,7 @@ using DashboardIoT.InfluxDB;
 using BrewHub.Dashboard.Core.MockData;
 using BrewHub.Dashboard.Core.Providers;
 using System.Reflection;
+using Dashboard.Services.DeviceMessaging;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -56,6 +57,19 @@ else
 {
     logger.LogWarning("InfluxDB Options not found. Using mock data");
     builder.Services.AddSingleton<IDataSource>(new MockDataSource());
+}
+
+// Bring up MQTT connection
+section = builder.Configuration.GetSection(MqttDeviceMessaging.Options.Section);
+if (section.Exists())
+{
+    logger.LogInformation("MqttDeviceMessaging Options OK");
+    builder.Services.Configure<MqttDeviceMessaging.Options>(section);
+    builder.Services.AddSingleton<IDeviceMessaging, MqttDeviceMessaging>();
+}
+else
+{
+    logger.LogWarning("MqttDeviceMessaging Options not found. DeviceMessaging will not be available");
 }
 
 // Get app version, store in configuration for later use

@@ -22,6 +22,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Common.ChartJS\Common.ChartJS.csproj" />
     <ProjectReference Include="..\Dashboard.Core\Dashboard.Core.csproj" />
+    <ProjectReference Include="..\Dashboard.Services.DeviceMessaging\Dashboard.Services.DeviceMessaging.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
