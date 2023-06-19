@@ -3,6 +3,7 @@
 
 namespace Dashboard.Services.DeviceMessaging;
 
+using System.Text.Json;
 using BrewHub.Dashboard.Core.Providers;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -111,7 +112,7 @@ public class MqttDeviceMessaging: IDeviceMessaging
     }
 
 
-    public async Task SendDesiredPropertyAsync(string deviceid, string? componentid, string metric, object value)
+    public async Task SendDesiredPropertyAsync(string deviceid, string? componentid, string metric, string value)
     {
         if (mqttClient is null)
         {
@@ -124,8 +125,12 @@ public class MqttDeviceMessaging: IDeviceMessaging
                 await Task.Delay(500);
             }
         }
-        
-        var json = System.Text.Json.JsonSerializer.Serialize(value);
+
+        // TODO: Should compose a full brewhub;1 message with Timestamp, Seq, and Model.
+        // However, that will require some more plumbing to get the model in here,
+        // so will save that for another day.
+        var props = new Dictionary<string, object>() { { metric, value } };
+        var json = JsonSerializer.Serialize(props);
         
         var topic = string.IsNullOrEmpty(componentid) ? $"{_basetopic}/NCMD/{deviceid}" : $"{_basetopic}/NCMD/{deviceid}/{componentid}";
 
@@ -142,7 +147,7 @@ public class MqttDeviceMessaging: IDeviceMessaging
         _logger.LogInformation("Message: Sent {topic} {message}", topic, json);
     }
 
-    public Task SendCommandAsync(string deviceid, string? componentid, string metric, object value)
+    public Task SendCommandAsync(string deviceid, string? componentid, string metric, string value)
     {
         throw new NotImplementedException();
     }

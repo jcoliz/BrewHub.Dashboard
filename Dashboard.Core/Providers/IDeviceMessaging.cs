@@ -8,7 +8,7 @@ namespace BrewHub.Dashboard.Core.Providers;
 /// </summary>
 public interface IDeviceMessaging
 {
-    Task SendDesiredPropertyAsync(string deviceid, string? componentid, string metric, object value);
+    Task SendDesiredPropertyAsync(string deviceid, string? componentid, string metric, string value);
 
-    Task SendCommandAsync(string deviceid, string? componentid, string metric, object value);
+    Task SendCommandAsync(string deviceid, string? componentid, string metric, string value);
 }

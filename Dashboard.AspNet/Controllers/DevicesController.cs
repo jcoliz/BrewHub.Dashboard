@@ -6,6 +6,7 @@ using BrewHub.Dashboard.Core.Providers;
 using BrewHub.Dashboard.Core.Display;
 using Microsoft.AspNetCore.Mvc;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 
 namespace BrewHub.Dashboard.Api;
 
@@ -189,7 +190,7 @@ public class DevicesController : ControllerBase
     /// <summary>
     /// Set property on device
     /// </summary>
-    /// <param name="payload">Value to set on property</param>
+    /// <param name="payload">Value to set on property. Note that this is currently always sent as a string.</param>
     /// <param name="device">Name of device</param>
     /// <param name="component">Name of component, or "device"</param>
     /// <param name="property">Name of property</param>
@@ -220,7 +221,13 @@ public class DevicesController : ControllerBase
             {
                 var service = _messagingservices.First();
 
-                await service.SendDesiredPropertyAsync(device, component == "device" ? null : component, property, payload);
+                // At this point, payload is a string-kind JsonElement as an object. The desired propery
+                // provider treats ALL desired properties as a string, so let's get it into
+                // string form before sending.
+                JsonElement el = (JsonElement)payload;
+                var strpayload = el.GetString();
+
+                await service.SendDesiredPropertyAsync(device, component == "device" ? null : component, property, strpayload!);
             }
             catch (Exception ex)
             {
