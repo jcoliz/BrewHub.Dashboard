@@ -11,7 +11,7 @@ import versionText from '../assets/version.txt?raw';
 <template>
     <footer class="row bg-light py-4 mt-3">
         <div class="col text-end">
-            <GithubButton href="https://github.com/jcoliz/VueJS.NET.StartKit/">View on GitHub</GithubButton>
+            <GithubButton href="https://github.com/jcoliz/BrewHub.Dashboard/">View! on GitHub</GithubButton>
             <p class="mb-0">
             <small>Version: {{ versionText }}</small>
             </p>
