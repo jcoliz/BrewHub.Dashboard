@@ -1,3 +1,6 @@
+// Copyright (C) 2023 James Coliz, Jr. <jcoliz@outlook.com> All rights reserved
+// Use of this source code is governed by the MIT license (see LICENSE file)
+
 using BrewHub.Dashboard.Core.Display;
 using BrewHub.Dashboard.Core.Models;
 using System.Runtime.CompilerServices;
