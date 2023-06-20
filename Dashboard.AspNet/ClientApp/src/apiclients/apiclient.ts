@@ -463,22 +463,10 @@ export class DevicesClient {
 
     /**
      * Set property on device
-     * @param device Name of device
-     * @param component Name of component, or "device"
-     * @param property Name of property
-     * @param payload Value to set on property. Note that this is currently always sent as a string.
+     * @param payload Details for the property. Uses all fields except __Time
      */
-    setProperty(device: string, component: string, property: string, payload: any): Promise<void> {
-        let url_ = this.baseUrl + "/api/Devices/{device}/Component/{component}/Property/{property}";
-        if (device === undefined || device === null)
-            throw new Error("The parameter 'device' must be defined.");
-        url_ = url_.replace("{device}", encodeURIComponent("" + device));
-        if (component === undefined || component === null)
-            throw new Error("The parameter 'component' must be defined.");
-        url_ = url_.replace("{component}", encodeURIComponent("" + component));
-        if (property === undefined || property === null)
-            throw new Error("The parameter 'property' must be defined.");
-        url_ = url_.replace("{property}", encodeURIComponent("" + property));
+    setProperty(payload: Datapoint): Promise<void> {
+        let url_ = this.baseUrl + "/api/Devices/SetProperty";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(payload);
@@ -1092,6 +1080,62 @@ export interface IDisplayMetric {
     id?: string;
     value?: string;
     units?: string | undefined;
+}
+
+export class Datapoint implements IDatapoint {
+    __Device?: string;
+    __Component?: string | undefined;
+    __Model?: string;
+    __Time?: Date;
+    __Field?: string;
+    __Value?: any;
+
+    constructor(data?: IDatapoint) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.__Device = _data["__Device"];
+            this.__Component = _data["__Component"];
+            this.__Model = _data["__Model"];
+            this.__Time = _data["__Time"] ? new Date(_data["__Time"].toString()) : <any>undefined;
+            this.__Field = _data["__Field"];
+            this.__Value = _data["__Value"];
+        }
+    }
+
+    static fromJS(data: any): Datapoint {
+        data = typeof data === 'object' ? data : {};
+        let result = new Datapoint();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["__Device"] = this.__Device;
+        data["__Component"] = this.__Component;
+        data["__Model"] = this.__Model;
+        data["__Time"] = this.__Time ? this.__Time.toISOString() : <any>undefined;
+        data["__Field"] = this.__Field;
+        data["__Value"] = this.__Value;
+        return data;
+    }
+}
+
+export interface IDatapoint {
+    __Device?: string;
+    __Component?: string | undefined;
+    __Model?: string;
+    __Time?: Date;
+    __Field?: string;
+    __Value?: any;
 }
 
 export class Script implements IScript {

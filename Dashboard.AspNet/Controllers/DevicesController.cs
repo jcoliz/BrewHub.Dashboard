@@ -7,6 +7,7 @@ using BrewHub.Dashboard.Core.Display;
 using Microsoft.AspNetCore.Mvc;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
+using BrewHub.Dashboard.Core.Models;
 
 namespace BrewHub.Dashboard.Api;
 
@@ -190,31 +191,26 @@ public class DevicesController : ControllerBase
     /// <summary>
     /// Set property on device
     /// </summary>
-    /// <param name="payload">Value to set on property. Note that this is currently always sent as a string.</param>
-    /// <param name="device">Name of device</param>
-    /// <param name="component">Name of component, or "device"</param>
-    /// <param name="property">Name of property</param>
+    /// <param name="payload">Details for the property. Uses all fields except __Time</param>
     [HttpPost]
-    [Route("{device}/Component/{component}/Property/{property}")]
+    [Route("[action]")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> SetProperty([FromBody] object payload, [FromRoute] string device, [FromRoute] string component, [FromRoute] string property)
+    public async Task<IActionResult> SetProperty([FromBody] Datapoint payload)
     {
-        _logger.LogInformation("SetProperty: Device {device} Component {component} payload {payload}", device, component, payload);
+        _logger.LogInformation("SetProperty: {payload}", JsonSerializer.Serialize(payload));
 
-        if (!(await DoesDeviceAndComponentExistAsync(device,component)))
+        if (!(await DoesDeviceAndComponentExistAsync(payload.__Device,payload.__Component ?? "device")))
             return NotFound();
 
         // Bad request if fails DTMI, e.g. wrong command or payload
-#if false
-        var dtmi = new DeviceModelDetails();
-        if (!dtmi.IsMetricWritable(property))
+        if (!_dtmi.IsMetricWritable(payload))
         {
-            _logger.LogError("{caller}: {status} Not a writable property {property}","SetProperty",StatusCodes.Status400BadRequest,property);
+            _logger.LogError("{caller}: {status} Not a writable property {property}","SetProperty",StatusCodes.Status400BadRequest,payload.__Field);
             return BadRequest();
         }
-#endif
+
         if (_messagingservices.Any())
         {
             try
@@ -224,10 +220,10 @@ public class DevicesController : ControllerBase
                 // At this point, payload is a string-kind JsonElement as an object. The desired propery
                 // provider treats ALL desired properties as a string, so let's get it into
                 // string form before sending.
-                JsonElement el = (JsonElement)payload;
+                JsonElement el = (JsonElement)payload.__Value;
                 var strpayload = el.GetString();
 
-                await service.SendDesiredPropertyAsync(device, component == "device" ? null : component, property, strpayload!);
+                await service.SendDesiredPropertyAsync(payload.__Device, payload.__Component, payload.__Field, strpayload!);
             }
             catch (Exception ex)
             {
