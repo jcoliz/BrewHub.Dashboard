@@ -9,6 +9,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BrewHub.Dashboard.Api;
 
+/// <summary>
+/// Provides an API for the backend to retrieve charts
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 [Produces("application/json")]
