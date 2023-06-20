@@ -217,16 +217,15 @@ public class DevicesController : ControllerBase
             {
                 var service = _messagingservices.First();
 
-                // At this point, payload is a string-kind JsonElement as an object. The desired propery
-                // provider treats ALL desired properties as a string, so let's get it into
-                // string form before sending.
+                // At this point, payload is a string-kind JsonElement as an object. We need a string
+                // before moving on to the next stage in processing
                 JsonElement el = (JsonElement)payload.__Value;
                 var strpayload = el.GetString();
 
                 // Device clients expect the value to be serialized in the correct type for what sort of property
                 // it is (for Azure IoT compat). So here, we need to type the value correctly, based on model
-                // (which is in the Datapoint payload)
-
+                // (which is in the Datapoint payload), using the value as a string sent from the frontend
+                // See Bug #1608: Json type mismatch sending desired properties, for more discussion
                 object typedvalue = _dtmi.UnformatMetricValue(payload, strpayload!);
 
                 await service.SendDesiredPropertyAsync(payload.__Device, payload.__Component, payload.__Field, typedvalue);
