@@ -22,6 +22,11 @@ public record DisplayMetricGroup
     /// </remarks>
     public string Id { get; init; } = string.Empty;
 
+    /// <summary>
+    /// Device model for the component or device shown here
+    /// </summary>
+    public string Model { get; init; } = string.Empty;
+
     public DisplayMetricGroupKind Kind { get; init; } = DisplayMetricGroupKind.Empty;
 
     public DisplayMetric[] Telemetry { get; init; } = Array.Empty<DisplayMetric>();

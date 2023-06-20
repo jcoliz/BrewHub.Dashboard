@@ -466,7 +466,7 @@ export class DevicesClient {
      * @param device Name of device
      * @param component Name of component, or "device"
      * @param property Name of property
-     * @param payload Value to set on property
+     * @param payload Value to set on property. Note that this is currently always sent as a string.
      */
     setProperty(device: string, component: string, property: string, payload: any): Promise<void> {
         let url_ = this.baseUrl + "/api/Devices/{device}/Component/{component}/Property/{property}";
@@ -945,7 +945,8 @@ export enum TimeframeEnum {
 
 export class DisplayMetricGroup implements IDisplayMetricGroup {
     title?: string;
-    id?: string | undefined;
+    id?: string;
+    model?: string;
     kind?: DisplayMetricGroupKind;
     telemetry?: DisplayMetric[];
     readOnlyProperties?: DisplayMetric[];
@@ -965,6 +966,7 @@ export class DisplayMetricGroup implements IDisplayMetricGroup {
         if (_data) {
             this.title = _data["title"];
             this.id = _data["id"];
+            this.model = _data["model"];
             this.kind = _data["kind"];
             if (Array.isArray(_data["telemetry"])) {
                 this.telemetry = [] as any;
@@ -1000,6 +1002,7 @@ export class DisplayMetricGroup implements IDisplayMetricGroup {
         data = typeof data === 'object' ? data : {};
         data["title"] = this.title;
         data["id"] = this.id;
+        data["model"] = this.model;
         data["kind"] = this.kind;
         if (Array.isArray(this.telemetry)) {
             data["telemetry"] = [];
@@ -1027,7 +1030,8 @@ export class DisplayMetricGroup implements IDisplayMetricGroup {
 
 export interface IDisplayMetricGroup {
     title?: string;
-    id?: string | undefined;
+    id?: string;
+    model?: string;
     kind?: DisplayMetricGroupKind;
     telemetry?: DisplayMetric[];
     readOnlyProperties?: DisplayMetric[];

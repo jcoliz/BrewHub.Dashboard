@@ -37,6 +37,7 @@ public class DisplayMetricGroupBuilder
             Title = group.Key,
             Kind = DisplayMetricGroupKind.Device,
             Id = group.Key,
+            Model = group.Last().__Model,
             Telemetry = group
                 .Select(d => new DisplayMetric()
                 {
@@ -76,6 +77,7 @@ public class DisplayMetricGroupBuilder
             Title = _models.MapComponentName(group.First()) ?? "Device Details",
             Kind = DisplayMetricGroupKind.Component,
             Id = group.Key,
+            Model = group.Last().__Model,
             Telemetry = group.Where(d=>_models.IsMetricTelemetry(d)).Select(FromDatapoint).ToArray(), 
             ReadOnlyProperties = group.Where(d=>!_models.IsMetricWritable(d) && !_models.IsMetricTelemetry(d)).Select(FromDatapoint).ToArray(), 
             WritableProperties = group.Where(d=>_models.IsMetricWritable(d)).Select(FromDatapoint).ToArray(), 
@@ -102,6 +104,7 @@ public class DisplayMetricGroupBuilder
             {
                 Title = "Telemetry",
                 Id = "telemetry",
+                Model = points.Last().__Model,
                 Kind = DisplayMetricGroupKind.Grouping,
                 Telemetry = telemetry.Select(FromDatapoint).ToArray()
             });
@@ -114,6 +117,7 @@ public class DisplayMetricGroupBuilder
             {
                 Title = "Properties",
                 Id = "roprops",
+                Model = points.Last().__Model,
                 Kind = DisplayMetricGroupKind.Grouping,
                 ReadOnlyProperties = ro.Select(FromDatapoint).Concat(new[] { schema }).ToArray()
             });
@@ -125,6 +129,7 @@ public class DisplayMetricGroupBuilder
             {
                 Title = "Writable Properties",
                 Id = "wprops",
+                Model = points.Last().__Model,
                 Kind = DisplayMetricGroupKind.Grouping,
                 WritableProperties = writable.Select(FromDatapoint).ToArray()
             });
@@ -136,6 +141,7 @@ public class DisplayMetricGroupBuilder
             {
                 Title = "Commands",
                 Id = "commands",
+                Model = points.Last().__Model,
                 Kind = DisplayMetricGroupKind.Grouping,
                 Commands = commands.ToArray()
             });
