@@ -4,7 +4,9 @@
 namespace Dashboard.Services.DeviceMessaging;
 
 using System.Text.Json;
+using BrewHub.Dashboard.Core.Models;
 using BrewHub.Dashboard.Core.Providers;
+using BrewHub.Devices.Platform.Mqtt;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MQTTnet;
@@ -112,7 +114,7 @@ public class MqttDeviceMessaging: IDeviceMessaging
     }
 
 
-    public async Task SendDesiredPropertyAsync(string deviceid, string? componentid, string metric, object value)
+    public async Task SendDesiredPropertyAsync(Datapoint point)
     {
         if (mqttClient is null)
         {
@@ -129,10 +131,18 @@ public class MqttDeviceMessaging: IDeviceMessaging
         // TODO: Should compose a full brewhub;1 message with Timestamp, Seq, and Model.
         // However, that will require some more plumbing to get the model in here,
         // so will save that for another day.
-        var props = new Dictionary<string, object>() { { metric, value } };
-        var json = JsonSerializer.Serialize(props);
+
+        var props = new Dictionary<string, object>() { { point.__Field, point.__Value } };
+        var payload = new MessagePayload()
+        {
+            Model = point.__Model,
+            Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
+            Metrics = props
+        };
+
+        var json = JsonSerializer.Serialize(payload);
         
-        var topic = string.IsNullOrEmpty(componentid) ? $"{_basetopic}/NCMD/{deviceid}" : $"{_basetopic}/NCMD/{deviceid}/{componentid}";
+        var topic = string.IsNullOrEmpty(point.__Component) ? $"{_basetopic}/NCMD/{point.__Device}" : $"{_basetopic}/NCMD/{point.__Device}/{point.__Component}";
 
         var message = new MqttApplicationMessageBuilder()
             .WithTopic(topic)

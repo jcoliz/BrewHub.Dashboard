@@ -228,7 +228,16 @@ public class DevicesController : ControllerBase
                 // See Bug #1608: Json type mismatch sending desired properties, for more discussion
                 object typedvalue = _dtmi.UnformatMetricValue(payload, strpayload!);
 
-                await service.SendDesiredPropertyAsync(payload.__Device, payload.__Component, payload.__Field, typedvalue);
+                var dpsend = new Datapoint()
+                {
+                    __Device = payload.__Device,
+                    __Component = payload.__Component,
+                    __Model = payload.__Model,
+                    __Field = payload.__Field,
+                    __Value = typedvalue
+
+                };
+                await service.SendDesiredPropertyAsync(dpsend);
             }
             catch (Exception ex)
             {
