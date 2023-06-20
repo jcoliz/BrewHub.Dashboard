@@ -176,5 +176,40 @@ namespace DashboardIoT.InfluxDB
             }
         }
 
+        public async Task<IEnumerable<Datapoint>> GetSingleComponentTelemetryAsync(string deviceid, string? componentid, TimeSpan lookback, TimeSpan interval)
+        {
+            try
+            {
+                // Convert timespan into flux time construct
+                Regex regex = new Regex("^[PT]+(?<value>.+)");
+                string lookbackstr = regex.Match(XmlConvert.ToString(lookback)).Groups["value"].Value.ToLowerInvariant();
+                string intervalstr = regex.Match(XmlConvert.ToString(interval)).Groups["value"].Value.ToLowerInvariant();
+
+                // TODO: This is where it would be great to have a tag for type=telemetry
+                // Right now, this is a MASSIVE overfetch.
+                var flux = 
+                     "import \"types\" " + 
+                    $"from(bucket:\"{_options.Bucket}\")" +
+                    $" |> range(start: -{lookbackstr})" +
+                    $" |> filter(fn: (r) => r[\"device\"] == \"{deviceid}\")" +
+                    (
+                        (componentid is null) ?
+                        " |> filter(fn: (r) => not exists r[\"component\"] )" :
+                        $" |> filter(fn: (r) => r[\"component\"] == \"{componentid}\")"
+                    ) +                    
+                    "  |> filter(fn: (r) => types.isType(v: r._value, type: \"int\") or types.isType(v: r._value, type: \"float\"))" +
+                     " |> keep(columns: [ \"device\", \"component\", \"_field\", \"_value\", \"_time\", \"_measurement\" ])" +
+                    $" |> aggregateWindow(every: {intervalstr}, fn: mean, createEmpty: false)" +
+                     " |> yield(name: \"mean\")";
+
+                return await DoFluxQueryAsync(flux);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "InfluxDB: Query Composition Failed");
+                throw;
+            }
+
+        }
     }
 }

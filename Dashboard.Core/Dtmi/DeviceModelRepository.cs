@@ -125,7 +125,11 @@ public class DeviceModelRepository
     /// </summary>
     public IEnumerable<string> VisualizeTelemetry(IEnumerable<string> models, DeviceModelMetricVisualizationLevel level)
     {
-        // All the things at the top level which have solution-level visibility. Could be metrics, could be components
+        // NOTE: Right now we expect this to be called for DEVICE models only.
+        // Now we are trying to get it to work for COMPONENT models.
+        // Not sure if this can support it, or whether it should be its own call.
+
+        // All the things on the given models which have the requested level of visibility. Could be metrics, could be components
         var toplevelsviz = 
             models
                 .Where(x=>Models.ContainsKey(x))
@@ -135,13 +139,13 @@ public class DeviceModelRepository
                     .Where(y=>y.Value.DashboardChartLevel >= level)
                 );
 
-        // Considering the top level those, find just the metrics on the DEVICE
+        // Considering the top level those, find just the metrics which are not on a subcomponent
         var devicemetrics = 
             toplevelsviz
                 .Where(x => x.Value.Kind != DeviceModelMetricKind.Component)
                 .Select(x => x.Key);
 
-        // Find the metrics which have top-level visibility AND are on a component which ALSO has top-level visibility
+        // Find the metrics which have requested level visibility AND are on a child component which ALSO has requested level visibility
         var componentmetrics = 
             toplevelsviz
                 .Where(x => x.Value.Kind == DeviceModelMetricKind.Component)

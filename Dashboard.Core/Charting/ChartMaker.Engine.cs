@@ -75,6 +75,29 @@ public static class ChartMaker
         return ChartConfig.CreateLineChart(labels, series, palette );
     }
 
+    public static ChartConfig CreateMultiLineChartForSingleComponent(IEnumerable<Models.Datapoint> points, IEnumerable<string> keys, string timeformat)
+    {
+        var series = new List<(string Label, IEnumerable<int> Data)>();
+        IEnumerable<string> labels = Enumerable.Empty<string>();
+
+        // For each line...
+        foreach(var key in keys)
+        {
+            // Get a subset of the points which match the key, and are ordered by time ascending
+            var thesepoints = points.Where(x => x.__Field == key).OrderBy(x => x.__Time);
+            var data = thesepoints.Select(x => Convert.ToInt32(x.__Value)).AsEnumerable<int>();
+            series.Add( (key, data) );
+
+            // Transform them into how the chart config creator wants to see them
+            labels = thesepoints.Select(x => x.__Time.ToString(timeformat));
+
+            // TODO: This does NOT deal with the series not having identical labels.
+            // That needs to be fixed.
+        }
+        
+        return ChartConfig.CreateLineChart(labels, series, palette );
+    }
+
     public static ChartConfig CreateMultiDeviceBarChart(IEnumerable<Models.Datapoint> points, IEnumerable<string> keys)
     {
         // Labels are the devices

@@ -99,5 +99,25 @@ namespace BrewHub.Dashboard.Core.MockData
             );
             return Task.FromResult(result);
         }
+
+        public Task<IEnumerable<Datapoint>> GetSingleComponentTelemetryAsync(string deviceid, string? componentid, TimeSpan lookback, TimeSpan interval)
+        {
+            var now = DateTimeOffset.Now;
+            var dates = Enumerable.Range(0, (int)Math.Ceiling(lookback / interval)).Select(x => now + x * interval);
+            var result = components.Where(c=>c == (componentid ?? string.Empty)).SelectMany
+            (
+                c => telemetry.Select(
+                    t => new Datapoint()
+                    {
+                        __Device = deviceid,
+                        __Component = string.IsNullOrEmpty(c) ? null : c,
+                        __Time = now,
+                        __Field = t,
+                        __Value = (object)NextDouble1000()
+                    }
+                )
+            );
+            return Task.FromResult(result);
+        }
     }
 }

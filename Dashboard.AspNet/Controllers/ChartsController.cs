@@ -78,6 +78,7 @@ public class ChartsController : ControllerBase
             return NotFound();
         }
 
+        // TODO: DRY
         TimeSpan lookback = TimeSpan.Zero;
         TimeSpan bininterval = TimeSpan.Zero;
         string labelformat = string.Empty;
@@ -163,7 +164,60 @@ public class ChartsController : ControllerBase
             return NotFound();
         }
 
-        return Ok(new Common.ChartJS.ChartConfig());
+        TimeSpan lookback = TimeSpan.Zero;
+        TimeSpan bininterval = TimeSpan.Zero;
+        string labelformat = string.Empty;
+
+        try
+        {
+            lookback = timeframe switch
+            {
+                TimeframeEnum.Minutes => TimeSpan.FromMinutes(5), // "5m",
+                TimeframeEnum.Hour => TimeSpan.FromHours(1), //"1h",
+                TimeframeEnum.Hours => TimeSpan.FromHours(4), //"4h",
+                TimeframeEnum.Day => TimeSpan.FromHours(24), //"24h",
+                TimeframeEnum.Week => TimeSpan.FromDays(7), //"7d",
+                TimeframeEnum.Month => TimeSpan.FromDays(28), //"28d",
+                _ => throw new NotImplementedException()
+            };
+
+            bininterval = timeframe switch
+            {
+                TimeframeEnum.Minutes =>  TimeSpan.FromSeconds(20), //"20s",
+                TimeframeEnum.Hour =>  TimeSpan.FromMinutes(2), //"2m",
+                TimeframeEnum.Hours =>  TimeSpan.FromMinutes(15), //"15m",
+                TimeframeEnum.Day =>  TimeSpan.FromHours(1), //"1h",
+                TimeframeEnum.Week =>  TimeSpan.FromDays(1), //"1d",
+                TimeframeEnum.Month => TimeSpan.FromDays(7), //"7d",
+                _ => throw new NotImplementedException()
+            };
+
+            labelformat = timeframe switch
+            {
+                TimeframeEnum.Minutes => "mm:ss",
+                TimeframeEnum.Hour or 
+                TimeframeEnum.Hours or 
+                TimeframeEnum.Day => "H:mm",
+                TimeframeEnum.Week or 
+                TimeframeEnum.Month => "M/dd",
+                _ => throw new NotImplementedException()
+            };
+        }
+        catch (NotImplementedException)
+        {
+            _logger.LogError("DeviceChart: {status} Unxpected timeframe {timeframe}",StatusCodes.Status400BadRequest,timeframe);
+            return BadRequest();
+        }
+
+        // Get historical telemetry data for just this component on this device
+        var actualcomponent = component == "device" ? null : component;
+        data = await _datasource.GetSingleComponentTelemetryAsync(device, actualcomponent, lookback, bininterval);
+        var dtmi = new DeviceModelRepository();
+        var models = data.Where(x=>x.__Component == actualcomponent).Select(x => x.__Model).Distinct();
+        var metrics = dtmi.VisualizeTelemetry(models, DeviceModelMetricVisualizationLevel.Component);
+        var result = ChartMaker.CreateMultiLineChartForSingleComponent(data, metrics, labelformat);
+
+        return Ok(result);
     }
 
 }
