@@ -112,7 +112,7 @@ public class MqttDeviceMessaging: IDeviceMessaging
     }
 
 
-    public async Task SendDesiredPropertyAsync(string deviceid, string? componentid, string metric, string value)
+    public async Task SendDesiredPropertyAsync(string deviceid, string? componentid, string metric, object value)
     {
         if (mqttClient is null)
         {
@@ -147,7 +147,7 @@ public class MqttDeviceMessaging: IDeviceMessaging
         _logger.LogInformation("Message: Sent {topic} {message}", topic, json);
     }
 
-    public Task SendCommandAsync(string deviceid, string? componentid, string metric, string value)
+    public Task SendCommandAsync(string deviceid, string? componentid, string metric, object value)
     {
         throw new NotImplementedException();
     }

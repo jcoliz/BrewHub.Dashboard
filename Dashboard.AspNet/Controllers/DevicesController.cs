@@ -223,7 +223,13 @@ public class DevicesController : ControllerBase
                 JsonElement el = (JsonElement)payload.__Value;
                 var strpayload = el.GetString();
 
-                await service.SendDesiredPropertyAsync(payload.__Device, payload.__Component, payload.__Field, strpayload!);
+                // Device clients expect the value to be serialized in the correct type for what sort of property
+                // it is (for Azure IoT compat). So here, we need to type the value correctly, based on model
+                // (which is in the Datapoint payload)
+
+                object typedvalue = _dtmi.UnformatMetricValue(payload, strpayload!);
+
+                await service.SendDesiredPropertyAsync(payload.__Device, payload.__Component, payload.__Field, typedvalue);
             }
             catch (Exception ex)
             {

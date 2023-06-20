@@ -237,6 +237,32 @@ public class DeviceModelRepository
     }
 
     /// <summary>
+    /// Given a formatted value, turn that into the correct type of object 
+    /// </summary>
+    /// <param name="d"></param>
+    /// <param name="formatted"></param>
+    /// <returns></returns>
+    public object UnformatMetricValue(Datapoint d, string formatted)
+    {
+        if (Models.TryGetValue(d.__Model,out var model) && model.Metrics.TryGetValue(d.__Field, out var metric) )
+        {
+            return metric.Formatter switch
+            {
+                DeviceModelMetricFormatter.Float or
+                DeviceModelMetricFormatter.PercentDouble => Convert.ToDouble(formatted),
+                DeviceModelMetricFormatter.KibiBits or
+                DeviceModelMetricFormatter.kBytes or
+                DeviceModelMetricFormatter.PercentInteger or
+                DeviceModelMetricFormatter.Status => Convert.ToInt32(formatted),
+                DeviceModelMetricFormatter.None or
+                _ => formatted
+            };
+        }
+        else
+            return formatted;
+    }
+
+    /// <summary>
     /// Whether a specific metric is telemetry metric
     /// </summary>
     /// <param name="metricid"></param>
