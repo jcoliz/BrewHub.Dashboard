@@ -38,7 +38,7 @@ public class ChartsController : ControllerBase
         _logger.LogInformation("Telemetry");
 
         // Pull raw telemetry from database
-        // TODO: Need to get all telemetry in this call
+        // TODO: User Story 1614: Store kind of metric update in database, use for charting query
         var data = await _datasource.GetLatestDeviceTelemetryAllAsync();
         var dtmi = new DeviceModelRepository();
         var models = data.Where(x=>x.__Component is null).Select(x => x.__Model).Distinct();

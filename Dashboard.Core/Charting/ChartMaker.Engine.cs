@@ -68,8 +68,7 @@ public static class ChartMaker
             // Transform them into how the chart config creator wants to see them
             labels = thesepoints.Select(x => x.__Time.ToString(timeformat));
 
-            // TODO: This does NOT deal with the series not having identical labels.
-            // That needs to be fixed.
+            // TODO: Bug 1613: Charting: Handle cases where series have different time series
         }
         
         return ChartConfig.CreateLineChart(labels, series, palette );
@@ -91,8 +90,7 @@ public static class ChartMaker
             // Transform them into how the chart config creator wants to see them
             labels = thesepoints.Select(x => x.__Time.ToString(timeformat));
 
-            // TODO: This does NOT deal with the series not having identical labels.
-            // That needs to be fixed.
+            // TODO: Bug 1613: Charting: Handle cases where series have different time series
         }
         
         return ChartConfig.CreateLineChart(labels, series, palette );

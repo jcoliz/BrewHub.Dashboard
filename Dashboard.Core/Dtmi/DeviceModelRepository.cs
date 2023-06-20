@@ -350,11 +350,11 @@ public class DeviceModelRepository
                         {
                             Name = x.Value.Name,
                             Id = x.Key,
-                            Value = x.Value.ValueLabel!, // TODO: Probably should allow null for this
+                            // TODO: User Story 1615: Allow DisplayMetric to have null value
+                            Value = x.Value.ValueLabel ?? string.Empty,
                             Units = x.Value.Units
                         });
-                        // TODO: Consider if we may be able to merge Display Metric 
-                        // and DeviceModelMetric
+                        // TODO: User Story 1616: Consider merging Display Metric and DeviceModelMetric
         }
         else
         {

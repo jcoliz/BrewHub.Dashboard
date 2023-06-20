@@ -128,10 +128,6 @@ public class MqttDeviceMessaging: IDeviceMessaging
             }
         }
 
-        // TODO: Should compose a full brewhub;1 message with Timestamp, Seq, and Model.
-        // However, that will require some more plumbing to get the model in here,
-        // so will save that for another day.
-
         var props = new Dictionary<string, object>() { { point.__Field, point.__Value } };
         var payload = new MessagePayload()
         {
