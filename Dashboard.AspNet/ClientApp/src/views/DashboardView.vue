@@ -149,8 +149,17 @@ function postUpdate(slabid: string, metric: api.IDisplayMetric, payload: string)
 
   const componentToSend = hasValue(props.componentid) ? props.componentid! : slabid;
 
+  const slab = slabs!.value.filter(x => x.id === slabid).pop();
+  const params: api.Datapoint = new api.Datapoint({
+    __Device: props.deviceid,
+    __Component: (componentToSend !== "device") ? componentToSend : undefined ,
+    __Model: slab!.model,
+    __Field: metric.id!,
+    __Value: payload
+  });
+
   devicesClient
-    .setProperty(props.deviceid!, componentToSend, metric.id!, payload)
+    .setProperty(params)
     .then(() => {
       postCommandDialogConfig.value = {
         title: "Update Property",
