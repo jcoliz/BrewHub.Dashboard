@@ -119,6 +119,7 @@ namespace DashboardIoT.InfluxDB
 
             var flux = $"from(bucket:\"{_options.Bucket}\")" +
                 " |> range(start: -10m)" +
+                " |> filter(fn: (r) => exists r[\"device\"] )" +
                 " |> last()" +
                 " |> keep(columns: [ \"device\", \"component\", \"_field\", \"_value\", \"_measurement\" ])";
 
