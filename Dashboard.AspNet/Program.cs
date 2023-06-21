@@ -47,6 +47,7 @@ builder.Services.AddOpenApiDocument( o => {
 builder.Services.AddRazorPages()
                 .AddRazorRuntimeCompilation();
 builder.Services.AddHealthChecks();
+builder.Services.AddProblemDetails();
 
 // Set influxdb:Server to "-" to force use of mock data
 var section = builder.Configuration.GetSection(InfluxDBDataSource.Options.Section);
@@ -90,6 +91,9 @@ if (resource is not null)
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+
+app.UseExceptionHandler();
+app.UseStatusCodePages();
 
 var runningincontainer = Convert.ToBoolean(Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") ?? "false");
 if (app.Environment.IsDevelopment())

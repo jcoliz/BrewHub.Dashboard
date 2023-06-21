@@ -95,6 +95,11 @@ public class DevicesController : ControllerBase
     {
         _logger.LogInformation("Device: {device}", device);
 
+        // This is to help test...
+        // Bug 1618: Unhandled exceptions in API controller should form a proper problem details response
+        if (device == "crash")
+            throw new ApplicationException("User-initiated failure");
+
         if (!(await DoesDeviceExistAsync(device)))
             return Problem(
                 title: "Not Found",
