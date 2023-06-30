@@ -156,7 +156,9 @@ public class DevicesController : ControllerBase
         // Query InfluxDB, compose into UI slabs
         var data = await _datasource.GetLatestDevicePropertiesAsync(device);
         var dtmi = new DeviceModelRepository();
-        var metrics = data.Where(x => component == (x.__Component ?? "device"));
+        var metrics = data
+            .Where(x => component == (x.__Component ?? "device"))
+            .Where(x => _dtmi.IsMetricShownAtLevel(x, DeviceModelMetricVisualizationLevel.Component));
         var slabs = _metricgroupbuilder.ManyFromComponent(metrics);
 
         return Ok(slabs);
