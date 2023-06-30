@@ -94,8 +94,8 @@ public class DeviceModelRepository
                 { "Status", new() { Name = "Status", Kind = DeviceModelMetricKind.Telemetry, Formatter = DeviceModelMetricFormatter.Status } },
                 { "targetTemp", new() { Name = "Target Temperature", Kind = DeviceModelMetricKind.WritableProperty, Formatter = DeviceModelMetricFormatter.Float, Units = "°C" } },
                 { "tcorr", new() { Name = "Temperature Correction", Kind = DeviceModelMetricKind.WritableProperty, Formatter = DeviceModelMetricFormatter.Float, Units = "°C", DashboardMetricLevel = DeviceModelMetricVisualizationLevel.Component } },
-                { "targetComp", new() { Name = "Target Component", Kind = DeviceModelMetricKind.WritableProperty } },
-                { "cComp", new() { Name = "Control Component", Kind = DeviceModelMetricKind.WritableProperty } },
+                { "targetMetric", new() { Name = "Target Metric", Kind = DeviceModelMetricKind.WritableProperty } },
+                { "overTemp", new() { Name = "Is Over Target Temp", Kind = DeviceModelMetricKind.ReadOnlyProperty, DashboardMetricLevel = DeviceModelMetricVisualizationLevel.Never } }
             }
         };
         
@@ -114,8 +114,8 @@ public class DeviceModelRepository
         {
             Metrics = new()
             {
-                { "manual", new() { Name = "Manual Control", Kind = DeviceModelMetricKind.WritableProperty } },
-                { "open", new() { Name = "Is Open", Kind = DeviceModelMetricKind.WritableProperty } },
+                { "sourceMetric", new() { Name = "Source Metric", Kind = DeviceModelMetricKind.WritableProperty } },
+                { "open", new() { Name = "Is Open", Kind = DeviceModelMetricKind.WritableProperty } }
             }
         };
     }
