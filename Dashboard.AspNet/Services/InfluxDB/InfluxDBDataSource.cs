@@ -120,6 +120,7 @@ namespace DashboardIoT.InfluxDB
             var flux = $"from(bucket:\"{_options.Bucket}\")" +
                 " |> range(start: -10m)" +
                 " |> filter(fn: (r) => exists r[\"device\"] )" +
+                " |> filter(fn: (r) => r[\"msgtype\"] != \"NCMD\")" +
                 " |> last()" +
                 " |> keep(columns: [ \"device\", \"component\", \"_field\", \"_value\", \"_measurement\" ])";
 
@@ -138,6 +139,7 @@ namespace DashboardIoT.InfluxDB
             var flux = $"from(bucket:\"{_options.Bucket}\")" +
                 " |> range(start: -24h)" +
                 $" |> filter(fn: (r) => r[\"device\"] == \"{deviceid}\")" +
+                " |> filter(fn: (r) => r[\"msgtype\"] != \"NCMD\")" +
                 " |> filter(fn: (r) => r[\"_field\"] != \"Seq\" and r[\"_field\"] != \"__t\")" +
                 " |> last()" +
                 " |> keep(columns: [ \"device\", \"component\", \"_field\", \"_value\", \"_measurement\" ])";
@@ -163,6 +165,7 @@ namespace DashboardIoT.InfluxDB
                     $"from(bucket:\"{_options.Bucket}\")" +
                     $" |> range(start: -{lookbackstr})" +
                     $" |> filter(fn: (r) => r[\"device\"] == \"{deviceid}\")" +
+                    " |> filter(fn: (r) => r[\"msgtype\"] != \"NCMD\")" +
                     "  |> filter(fn: (r) => types.isType(v: r._value, type: \"int\") or types.isType(v: r._value, type: \"float\"))" +
                      " |> keep(columns: [ \"device\", \"component\", \"_field\", \"_value\", \"_time\", \"_measurement\" ])" +
                     $" |> aggregateWindow(every: {intervalstr}, fn: mean, createEmpty: false)" +
@@ -192,6 +195,7 @@ namespace DashboardIoT.InfluxDB
                      "import \"types\" " + 
                     $"from(bucket:\"{_options.Bucket}\")" +
                     $" |> range(start: -{lookbackstr})" +
+                    " |> filter(fn: (r) => r[\"msgtype\"] != \"NCMD\")" +
                     $" |> filter(fn: (r) => r[\"device\"] == \"{deviceid}\")" +
                     (
                         (componentid is null) ?
