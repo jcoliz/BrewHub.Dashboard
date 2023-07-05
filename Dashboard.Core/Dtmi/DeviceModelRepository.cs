@@ -191,7 +191,7 @@ public class DeviceModelRepository
     Func<object, string> degreesCelcius = x => $"{x:F1}°C";
     Func<object, string> floatNoUnits = x => $"{x:F1}";
     Func<object, string> kibiBits = x => $"{(double)x / 7812.5:F1} MB";
-    Func<object, string> noFormatting = x => x.ToString() ?? string.Empty;
+    Func<object, string> noFormatting = x => x?.ToString() ?? "(null)";
     Func<object, string> percentInt = x => $"{x}%";
     Func<object, string> percentDouble = x => $"{x:F1}%";
     Func<object, string> status = x => (double)x == 0 ? "OK" : $"ERROR {x:F0}";
