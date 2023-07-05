@@ -76,6 +76,7 @@ public class DeviceModelRepository
                 { "swVersion", new() { Name = "Software Version", Kind = DeviceModelMetricKind.ReadOnlyProperty } },
                 { "osName", new() { Name = "Operating System", Kind = DeviceModelMetricKind.ReadOnlyProperty, DashboardMetricLevel = DeviceModelMetricVisualizationLevel.Component } },
                 { "processorArchitecture", new() { Name = "Processor Architecture", Kind = DeviceModelMetricKind.ReadOnlyProperty, DashboardMetricLevel = DeviceModelMetricVisualizationLevel.Component } },
+                { "processorManufacturer", new() { Name = "Processor Manufacturer", Kind = DeviceModelMetricKind.ReadOnlyProperty, DashboardMetricLevel = DeviceModelMetricVisualizationLevel.Component } },
                 { "totalStorage", new() { Name = "Total Storage", Kind = DeviceModelMetricKind.ReadOnlyProperty, Formatter = DeviceModelMetricFormatter.kBytes, DashboardMetricLevel = DeviceModelMetricVisualizationLevel.Component } },
                 { "totalMemory", new() { Name = "Total Memory", Kind = DeviceModelMetricKind.ReadOnlyProperty, Formatter = DeviceModelMetricFormatter.kBytes, DashboardMetricLevel = DeviceModelMetricVisualizationLevel.Component } },
                 { "rt", new() { Name = "Reflux Thermostat", Kind = DeviceModelMetricKind.Component, Schema = "dtmi:brewhub:controls:Thermostat;1", DashboardChartLevel = DeviceModelMetricVisualizationLevel.Solution }},
