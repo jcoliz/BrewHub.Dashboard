@@ -4,7 +4,7 @@
  * Application sidebar for navigation
  */
 
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import NavItemRouterLink from './NavItemRouterLink.vue';
 import NavItemLink from './NavItemLink.vue';
 import NavItemGroup from './NavItemGroup.vue';
@@ -29,6 +29,14 @@ function unshow()
     }
   }
 }
+
+//
+// User Story 1641: Dashboard local links should link to machine where dashboard is running
+//
+
+const hostname = computed(() => {
+  return location.hostname;
+})
 
 </script>
 
@@ -87,24 +95,24 @@ function unshow()
             />
           </NavItemGroup>
           <NavItemHeader 
-            title="Edge Components"
+            :title="`${hostname} Services`"
           />
           <NavItemGroup>
             <NavItemLink 
               title="Grafana" 
-              link="http://localhost:3000/"
+              :link="`http://${hostname}:3000/`"
               icon="bar-chart"
               @click="unshow"
             />
             <NavItemLink 
               title="InfluxDB" 
-              link="http://localhost:8086" 
+              :link="`http://${hostname}:8086/`"
               icon="database"
               @click="unshow"
             />
             <NavItemLink 
               title="VerneMQ" 
-              link="http://localhost:8888/status" 
+              :link="`http://${hostname}:8888/status`"
               icon="radio"
               @click="unshow"
             />
