@@ -100,6 +100,13 @@ namespace BrewHub.Dashboard.Core.MockData
             return Task.FromResult(result);
         }
 
+        public Task<IEnumerable<Datapoint>> GetSingleDeviceMetricsAsync(string deviceid, IEnumerable<Datapoint> metrics, TimeSpan lookback, TimeSpan interval)
+        {
+            var result = GetSingleDeviceTelemetryAsync(deviceid, lookback, interval);
+
+            return result;
+        }
+
         public Task<IEnumerable<Datapoint>> GetSingleComponentTelemetryAsync(string deviceid, string? componentid, TimeSpan lookback, TimeSpan interval)
         {
             var now = DateTimeOffset.Now;

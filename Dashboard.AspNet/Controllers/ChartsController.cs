@@ -92,12 +92,33 @@ public class ChartsController : ControllerBase
             return BadRequest();
         }
 
+        //
         // Get historical telemetry data for all components on this device
-        data = await _datasource.GetSingleDeviceTelemetryAsync(device, timescale.lookback, timescale.bininterval);
+        //
+
+        // Fixing Bug 1648: Dashboard timeout on BrewBox with timespan=Day
+        //
+        // Previously, we would get ALL device telemetry from the data source, then post-filter.
+        // Now, we are going to build a filter FIRST, then ask the data source for ONLY the data
+        // we exactly need.
+
+        // First thing we need to know: What is the model for this device?
+        // Will use the existing latest device properties call. I THINK this will be fast, because
+        // it's all 'last()'. If that turns out to be wrong, I can always create an optimized
+        // call to handle this;
+        var latestprops = await _datasource.GetLatestDevicePropertiesAsync(device);
+        var model = latestprops.Where(x => x.__Component is null).Select(x => x.__Model).Distinct().Single();
+
+        // What are the metrics we need to get back?
         var dtmi = new DeviceModelRepository();
-        var models = data.Where(x=>x.__Component is null).Select(x => x.__Model).Distinct();
-        var metrics = dtmi.VisualizeTelemetry(models, DeviceModelMetricVisualizationLevel.Device);
-        var result = ChartMaker.CreateMultiLineChart(data, metrics, timescale.labelformat);
+        var metrics = dtmi.GetFullVisualizeDetails(new[] { model } , DeviceModelMetricVisualizationLevel.Device);
+
+        // Fetch ONLY that data
+        data = await _datasource.GetSingleDeviceMetricsAsync(device, metrics, timescale.lookback, timescale.bininterval);
+
+        // TODO: Replace with `CreateMultiLineChartAll`
+        var labels = dtmi.VisualizeTelemetry(new[] { model }, DeviceModelMetricVisualizationLevel.Device);
+        var result = ChartMaker.CreateMultiLineChart(data, labels, timescale.labelformat);
 
         return Ok(result);
     }

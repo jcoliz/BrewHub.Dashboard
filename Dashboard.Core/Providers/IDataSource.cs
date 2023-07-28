@@ -38,6 +38,9 @@ namespace BrewHub.Dashboard.Core.Providers
         /// </returns>
         public Task<IEnumerable<Datapoint>> GetSingleDeviceTelemetryAsync(string deviceid, TimeSpan lookback, TimeSpan interval);
 
+
+        public Task<IEnumerable<Datapoint>> GetSingleDeviceMetricsAsync(string deviceid, IEnumerable<Datapoint> metrics, TimeSpan lookback, TimeSpan interval);
+
         /// <summary>
         /// Get all metrics for one component over time
         /// </summary>

@@ -180,6 +180,54 @@ namespace DashboardIoT.InfluxDB
             }
         }
 
+        public async Task<IEnumerable<Datapoint>> GetSingleDeviceMetricsAsync(string deviceid, IEnumerable<Datapoint> metrics, TimeSpan lookback, TimeSpan interval)
+        {
+            try
+            {
+                // Convert timespan into flux time construct
+                Regex regex = new Regex("^[PT]+(?<value>.+)");
+                string lookbackstr = regex.Match(XmlConvert.ToString(lookback)).Groups["value"].Value.ToLowerInvariant();
+                string intervalstr = regex.Match(XmlConvert.ToString(interval)).Groups["value"].Value.ToLowerInvariant();
+
+                // Fixes Bug 1648: Dashboard timeout on BrewBox with timespan=Day
+                // 
+                // We will craft a single query for each metric, and run them separately.
+                // I think this will be faster than the over-fetching we did previously.
+                //
+                // Could be optimized further with a single query PER MODEL in the supplied metrics.
+                var result = new List<Datapoint>();
+
+                foreach(var metric in metrics)
+                {
+                    var flux = 
+                        $"from(bucket:\"{_options.Bucket}\")" +
+                        $" |> range(start: -{lookbackstr})" +
+                        " |> filter(fn: (r) => r[\"msgtype\"] != \"NCMD\")" +
+                        $" |> filter(fn: (r) => r[\"_measurement\"] == \"{metric.__Model}\")" +
+                        $" |> filter(fn: (r) => r[\"_field\"] == \"{metric.__Field}\")" +
+                        $" |> filter(fn: (r) => r[\"device\"] == \"{deviceid}\")" +
+                        (
+                            (metric.__Component is null) ?
+                            " |> filter(fn: (r) => not exists r[\"component\"] )" :
+                            $" |> filter(fn: (r) => r[\"component\"] == \"{metric.__Component}\")"
+                        ) +
+                        $" |> aggregateWindow(every: {intervalstr}, fn: mean, createEmpty: false)" +
+                        " |> yield(name: \"mean\")";
+
+                    var data = await DoFluxQueryAsync(flux);
+                    result.AddRange(data);
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "InfluxDB: Query Composition Failed");
+                throw;
+            }
+        }
+
+
         public async Task<IEnumerable<Datapoint>> GetSingleComponentTelemetryAsync(string deviceid, string? componentid, TimeSpan lookback, TimeSpan interval)
         {
             try
