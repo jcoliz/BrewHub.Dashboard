@@ -38,7 +38,16 @@ namespace BrewHub.Dashboard.Core.Providers
         /// </returns>
         public Task<IEnumerable<Datapoint>> GetSingleDeviceTelemetryAsync(string deviceid, TimeSpan lookback, TimeSpan interval);
 
-
+        /// <summary>
+        /// Get only selected metrics for one device over time
+        /// </summary>
+        /// <param name="deviceid">Which device</param>
+        /// <param name="metrics">Which metrics. Fill in: __Model, __Component, __Field</param>
+        /// <param name="lookback">How far back from now to look</param>
+        /// <param name="interval">How much time should each data point cover</param>
+        /// <returns>
+        /// Dictionary of component/field names to list of time/values
+        /// </returns>
         public Task<IEnumerable<Datapoint>> GetSingleDeviceMetricsAsync(string deviceid, IEnumerable<Datapoint> metrics, TimeSpan lookback, TimeSpan interval);
 
         /// <summary>
