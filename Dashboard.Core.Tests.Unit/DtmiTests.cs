@@ -142,6 +142,7 @@ public class DtmiTests
 
         Assert.That(result, Is.EquivalentTo(expected));
     }
+//        var metrics = dtmi.VisualizeTelemetry(models, DeviceModelMetricVisualizationLevel.Device);
 
     [Test]
     public void TestDeviceVisualizationWithAddedComponent()
@@ -155,4 +156,27 @@ public class DtmiTests
         Assert.That(result, Is.EquivalentTo(expected));
     }
 
+    [Test]
+    public void TestDeviceVisualizationFull()
+    {
+        var result = details.GetFullVisualizeDetails(new[] { "TemperatureController;2"} , DeviceModelMetricVisualizationLevel.Device);
+
+        Assert.That(result.Count(), Is.EqualTo(2));
+        Assert.That(result.Where(x=>x.__Component == "thermostat1").Single().__Field, Is.EqualTo("temperature"));
+        Assert.That(result.Where(x=>x.__Component == "thermostat2").Single().__Field, Is.EqualTo("temperature"));
+    }
+    [Test]
+    public void TestDeviceVisualizationFullWithToplevel()
+    {
+        // Move the working set metric to the top level.
+        var currentmetric = details.Models["TemperatureController;2"].Metrics["workingSet"];
+        details.Models["TemperatureController;2"].Metrics["workingSet"] = currentmetric with { DashboardChartLevel = DeviceModelMetricVisualizationLevel.Device };
+
+        var result = details.GetFullVisualizeDetails(new[] { "TemperatureController;2"} , DeviceModelMetricVisualizationLevel.Device);
+
+        Assert.That(result.Count(), Is.EqualTo(3));
+        Assert.That(result.Where(x=>x.__Component is null).Single().__Field, Is.EqualTo("workingSet"));
+        Assert.That(result.Where(x=>x.__Component == "thermostat1").Single().__Field, Is.EqualTo("temperature"));
+        Assert.That(result.Where(x=>x.__Component == "thermostat2").Single().__Field, Is.EqualTo("temperature"));
+    }
 }

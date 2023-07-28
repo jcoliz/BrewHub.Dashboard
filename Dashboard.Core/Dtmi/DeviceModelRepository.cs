@@ -124,6 +124,11 @@ public class DeviceModelRepository
     /// <summary>
     /// Telemetry values to be shown when looking at the given level of the solution
     /// </summary>
+    /// <remarks>
+    /// This version supports the original, unoptimized pathway for DB queries. In this case,
+    /// we overfetch nearly EVERYTHING from the db and then filter down in memory to just what
+    /// we want. This function tells us how to filter the data after fetching.
+    /// </remarks>
     public IEnumerable<string> VisualizeTelemetry(IEnumerable<string> models, DeviceModelMetricVisualizationLevel level)
     {
         // NOTE: Right now we expect this to be called for DEVICE models only.
@@ -156,6 +161,61 @@ public class DeviceModelRepository
                     .Metrics
                     .Where(m=>m.Value.DashboardChartLevel >= level)
                     .Select(z=>$"{x.Key}/{z.Key}")
+                );
+
+        return devicemetrics.Concat(componentmetrics);
+    }
+
+    // GetFullVisualizeDetails
+
+    /// <summary>
+    /// Visualization details for all metrics to be shown when looking at the given level of the solution
+    /// </summary>
+    /// <remarks>
+    /// This version supports an optimized DB query path. Here, we will call this method BEFORE
+    /// the db queries, and then craft queries to only fetch what's described here. Thus, we need
+    /// the schema as well, which will help with the DB queries.
+    /// </remarks>
+    /// <returns>
+    /// One datapoint for each metric, with component, model, and field filled in.
+    /// </returns>
+    public IEnumerable<Datapoint> GetFullVisualizeDetails(IEnumerable<string> models, DeviceModelMetricVisualizationLevel level)
+    {
+        // NOTE: Right now we expect this to be called for DEVICE models only.
+        // Now we are trying to get it to work for COMPONENT models.
+        // Not sure if this can support it, or whether it should be its own call.
+
+        var result = new List<Datapoint>();
+
+        // All the things on the given models which have the requested level of visibility. Could be metrics, could be components
+        var toplevelsviz = 
+            models
+                .Where(x=>Models.ContainsKey(x))
+                .SelectMany(x => 
+                    Models[x]
+                    .Metrics
+                    .Where(y=>y.Value.DashboardChartLevel >= level)
+                    .ToDictionary(y=>y.Key,y=>(model:x,details:y.Value))
+                );
+
+        // PROBLEM: We need the MODEL out of the top level
+
+        // Considering the top level those, find just the metrics which are not on a subcomponent
+        var devicemetrics = 
+            toplevelsviz
+                .Where(x => x.Value.details.Kind != DeviceModelMetricKind.Component)
+                .Select(x => new Datapoint { __Model = x.Value.model, __Field = x.Key, __Component = null } );
+
+        // Find the metrics which have requested level visibility AND are on a child component which ALSO has requested level visibility
+        var componentmetrics = 
+            toplevelsviz
+                .Where(x => x.Value.details.Kind == DeviceModelMetricKind.Component)
+                .Where(x => Models.ContainsKey(x.Value.details.Schema!))
+                .SelectMany(x => 
+                    Models[x.Value.details.Schema!]
+                    .Metrics
+                    .Where(m=>m.Value.DashboardChartLevel >= level)
+                    .Select(z=> new Datapoint { __Component = x.Key, __Field = z.Key, __Model = x.Value.details.Schema! })
                 );
 
         return devicemetrics.Concat(componentmetrics);
