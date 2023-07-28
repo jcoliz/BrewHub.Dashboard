@@ -1,0 +1,1954 @@
+[
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:41:20+00:00",
+        "__Field": "CpuLoad",
+        "__Value": 8
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:42:00+00:00",
+        "__Field": "CpuLoad",
+        "__Value": 5
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:42:20+00:00",
+        "__Field": "CpuLoad",
+        "__Value": 15
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:42:40+00:00",
+        "__Field": "CpuLoad",
+        "__Value": 17
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:43:00+00:00",
+        "__Field": "CpuLoad",
+        "__Value": 12
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:43:20+00:00",
+        "__Field": "CpuLoad",
+        "__Value": 22
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:44:00+00:00",
+        "__Field": "CpuLoad",
+        "__Value": 15
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:44:20+00:00",
+        "__Field": "CpuLoad",
+        "__Value": 10
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:44:40+00:00",
+        "__Field": "CpuLoad",
+        "__Value": 28.000000000000004
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:45:00+00:00",
+        "__Field": "CpuLoad",
+        "__Value": 32
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:45:40+00:00",
+        "__Field": "CpuLoad",
+        "__Value": 34
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:45:57.126609+00:00",
+        "__Field": "CpuLoad",
+        "__Value": 31
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "cv",
+        "__Model": "dtmi:brewhub:controls:BinaryValve;1",
+        "__Time": "2023-07-28T02:41:00+00:00",
+        "__Field": "Seq",
+        "__Value": 264243
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "cv",
+        "__Model": "dtmi:brewhub:controls:BinaryValve;1",
+        "__Time": "2023-07-28T02:41:20+00:00",
+        "__Field": "Seq",
+        "__Value": 264270
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "cv",
+        "__Model": "dtmi:brewhub:controls:BinaryValve;1",
+        "__Time": "2023-07-28T02:41:40+00:00",
+        "__Field": "Seq",
+        "__Value": 264321
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "cv",
+        "__Model": "dtmi:brewhub:controls:BinaryValve;1",
+        "__Time": "2023-07-28T02:42:00+00:00",
+        "__Field": "Seq",
+        "__Value": 264372
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "cv",
+        "__Model": "dtmi:brewhub:controls:BinaryValve;1",
+        "__Time": "2023-07-28T02:42:20+00:00",
+        "__Field": "Seq",
+        "__Value": 264420
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "cv",
+        "__Model": "dtmi:brewhub:controls:BinaryValve;1",
+        "__Time": "2023-07-28T02:42:40+00:00",
+        "__Field": "Seq",
+        "__Value": 264468
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "cv",
+        "__Model": "dtmi:brewhub:controls:BinaryValve;1",
+        "__Time": "2023-07-28T02:43:00+00:00",
+        "__Field": "Seq",
+        "__Value": 264519
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "cv",
+        "__Model": "dtmi:brewhub:controls:BinaryValve;1",
+        "__Time": "2023-07-28T02:43:20+00:00",
+        "__Field": "Seq",
+        "__Value": 264570
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "cv",
+        "__Model": "dtmi:brewhub:controls:BinaryValve;1",
+        "__Time": "2023-07-28T02:43:40+00:00",
+        "__Field": "Seq",
+        "__Value": 264618
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "cv",
+        "__Model": "dtmi:brewhub:controls:BinaryValve;1",
+        "__Time": "2023-07-28T02:44:00+00:00",
+        "__Field": "Seq",
+        "__Value": 264666
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "cv",
+        "__Model": "dtmi:brewhub:controls:BinaryValve;1",
+        "__Time": "2023-07-28T02:44:20+00:00",
+        "__Field": "Seq",
+        "__Value": 264717
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "cv",
+        "__Model": "dtmi:brewhub:controls:BinaryValve;1",
+        "__Time": "2023-07-28T02:44:40+00:00",
+        "__Field": "Seq",
+        "__Value": 264768
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "cv",
+        "__Model": "dtmi:brewhub:controls:BinaryValve;1",
+        "__Time": "2023-07-28T02:45:00+00:00",
+        "__Field": "Seq",
+        "__Value": 264816
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "cv",
+        "__Model": "dtmi:brewhub:controls:BinaryValve;1",
+        "__Time": "2023-07-28T02:45:20+00:00",
+        "__Field": "Seq",
+        "__Value": 264867
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "cv",
+        "__Model": "dtmi:brewhub:controls:BinaryValve;1",
+        "__Time": "2023-07-28T02:45:40+00:00",
+        "__Field": "Seq",
+        "__Value": 264918
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "cv",
+        "__Model": "dtmi:brewhub:controls:BinaryValve;1",
+        "__Time": "2023-07-28T02:45:57.126609+00:00",
+        "__Field": "Seq",
+        "__Value": 264957
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rv",
+        "__Model": "dtmi:brewhub:controls:BinaryValve;1",
+        "__Time": "2023-07-28T02:41:00+00:00",
+        "__Field": "Seq",
+        "__Value": 264245
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rv",
+        "__Model": "dtmi:brewhub:controls:BinaryValve;1",
+        "__Time": "2023-07-28T02:41:20+00:00",
+        "__Field": "Seq",
+        "__Value": 264272
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rv",
+        "__Model": "dtmi:brewhub:controls:BinaryValve;1",
+        "__Time": "2023-07-28T02:41:40+00:00",
+        "__Field": "Seq",
+        "__Value": 264323
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rv",
+        "__Model": "dtmi:brewhub:controls:BinaryValve;1",
+        "__Time": "2023-07-28T02:42:00+00:00",
+        "__Field": "Seq",
+        "__Value": 264374
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rv",
+        "__Model": "dtmi:brewhub:controls:BinaryValve;1",
+        "__Time": "2023-07-28T02:42:20+00:00",
+        "__Field": "Seq",
+        "__Value": 264422
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rv",
+        "__Model": "dtmi:brewhub:controls:BinaryValve;1",
+        "__Time": "2023-07-28T02:42:40+00:00",
+        "__Field": "Seq",
+        "__Value": 264470
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rv",
+        "__Model": "dtmi:brewhub:controls:BinaryValve;1",
+        "__Time": "2023-07-28T02:43:00+00:00",
+        "__Field": "Seq",
+        "__Value": 264521
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rv",
+        "__Model": "dtmi:brewhub:controls:BinaryValve;1",
+        "__Time": "2023-07-28T02:43:20+00:00",
+        "__Field": "Seq",
+        "__Value": 264572
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rv",
+        "__Model": "dtmi:brewhub:controls:BinaryValve;1",
+        "__Time": "2023-07-28T02:43:40+00:00",
+        "__Field": "Seq",
+        "__Value": 264620
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rv",
+        "__Model": "dtmi:brewhub:controls:BinaryValve;1",
+        "__Time": "2023-07-28T02:44:00+00:00",
+        "__Field": "Seq",
+        "__Value": 264668
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rv",
+        "__Model": "dtmi:brewhub:controls:BinaryValve;1",
+        "__Time": "2023-07-28T02:44:20+00:00",
+        "__Field": "Seq",
+        "__Value": 264719
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rv",
+        "__Model": "dtmi:brewhub:controls:BinaryValve;1",
+        "__Time": "2023-07-28T02:44:40+00:00",
+        "__Field": "Seq",
+        "__Value": 264770
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rv",
+        "__Model": "dtmi:brewhub:controls:BinaryValve;1",
+        "__Time": "2023-07-28T02:45:00+00:00",
+        "__Field": "Seq",
+        "__Value": 264818
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rv",
+        "__Model": "dtmi:brewhub:controls:BinaryValve;1",
+        "__Time": "2023-07-28T02:45:20+00:00",
+        "__Field": "Seq",
+        "__Value": 264869
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rv",
+        "__Model": "dtmi:brewhub:controls:BinaryValve;1",
+        "__Time": "2023-07-28T02:45:40+00:00",
+        "__Field": "Seq",
+        "__Value": 264920
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rv",
+        "__Model": "dtmi:brewhub:controls:BinaryValve;1",
+        "__Time": "2023-07-28T02:45:57.126609+00:00",
+        "__Field": "Seq",
+        "__Value": 264959
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:41:00+00:00",
+        "__Field": "Seq",
+        "__Value": 264242
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:41:20+00:00",
+        "__Field": "Seq",
+        "__Value": 264269
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:41:40+00:00",
+        "__Field": "Seq",
+        "__Value": 264320
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:42:00+00:00",
+        "__Field": "Seq",
+        "__Value": 264371
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:42:20+00:00",
+        "__Field": "Seq",
+        "__Value": 264419
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:42:40+00:00",
+        "__Field": "Seq",
+        "__Value": 264467
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:43:00+00:00",
+        "__Field": "Seq",
+        "__Value": 264518
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:43:20+00:00",
+        "__Field": "Seq",
+        "__Value": 264569
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:43:40+00:00",
+        "__Field": "Seq",
+        "__Value": 264617
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:44:00+00:00",
+        "__Field": "Seq",
+        "__Value": 264665
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:44:20+00:00",
+        "__Field": "Seq",
+        "__Value": 264716
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:44:40+00:00",
+        "__Field": "Seq",
+        "__Value": 264767
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:45:00+00:00",
+        "__Field": "Seq",
+        "__Value": 264815
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:45:20+00:00",
+        "__Field": "Seq",
+        "__Value": 264866
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:45:40+00:00",
+        "__Field": "Seq",
+        "__Value": 264917
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:45:57.126609+00:00",
+        "__Field": "Seq",
+        "__Value": 264956
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:41:00+00:00",
+        "__Field": "Seq",
+        "__Value": 264244
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:41:20+00:00",
+        "__Field": "Seq",
+        "__Value": 264271
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:41:40+00:00",
+        "__Field": "Seq",
+        "__Value": 264322
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:42:00+00:00",
+        "__Field": "Seq",
+        "__Value": 264373
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:42:20+00:00",
+        "__Field": "Seq",
+        "__Value": 264421
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:42:40+00:00",
+        "__Field": "Seq",
+        "__Value": 264469
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:43:00+00:00",
+        "__Field": "Seq",
+        "__Value": 264520
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:43:20+00:00",
+        "__Field": "Seq",
+        "__Value": 264571
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:43:40+00:00",
+        "__Field": "Seq",
+        "__Value": 264619
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:44:00+00:00",
+        "__Field": "Seq",
+        "__Value": 264667
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:44:20+00:00",
+        "__Field": "Seq",
+        "__Value": 264718
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:44:40+00:00",
+        "__Field": "Seq",
+        "__Value": 264769
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:45:00+00:00",
+        "__Field": "Seq",
+        "__Value": 264817
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:45:20+00:00",
+        "__Field": "Seq",
+        "__Value": 264868
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:45:40+00:00",
+        "__Field": "Seq",
+        "__Value": 264919
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:45:57.126609+00:00",
+        "__Field": "Seq",
+        "__Value": 264958
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:41:00+00:00",
+        "__Field": "Seq",
+        "__Value": 264240
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:41:20+00:00",
+        "__Field": "Seq",
+        "__Value": 264270
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:41:40+00:00",
+        "__Field": "Seq",
+        "__Value": 264321
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:42:00+00:00",
+        "__Field": "Seq",
+        "__Value": 264369
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:42:20+00:00",
+        "__Field": "Seq",
+        "__Value": 264417
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:42:40+00:00",
+        "__Field": "Seq",
+        "__Value": 264468
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:43:00+00:00",
+        "__Field": "Seq",
+        "__Value": 264519
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:43:20+00:00",
+        "__Field": "Seq",
+        "__Value": 264567
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:43:40+00:00",
+        "__Field": "Seq",
+        "__Value": 264615
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:44:00+00:00",
+        "__Field": "Seq",
+        "__Value": 264666
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:44:20+00:00",
+        "__Field": "Seq",
+        "__Value": 264717
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:44:40+00:00",
+        "__Field": "Seq",
+        "__Value": 264765
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:45:00+00:00",
+        "__Field": "Seq",
+        "__Value": 264813
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:45:20+00:00",
+        "__Field": "Seq",
+        "__Value": 264864
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:45:40+00:00",
+        "__Field": "Seq",
+        "__Value": 264915
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:45:57.126609+00:00",
+        "__Field": "Seq",
+        "__Value": 264954
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:41:00+00:00",
+        "__Field": "Seq",
+        "__Value": 264241
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:41:20+00:00",
+        "__Field": "Seq",
+        "__Value": 264271
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:41:40+00:00",
+        "__Field": "Seq",
+        "__Value": 264322
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:42:00+00:00",
+        "__Field": "Seq",
+        "__Value": 264370
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:42:20+00:00",
+        "__Field": "Seq",
+        "__Value": 264418
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:42:40+00:00",
+        "__Field": "Seq",
+        "__Value": 264469
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:43:00+00:00",
+        "__Field": "Seq",
+        "__Value": 264520
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:43:20+00:00",
+        "__Field": "Seq",
+        "__Value": 264568
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:43:40+00:00",
+        "__Field": "Seq",
+        "__Value": 264616
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:44:00+00:00",
+        "__Field": "Seq",
+        "__Value": 264664
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:44:20+00:00",
+        "__Field": "Seq",
+        "__Value": 264715
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:44:40+00:00",
+        "__Field": "Seq",
+        "__Value": 264766
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:45:00+00:00",
+        "__Field": "Seq",
+        "__Value": 264814
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:45:20+00:00",
+        "__Field": "Seq",
+        "__Value": 264865
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:45:40+00:00",
+        "__Field": "Seq",
+        "__Value": 264916
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:45:57.126609+00:00",
+        "__Field": "Seq",
+        "__Value": 264955
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:41:00+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:41:20+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:41:40+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:42:00+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:42:20+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:42:40+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:43:00+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:43:20+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:43:40+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:44:00+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:44:20+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:44:40+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:45:00+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:45:20+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:45:40+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:45:57.126609+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:41:00+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:41:20+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:41:40+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:42:00+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:42:20+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:42:40+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:43:00+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:43:20+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:43:40+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:44:00+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:44:20+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:44:40+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:45:00+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:45:20+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:45:40+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:45:57.126609+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:41:00+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:41:20+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:41:40+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:42:00+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:42:20+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:42:40+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:43:00+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:43:20+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:43:40+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:44:00+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:44:20+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:44:40+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:45:00+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:45:20+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:45:40+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:45:57.126609+00:00",
+        "__Field": "Status",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:41:00+00:00",
+        "__Field": "WorkingSet",
+        "__Value": 649120
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:41:20+00:00",
+        "__Field": "WorkingSet",
+        "__Value": 649120
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:41:40+00:00",
+        "__Field": "WorkingSet",
+        "__Value": 649120
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:42:00+00:00",
+        "__Field": "WorkingSet",
+        "__Value": 649120
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:42:20+00:00",
+        "__Field": "WorkingSet",
+        "__Value": 649120
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:42:40+00:00",
+        "__Field": "WorkingSet",
+        "__Value": 649120
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:43:00+00:00",
+        "__Field": "WorkingSet",
+        "__Value": 649120
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:43:20+00:00",
+        "__Field": "WorkingSet",
+        "__Value": 649120
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:43:40+00:00",
+        "__Field": "WorkingSet",
+        "__Value": 649120
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:44:00+00:00",
+        "__Field": "WorkingSet",
+        "__Value": 649120
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:44:20+00:00",
+        "__Field": "WorkingSet",
+        "__Value": 649120
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:44:40+00:00",
+        "__Field": "WorkingSet",
+        "__Value": 649120
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:45:00+00:00",
+        "__Field": "WorkingSet",
+        "__Value": 649120
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:45:20+00:00",
+        "__Field": "WorkingSet",
+        "__Value": 649120
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:45:40+00:00",
+        "__Field": "WorkingSet",
+        "__Value": 649120
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:45:57.126609+00:00",
+        "__Field": "WorkingSet",
+        "__Value": 649120
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:41:00+00:00",
+        "__Field": "h",
+        "__Value": 36.2
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:41:20+00:00",
+        "__Field": "h",
+        "__Value": 36.24444444444445
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:41:40+00:00",
+        "__Field": "h",
+        "__Value": 36.375
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:42:00+00:00",
+        "__Field": "h",
+        "__Value": 36.4
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:42:20+00:00",
+        "__Field": "h",
+        "__Value": 36.4
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:42:40+00:00",
+        "__Field": "h",
+        "__Value": 36.4
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:43:00+00:00",
+        "__Field": "h",
+        "__Value": 36.4125
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:43:20+00:00",
+        "__Field": "h",
+        "__Value": 36.4375
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:43:40+00:00",
+        "__Field": "h",
+        "__Value": 36.4875
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:44:00+00:00",
+        "__Field": "h",
+        "__Value": 36.5
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:44:20+00:00",
+        "__Field": "h",
+        "__Value": 36.5
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:44:40+00:00",
+        "__Field": "h",
+        "__Value": 36.5
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:45:00+00:00",
+        "__Field": "h",
+        "__Value": 36.5
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:45:20+00:00",
+        "__Field": "h",
+        "__Value": 36.5
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:45:40+00:00",
+        "__Field": "h",
+        "__Value": 36.5
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:45:57.126609+00:00",
+        "__Field": "h",
+        "__Value": 36.5
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:45:20+00:00",
+        "__Field": "hcorr",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:41:00+00:00",
+        "__Field": "t",
+        "__Value": 22.43157284657938
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:41:20+00:00",
+        "__Field": "t",
+        "__Value": 23.617973784548493
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:41:40+00:00",
+        "__Field": "t",
+        "__Value": 23.050371545902475
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:42:00+00:00",
+        "__Field": "t",
+        "__Value": 26.363338544107577
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:42:20+00:00",
+        "__Field": "t",
+        "__Value": 23.286458886015794
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:42:40+00:00",
+        "__Field": "t",
+        "__Value": 26.443257793053338
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:43:00+00:00",
+        "__Field": "t",
+        "__Value": 24.10415657315992
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:43:20+00:00",
+        "__Field": "t",
+        "__Value": 22.517004959905492
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:43:40+00:00",
+        "__Field": "t",
+        "__Value": 25.662075778783297
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:44:00+00:00",
+        "__Field": "t",
+        "__Value": 22.591927455909175
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:44:20+00:00",
+        "__Field": "t",
+        "__Value": 25.52678522431761
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:44:40+00:00",
+        "__Field": "t",
+        "__Value": 23.341076160345487
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:45:00+00:00",
+        "__Field": "t",
+        "__Value": 21.81137725370593
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:45:20+00:00",
+        "__Field": "t",
+        "__Value": 26.442148880520556
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:45:40+00:00",
+        "__Field": "t",
+        "__Value": 24.732945862545023
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:45:57.126609+00:00",
+        "__Field": "t",
+        "__Value": 27.845092974359638
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:41:00+00:00",
+        "__Field": "t",
+        "__Value": 95.93320348821472
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:41:20+00:00",
+        "__Field": "t",
+        "__Value": 95.72604119799388
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:41:40+00:00",
+        "__Field": "t",
+        "__Value": 95.74399667875548
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:42:00+00:00",
+        "__Field": "t",
+        "__Value": 95.82079246862043
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:42:20+00:00",
+        "__Field": "t",
+        "__Value": 95.91495118211273
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:42:40+00:00",
+        "__Field": "t",
+        "__Value": 95.86422474054976
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:43:00+00:00",
+        "__Field": "t",
+        "__Value": 95.72865822386133
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:43:20+00:00",
+        "__Field": "t",
+        "__Value": 95.74013362683844
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:43:40+00:00",
+        "__Field": "t",
+        "__Value": 95.65588915967135
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:44:00+00:00",
+        "__Field": "t",
+        "__Value": 95.60979453721268
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:44:20+00:00",
+        "__Field": "t",
+        "__Value": 95.7159822467223
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:44:40+00:00",
+        "__Field": "t",
+        "__Value": 95.59226668991006
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:45:00+00:00",
+        "__Field": "t",
+        "__Value": 95.61725802278653
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:45:20+00:00",
+        "__Field": "t",
+        "__Value": 95.76140652510371
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:45:40+00:00",
+        "__Field": "t",
+        "__Value": 96.21188222109795
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:45:57.126609+00:00",
+        "__Field": "t",
+        "__Value": 95.6731422459984
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:41:00+00:00",
+        "__Field": "t",
+        "__Value": 24.7
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:41:20+00:00",
+        "__Field": "t",
+        "__Value": 24.699999999999996
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:41:40+00:00",
+        "__Field": "t",
+        "__Value": 24.699999999999996
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:42:00+00:00",
+        "__Field": "t",
+        "__Value": 24.699999999999996
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:42:20+00:00",
+        "__Field": "t",
+        "__Value": 24.687499999999996
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:42:40+00:00",
+        "__Field": "t",
+        "__Value": 24.688888888888883
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:43:00+00:00",
+        "__Field": "t",
+        "__Value": 24.724999999999998
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:43:20+00:00",
+        "__Field": "t",
+        "__Value": 24.699999999999996
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:43:40+00:00",
+        "__Field": "t",
+        "__Value": 24.699999999999996
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:44:00+00:00",
+        "__Field": "t",
+        "__Value": 24.699999999999996
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:44:20+00:00",
+        "__Field": "t",
+        "__Value": 24.699999999999996
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:44:40+00:00",
+        "__Field": "t",
+        "__Value": 24.699999999999996
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:45:00+00:00",
+        "__Field": "t",
+        "__Value": 24.699999999999996
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:45:20+00:00",
+        "__Field": "t",
+        "__Value": 24.699999999999996
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:45:40+00:00",
+        "__Field": "t",
+        "__Value": 24.699999999999996
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:45:57.126609+00:00",
+        "__Field": "t",
+        "__Value": 24.7
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:45:20+00:00",
+        "__Field": "targetTemp",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:45:20+00:00",
+        "__Field": "targetTemp",
+        "__Value": 95
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "ct",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:45:20+00:00",
+        "__Field": "tcorr",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "rt",
+        "__Model": "dtmi:brewhub:controls:Thermostat;1",
+        "__Time": "2023-07-28T02:45:20+00:00",
+        "__Field": "tcorr",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": "amb",
+        "__Model": "dtmi:brewhub:sensors:TH;1",
+        "__Time": "2023-07-28T02:45:20+00:00",
+        "__Field": "tcorr",
+        "__Value": 0
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:45:20+00:00",
+        "__Field": "totalMemory",
+        "__Value": 429428
+    },
+    {
+        "__Device": "pizero-1c",
+        "__Component": null,
+        "__Model": "dtmi:brewhub:prototypes:still_6_unit;1",
+        "__Time": "2023-07-28T02:45:20+00:00",
+        "__Field": "totalStorage",
+        "__Value": 4908624
+    }
+]

@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="SampleData/TelemetryChart.json" />  
+    <EmbeddedResource Include="SampleData/DeviceChart-pizero-1c.json" />
   </ItemGroup>
 
 </Project>

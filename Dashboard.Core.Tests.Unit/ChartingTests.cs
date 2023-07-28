@@ -19,9 +19,8 @@ public class ChartingTests
     {
     }
 
-    private async Task<Datapoint[]> LoadTelemetryChart()
+    private async Task<Datapoint[]> LoadChartData(string filename)
     {
-        var filename = "SampleData.TelemetryChart.json";
         var assembly = Assembly.GetExecutingAssembly();
         var names  = assembly!.GetManifestResourceNames();
         var resource = assembly!.GetManifestResourceNames().Where(x => x.EndsWith(filename)).SingleOrDefault();
@@ -100,7 +99,8 @@ public class ChartingTests
         // What should happen is that NULL values are given for cases where one device doesn't HAVE
         // a certain kind of data
 
-        var data = await LoadTelemetryChart();
+        var filename = "SampleData.TelemetryChart.json";
+        var data = await LoadChartData(filename);
         var result = ChartMaker.CreateMultiDeviceBarChart(data, new[] { "rt/t", "ct/t", "thermostat1/temperature", "thermostat2/temperature" });
 
         // For each label (device) there should be a value for each series (metric). Obviously in this
@@ -117,6 +117,34 @@ public class ChartingTests
         foreach(var dataset in result.Data.Datasets)
         {
             Assert.That(dataset.Data.Count(), Is.EqualTo(devices), $"Incorrect number of labels for series {dataset.Label}");
+        }
+    }
+    [Test]
+    public async Task CreateMultiLineChart()
+    {
+        // Note that this data set triggers Bug 1613, which we've now fixed
+        // Bug 1613: Charting: Handle cases where series have different time series
+
+        var filename = "DeviceChart-pizero-1c.json";
+        var data = await LoadChartData(filename);
+        var metrics = new[] { "CpuLoad", "rt/t", "ct/t", "amb/t" };
+        var result = ChartMaker.CreateMultiLineChart(data, metrics, "mm:ss");
+
+        // There are 16 time slices in the data set we supplied
+        var timeslices = 16;
+
+        // Make sure correct number of labels (one for each timeslice)
+        var numlabels = result.Data.Labels.Count();
+        Assert.That(numlabels, Is.EqualTo(timeslices));
+
+        // Make sure correct number of data sets (one for each metric)
+        var numdatasets = result.Data.Datasets.Count();
+        Assert.That(numdatasets, Is.EqualTo(metrics.Length));
+
+        // Make sure correct number of data points in each data set (one for each timeslice)
+        foreach(var dataset in result.Data.Datasets)
+        {
+            Assert.That(dataset.Data.Count(), Is.EqualTo(timeslices), $"Incorrect number of labels for series {dataset.Label}");
         }
     }
 }

@@ -47,9 +47,10 @@ public static class ChartMaker
     public static ChartConfig CreateMultiLineChart(IEnumerable<Models.Datapoint> points, IEnumerable<string> keys, string timeformat)
     {
         var series = new List<(string Label, IEnumerable<int> Data)>();
-        IEnumerable<string> labels = Enumerable.Empty<string>();
 
-        // For each line...
+        var rawpoints = new Dictionary<string, IEnumerable<Models.Datapoint>>();
+
+        // Collect raw points for each line we want to show...
         foreach(var key in keys)
         {
             // Decompose the key into component and field parts
@@ -61,16 +62,62 @@ public static class ChartMaker
             string field = split.Last();
 
             // Get a subset of the points which match the key, and are ordered by time ascending
-            var thesepoints = points.Where(x => x.__Component == component && x.__Field == field).OrderBy(x => x.__Time);
-            var data = thesepoints.Select(x => Convert.ToInt32(x.__Value)).AsEnumerable<int>();
-            series.Add( (key, data) );
-
-            // Transform them into how the chart config creator wants to see them
-            labels = thesepoints.Select(x => x.__Time.ToString(timeformat));
-
-            // TODO: Bug 1613: Charting: Handle cases where series have different time series
+            rawpoints[key] = points.Where(x => x.__Component == component && x.__Field == field).OrderBy(x => x.__Time);
         }
-        
+
+        // Bug 1613: Charting: Handle cases where series have different time series
+        // Determine the complete set of time points in this domain (touched by at least one key)
+        var slices = rawpoints.SelectMany(x => x.Value).Select(x => x.__Time).Distinct().OrderBy(x=>x);
+
+        // We can make the labels out of this
+        var labels = slices.Select(x => x.ToString(timeformat));
+
+        // Create each series, ensuring that there is one datapoint for every time slice
+        foreach(var key in keys)
+        {
+            var keypoints = rawpoints[key];
+            var iterator = keypoints.GetEnumerator();
+            iterator.MoveNext();
+
+            int lastval = 0;
+            var datapoints = new List<int>();
+
+            foreach(var slice in slices)
+            {
+                // We're going to make one data points for each slice value, copying the previous value
+                // if it's not there
+
+                if (iterator == null)
+                {
+                    // No more items, use previous
+                    datapoints.Add(lastval);
+                }
+                else if (iterator.Current.__Time == slice)
+                {
+                    // Exact match!
+                    // Use it, and advance
+                    lastval = Convert.ToInt32(iterator.Current.__Value);
+                    datapoints.Add(lastval);
+                    iterator.MoveNext();
+                }
+                else if (iterator.Current.__Time > slice)
+                {
+                    // We're asking for a time value which is missing
+                    // Fill in, and don't advance
+                    datapoints.Add(lastval);
+                }
+                else
+                {
+                    // We're asking for a time value which is BEFORE the
+                    // current. This should never happen
+                    datapoints.Add(lastval);
+                }
+            }
+
+            // Add the series
+            series.Add( (key, datapoints) );
+        }
+
         return ChartConfig.CreateLineChart(labels, series, palette );
     }
 
