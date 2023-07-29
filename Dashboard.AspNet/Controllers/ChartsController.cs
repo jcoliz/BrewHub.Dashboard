@@ -116,7 +116,10 @@ public class ChartsController : ControllerBase
         // Fetch ONLY that data
         data = await _datasource.GetSingleDeviceMetricsAsync(device, metrics, timescale.lookback, timescale.bininterval);
 
-        // TODO: Replace with `CreateMultiLineChartAll`
+        // TODO: CreateMultiLineChart no longer needs to take labels. Can be refactored 
+        // to construct
+        // the labels out of the data supplied. Because we now ALWAYS filter before 
+        // querying the DB.
         var labels = dtmi.VisualizeTelemetry(new[] { model }, DeviceModelMetricVisualizationLevel.Device);
         var result = ChartMaker.CreateMultiLineChart(data, labels, timescale.labelformat);
 
@@ -166,12 +169,31 @@ public class ChartsController : ControllerBase
         }
 
         // Get historical telemetry data for just this component on this device
+
+        // What is the model for this componrnt?
+        var latestprops = await _datasource.GetLatestDevicePropertiesAsync(device);
         var actualcomponent = component == "device" ? null : component;
-        data = await _datasource.GetSingleComponentTelemetryAsync(device, actualcomponent, timescale.lookback, timescale.bininterval);
+        var model = latestprops.Where(x => x.__Component == actualcomponent).Select(x => x.__Model).Distinct().Single();
+
+        // What are the metrics we need to get back?
         var dtmi = new DeviceModelRepository();
-        var models = data.Where(x=>x.__Component == actualcomponent).Select(x => x.__Model).Distinct();
-        var metrics = dtmi.VisualizeTelemetry(models, DeviceModelMetricVisualizationLevel.Component);
-        var result = ChartMaker.CreateMultiLineChartForSingleComponent(data, metrics, timescale.labelformat);
+        var metrics = dtmi
+                        .GetFullVisualizeDetails(new[] { model }, DeviceModelMetricVisualizationLevel.Component)
+                        .Select(x => x with { __Component = actualcomponent });
+
+        // Fetch ONLY that data
+        data = await _datasource.GetSingleDeviceMetricsAsync(device, metrics, timescale.lookback, timescale.bininterval);
+
+        // Make labels out of the actual data
+        var labels = data
+                    .Select(x => x.__Component is not null ? $"{x.__Component}/{x.__Field}" : x.__Field)
+                    .Distinct();
+        
+        // TODO: CreateMultiLineChart no longer needs to take labels. Can be refactored 
+        // to construct
+        // the labels out of the data supplied. Because we now ALWAYS filter before 
+        // querying the DB.
+        var result = ChartMaker.CreateMultiLineChart(data, labels, timescale.labelformat);
 
         return Ok(result);
     }

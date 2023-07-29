@@ -206,19 +206,29 @@ public class DeviceModelRepository
                 .Where(x => x.Value.details.Kind != DeviceModelMetricKind.Component)
                 .Select(x => new Datapoint { __Model = x.Value.model, __Field = x.Key, __Component = null } );
 
-        // Find the metrics which have requested level visibility AND are on a child component which ALSO has requested level visibility
-        var componentmetrics = 
-            toplevelsviz
-                .Where(x => x.Value.details.Kind == DeviceModelMetricKind.Component)
-                .Where(x => Models.ContainsKey(x.Value.details.Schema!))
-                .SelectMany(x => 
-                    Models[x.Value.details.Schema!]
-                    .Metrics
-                    .Where(m=>m.Value.DashboardChartLevel >= level)
-                    .Select(z=> new Datapoint { __Component = x.Key, __Field = z.Key, __Model = x.Value.details.Schema! })
-                );
+        // If we're asking for component metrics, no need to continue! We ONLY want metrics on the requested
+        // component, not its children.
 
-        return devicemetrics.Concat(componentmetrics);
+        if ( level <= DeviceModelMetricVisualizationLevel.Component )
+        {
+            return devicemetrics;
+        }
+        else
+        {
+            // Find the metrics which have requested level visibility AND are on a child component which ALSO has requested level visibility
+            var componentmetrics = 
+                toplevelsviz
+                    .Where(x => x.Value.details.Kind == DeviceModelMetricKind.Component)
+                    .Where(x => Models.ContainsKey(x.Value.details.Schema!))
+                    .SelectMany(x => 
+                        Models[x.Value.details.Schema!]
+                        .Metrics
+                        .Where(m=>m.Value.DashboardChartLevel >= level)
+                        .Select(z=> new Datapoint { __Component = x.Key, __Field = z.Key, __Model = x.Value.details.Schema! })
+                    );
+
+            return devicemetrics.Concat(componentmetrics);
+        }
     }
 
     /// <summary>
