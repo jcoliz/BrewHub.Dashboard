@@ -75,34 +75,17 @@ public static class ChartMaker
 
             foreach(var slice in slices)
             {
-                // We're going to make one data points for each slice value, copying the previous value
+                // We're going to make one data point for each slice value, copying the previous value
                 // if it's not there
 
-                if (iterator == null)
-                {
-                    // No more items, use previous
-                    datapoints.Add(lastval);
-                }
-                else if (iterator.Current.__Time == slice)
+                if (iterator.Current.__Time == slice)
                 {
                     // Exact match!
                     // Use it, and advance
                     lastval = Convert.ToInt32(iterator.Current.__Value);
-                    datapoints.Add(lastval);
                     iterator.MoveNext();
                 }
-                else if (iterator.Current.__Time > slice)
-                {
-                    // We're asking for a time value which is missing
-                    // Fill in, and don't advance
-                    datapoints.Add(lastval);
-                }
-                else
-                {
-                    // We're asking for a time value which is BEFORE the
-                    // current. This should never happen
-                    datapoints.Add(lastval);
-                }
+                datapoints.Add(lastval);
             }
 
             // Add the series
