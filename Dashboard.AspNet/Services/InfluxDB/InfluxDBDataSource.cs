@@ -217,11 +217,14 @@ namespace DashboardIoT.InfluxDB
                 // Could be optimized further with a single query PER MODEL in the supplied metrics.
                 var result = new List<Datapoint>();
 
+                // Need to have a common end time, so the last point always has the same timestamp
+                long endtime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+
                 foreach(var metric in metrics)
                 {
                     var flux = 
                         $"from(bucket:\"{_options.Bucket}\")" +
-                        $" |> range(start: -{lookbackstr})" +
+                        $" |> range(start: -{lookbackstr}, stop:{endtime})" +
                         " |> filter(fn: (r) => r[\"msgtype\"] != \"NCMD\")" +
                         $" |> filter(fn: (r) => r[\"_measurement\"] == \"{metric.__Model}\")" +
                         $" |> filter(fn: (r) => r[\"_field\"] == \"{metric.__Field}\")" +
