@@ -126,9 +126,11 @@ public class ChartingTests
         // Bug 1613: Charting: Handle cases where series have different time series
 
         var filename = "DeviceChart-pizero-1c.json";
-        var data = await LoadChartData(filename);
-        var metrics = new[] { "CpuLoad", "rt/t", "ct/t", "amb/t" };
-        var result = ChartMaker.CreateMultiLineChart(data, metrics, "mm:ss");
+        var origdata = await LoadChartData(filename);
+
+        // Just for testing, we're doing to reduce the data to just the sequence markers
+        var data = origdata.Where(x => x.__Field == "Seq");
+        var result = ChartMaker.CreateMultiLineChart(data, "mm:ss");
 
         // There are 16 time slices in the data set we supplied
         var timeslices = 16;
@@ -138,6 +140,8 @@ public class ChartingTests
         Assert.That(numlabels, Is.EqualTo(timeslices));
 
         // Make sure correct number of data sets (one for each metric)
+        // (These are the metrics we know are in our sample data!)
+        var metrics = new[] { "Seq", "rt/Seq", "rv/Seq", "ct/Seq", "cv/Seq", "amb/Seq" };
         var numdatasets = result.Data.Datasets.Count();
         Assert.That(numdatasets, Is.EqualTo(metrics.Length));
 

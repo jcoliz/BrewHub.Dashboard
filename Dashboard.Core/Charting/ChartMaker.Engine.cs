@@ -44,11 +44,16 @@ public static class ChartMaker
         return ChartConfig.CreateLineChart(labels, series, palette );
     }
 
-    public static ChartConfig CreateMultiLineChart(IEnumerable<Models.Datapoint> points, IEnumerable<string> keys, string timeformat)
+    public static ChartConfig CreateMultiLineChart(IEnumerable<Models.Datapoint> points, string timeformat)
     {
         var series = new List<(string Label, IEnumerable<int> Data)>();
 
         var rawpoints = new Dictionary<string, IEnumerable<Models.Datapoint>>();
+
+        // Pick the series keys out of the data
+        var keys = points
+            .Select(x => x.__Component is not null ? $"{x.__Component}/{x.__Field}" : x.__Field)
+            .Distinct();
 
         // Collect raw points for each line we want to show...
         foreach(var key in keys)

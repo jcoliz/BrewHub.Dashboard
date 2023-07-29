@@ -116,14 +116,12 @@ public class ChartsController : ControllerBase
         // Fetch ONLY that data
         data = await _datasource.GetSingleDeviceMetricsAsync(device, metrics, timescale.lookback, timescale.bininterval);
 
-        // TODO: CreateMultiLineChart no longer needs to take labels. Can be refactored 
-        // to construct
-        // the labels out of the data supplied. Because we now ALWAYS filter before 
-        // querying the DB.
-        var labels = dtmi.VisualizeTelemetry(new[] { model }, DeviceModelMetricVisualizationLevel.Device);
-        var result = ChartMaker.CreateMultiLineChart(data, labels, timescale.labelformat);
+        // Make the chart!
+        var result = ChartMaker.CreateMultiLineChart(data, timescale.labelformat);
 
         return Ok(result);
+
+        // TODO: Refactor for DRY between this and the component chart
     }
 
     /// <summary>
@@ -184,16 +182,8 @@ public class ChartsController : ControllerBase
         // Fetch ONLY that data
         data = await _datasource.GetSingleDeviceMetricsAsync(device, metrics, timescale.lookback, timescale.bininterval);
 
-        // Make labels out of the actual data
-        var labels = data
-                    .Select(x => x.__Component is not null ? $"{x.__Component}/{x.__Field}" : x.__Field)
-                    .Distinct();
-        
-        // TODO: CreateMultiLineChart no longer needs to take labels. Can be refactored 
-        // to construct
-        // the labels out of the data supplied. Because we now ALWAYS filter before 
-        // querying the DB.
-        var result = ChartMaker.CreateMultiLineChart(data, labels, timescale.labelformat);
+        // Make the chart! 
+        var result = ChartMaker.CreateMultiLineChart(data, timescale.labelformat);
 
         return Ok(result);
     }
