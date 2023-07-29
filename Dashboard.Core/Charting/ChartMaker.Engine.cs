@@ -7,43 +7,6 @@ namespace BrewHub.Dashboard.Core.Charting;
 
 public static class ChartMaker
 {
-    public static ChartConfig CreateBarChart(IEnumerable<Models.Datapoint> points, string key, string timeformat)
-    {
-        // Decompose the key into component and field parts
-        var split = key.Split('/');
-        if (split.Length > 2)
-            throw new ArgumentException($"Unexpected key segments. Allowed=1 or 2. Found = {split.Length}");
-
-        string? component = (split.Length == 2) ? split.First() : null;
-        string field = split.Last();
-        
-        // Get a subset of the points which match the key, and are ordered by time ascending
-        var thesepoints = points.Where(x => x.__Component == component && x.__Field == field).OrderBy(x => x.__Time).Select(x=>( x.__Time.ToString(timeformat), Convert.ToInt32(x.__Value) ));
-
-        return ChartConfig.CreateBarChart(thesepoints, palette );
-    }
-
-    public static ChartConfig CreateLineChart(IEnumerable<Models.Datapoint> points, string key, string timeformat)
-    {
-        // Decompose the key into component and field parts
-        var split = key.Split('/');
-        if (split.Length > 2)
-            throw new ArgumentException($"Unexpected key segments. Allowed=1 or 2. Found = {split.Length}");
-
-        string? component = (split.Length == 2) ? split.First() : null;
-        string field = split.Last();
-        
-        // Get a subset of the points which match the key, and are ordered by time ascending
-        var thesepoints = points.Where(x => x.__Component == component && x.__Field == field).OrderBy(x => x.__Time);
-
-        // Transform them into how the chart config creator wants to see them
-        var labels = thesepoints.Select(x => x.__Time.ToString(timeformat));
-        var data = thesepoints.Select(x => Convert.ToInt32(x.__Value)).AsEnumerable<int>();
-        var series = new[] { (key, data) };
-
-        return ChartConfig.CreateLineChart(labels, series, palette );
-    }
-
     public static ChartConfig CreateMultiLineChart(IEnumerable<Models.Datapoint> points, string timeformat)
     {
         var series = new List<(string Label, IEnumerable<int> Data)>();
@@ -92,28 +55,6 @@ public static class ChartMaker
             series.Add( (s.Key, datapoints) );
         }
 
-        return ChartConfig.CreateLineChart(labels, series, palette );
-    }
-
-    public static ChartConfig CreateMultiLineChartForSingleComponent(IEnumerable<Models.Datapoint> points, IEnumerable<string> keys, string timeformat)
-    {
-        var series = new List<(string Label, IEnumerable<int> Data)>();
-        IEnumerable<string> labels = Enumerable.Empty<string>();
-
-        // For each line...
-        foreach(var key in keys)
-        {
-            // Get a subset of the points which match the key, and are ordered by time ascending
-            var thesepoints = points.Where(x => x.__Field == key).OrderBy(x => x.__Time);
-            var data = thesepoints.Select(x => Convert.ToInt32(x.__Value)).AsEnumerable<int>();
-            series.Add( (key, data) );
-
-            // Transform them into how the chart config creator wants to see them
-            labels = thesepoints.Select(x => x.__Time.ToString(timeformat));
-
-            // TODO: Bug 1613: Charting: Handle cases where series have different time series
-        }
-        
         return ChartConfig.CreateLineChart(labels, series, palette );
     }
 
