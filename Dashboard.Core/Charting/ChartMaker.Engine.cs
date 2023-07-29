@@ -48,27 +48,14 @@ public static class ChartMaker
     {
         var series = new List<(string Label, IEnumerable<int> Data)>();
 
-        var rawpoints = new Dictionary<string, IEnumerable<Models.Datapoint>>();
-
-        // Pick the series keys out of the data
-        var keys = points
-            .Select(x => x.__Component is not null ? $"{x.__Component}/{x.__Field}" : x.__Field)
-            .Distinct();
-
-        // Collect raw points for each line we want to show...
-        foreach(var key in keys)
-        {
-            // Decompose the key into component and field parts
-            var split = key.Split('/');
-            if (split.Length > 2)
-                throw new ArgumentException($"Unexpected key segments. Allowed=1 or 2. Found = {split.Length}");
-
-            string? component = (split.Length == 2) ? split.First() : null;
-            string field = split.Last();
-
-            // Get a subset of the points which match the key, and are ordered by time ascending
-            rawpoints[key] = points.Where(x => x.__Component == component && x.__Field == field).OrderBy(x => x.__Time);
-        }
+        // Organize the data into a dictionary with one entry per series
+        var rawpoints = points
+            .Select(x => (x.__Component,x.__Field))
+            .Distinct()
+            .ToDictionary(
+                key=>key.__Component is not null ? $"{key.__Component}/{key.__Field}" : key.__Field,
+                key=>points.Where(x => x.__Component == key.__Component && x.__Field == key.__Field).OrderBy(x => x.__Time)
+            );
 
         // Bug 1613: Charting: Handle cases where series have different time series
         // Determine the complete set of time points in this domain (touched by at least one key)
@@ -78,10 +65,9 @@ public static class ChartMaker
         var labels = slices.Select(x => x.ToString(timeformat));
 
         // Create each series, ensuring that there is one datapoint for every time slice
-        foreach(var key in keys)
+        foreach(var s in rawpoints)
         {
-            var keypoints = rawpoints[key];
-            var iterator = keypoints.GetEnumerator();
+            var iterator = s.Value.GetEnumerator();
             iterator.MoveNext();
 
             int lastval = 0;
@@ -120,7 +106,7 @@ public static class ChartMaker
             }
 
             // Add the series
-            series.Add( (key, datapoints) );
+            series.Add( (s.Key, datapoints) );
         }
 
         return ChartConfig.CreateLineChart(labels, series, palette );
