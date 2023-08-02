@@ -41,7 +41,7 @@ public static class ChartMaker
                 // We're going to make one data point for each slice value, copying the previous value
                 // if it's not there
 
-                if (iterator.Current.__Time == slice)
+                if (iterator?.Current.__Time == slice)
                 {
                     // Exact match!
                     // Use it, and advance
