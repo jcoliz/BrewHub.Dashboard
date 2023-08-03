@@ -12,6 +12,8 @@ RUN apt-get update -yq \
         nodejs
 
 # copy csproj and restore as distinct layers
+COPY BrewHub.Protocol.Mqtt/Protocol.Mqtt/*.csproj BrewHub.Protocol.Mqtt/Protocol.Mqtt/
+COPY Dashboard.Services.DeviceMessaging/*.csproj Dashboard.Services.DeviceMessaging/
 COPY Dashboard.AspNet/*.csproj Dashboard.AspNet/
 COPY Dashboard.Core/*.csproj Dashboard.Core/
 COPY Common.ChartJS/*.csproj Common.ChartJS/
