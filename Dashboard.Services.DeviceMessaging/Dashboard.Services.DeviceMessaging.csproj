@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Dashboard.Core\Dashboard.Core.csproj" />
+    <ProjectReference Include="..\BrewHub.Protocol.Mqtt\Protocol.Mqtt\Protocol.Mqtt.csproj" />
   </ItemGroup>
 
   <ItemGroup>

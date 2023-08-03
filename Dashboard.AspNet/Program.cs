@@ -4,6 +4,7 @@
 using DashboardIoT.InfluxDB;
 using BrewHub.Dashboard.Core.MockData;
 using BrewHub.Dashboard.Core.Providers;
+using BrewHub.Protocol.Mqtt;
 using System.Reflection;
 using Dashboard.Services.DeviceMessaging;
 
@@ -19,6 +20,8 @@ using var loggerFactory = LoggerFactory.Create(logbuilder =>
 });
 var logger = loggerFactory.CreateLogger("Startup");
 logger.LogInformation("*** STARTING ***");
+
+builder.Configuration.AddTomlFile("config.toml", optional: true, reloadOnChange: true);
 
 // Add services to the container.
 
@@ -64,11 +67,11 @@ else
 }
 
 // Bring up MQTT connection
-section = builder.Configuration.GetSection(MqttDeviceMessaging.Options.Section);
+section = builder.Configuration.GetSection(MqttOptions.Section);
 if (section.Exists())
 {
     logger.LogInformation("MqttDeviceMessaging Options OK");
-    builder.Services.Configure<MqttDeviceMessaging.Options>(section);
+    builder.Services.Configure<MqttOptions>(section);
     builder.Services.AddSingleton<IDeviceMessaging, MqttDeviceMessaging>();
 }
 else

@@ -6,7 +6,7 @@ namespace Dashboard.Services.DeviceMessaging;
 using System.Text.Json;
 using BrewHub.Dashboard.Core.Models;
 using BrewHub.Dashboard.Core.Providers;
-using BrewHub.Devices.Platform.Mqtt;
+using BrewHub.Protocol.Mqtt;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MQTTnet;
@@ -21,31 +21,15 @@ using MQTTnet.Extensions.ManagedClient;
 /// </summary>
 public class MqttDeviceMessaging: IDeviceMessaging
 {
-    public class Options
-    {
-        public static string Section => "MQTT";
-
-        public string? Server { get; set; }
-
-        public int Port { get; set; } = 1883;
-
-        public string Topic { get; set; } = "empty";
-
-        public string Site { get; set; } = "none";
-
-        public string? ClientId { get; set; }
-    }
-
-
     private readonly ILogger<MqttDeviceMessaging> _logger;
 
-    private readonly string _basetopic;
+    private readonly MqttOptions _options;
 
-    private readonly Options _options;
+    private readonly MessageGenerator _messagegenerator;
 
     private IManagedMqttClient? mqttClient;
 
-    public MqttDeviceMessaging(ILogger<MqttDeviceMessaging> logger, IOptions<Options> options)
+    public MqttDeviceMessaging(ILogger<MqttDeviceMessaging> logger, IOptions<MqttOptions> options)
     {
         _logger = logger;
 
@@ -53,13 +37,7 @@ public class MqttDeviceMessaging: IDeviceMessaging
             throw new ApplicationException("Must set MQTT options in configuration");
 
         _options = options.Value;
-
-        if (_options.Server is null)
-            throw new ApplicationException("Must set MQTT:Server value in configuration");
-        if (_options.ClientId is null)
-            throw new ApplicationException("Must set MQTT:ClientId value in configuration");
-
-        _basetopic = $"{_options.Topic}/{_options.Site}";        
+        _messagegenerator = new MessageGenerator(_options);
     }
 
     /// <summary>
@@ -113,7 +91,6 @@ public class MqttDeviceMessaging: IDeviceMessaging
             );
     }
 
-
     public async Task SendDesiredPropertyAsync(Datapoint point)
     {
         if (mqttClient is null)
@@ -129,17 +106,15 @@ public class MqttDeviceMessaging: IDeviceMessaging
         }
 
         var props = new Dictionary<string, object>() { { point.__Field, point.__Value } };
-        var payload = new MessagePayload()
-        {
-            Model = point.__Model,
-            Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
-            Metrics = props
-        };
 
-        var json = JsonSerializer.Serialize(payload);
+        // Create message
+
+        var (topic, payload) = _messagegenerator.Generate(MessageGenerator.MessageKind.Command, point.__Device, point.__Component, point.__Model, props);
+
+        // Send it
+
+        var json = System.Text.Json.JsonSerializer.Serialize(payload);
         
-        var topic = string.IsNullOrEmpty(point.__Component) ? $"{_basetopic}/NCMD/{point.__Device}" : $"{_basetopic}/NCMD/{point.__Device}/{point.__Component}";
-
         var message = new MqttApplicationMessageBuilder()
             .WithTopic(topic)
             .WithPayload(json)
